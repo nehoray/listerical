@@ -1,6 +1,7 @@
 # app.py
 import os
 import sys
+from datetime import date
 
 import mysql.connector
 from flask import Flask, jsonify, request
@@ -45,7 +46,20 @@ def add_new_dish():
 @app.route("/menu", methods=["GET"])
 def get_menu_by_date():
     chosen_date = str(request.args.get("date"))
-    data = menu.get_daily_menu(chosen_date, mydb)
+    data = menu.get_menu_by_date_sql(chosen_date, mydb)
+    return jsonify(data=data)
+
+
+# if date param is'nt sent, the function will use today's date
+@app.route("/opennighours", defaults={"chosen_date": None})
+@app.route("/opennighours/<chosen_date>", methods=["GET"])
+# TODO: decide functions names
+def get_opennig_hours(chosen_date):
+    if chosen_date == None:
+        date.today()
+        chosen_date = date.today().strftime("%Y-%m-%d")
+
+    data = menu.get_opennig_hours_sql(chosen_date, mydb)
     return jsonify(data=data)
 
 
