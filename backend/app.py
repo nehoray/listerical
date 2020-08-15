@@ -2,7 +2,6 @@
 from flask import Flask
 import mysql.connector
 
-cmd = "INSERT INTO listerical_db.dish (name, created_date, food_type_base,calories_per_100_grams) VALUES ('הצלחה',now(),null,30);"
 
 app = Flask(__name__)
 
@@ -12,17 +11,23 @@ mydb = mysql.connector.connect(
   password="סיסמאחזקהמאוד",
   database="listerical_db"
 )
-
-mycursor = mydb.cursor()
-
 @app.route("/")
 def Index():
     return 'hello world'
 
-@app.route('/insert')
-def insert():
+#  todo: pass parameters from FE
+@app.route('/dish/add')
+def add_new_dish():
+    sql_cmd = "INSERT INTO listerical_db.dish (name, created_date, food_type_base,calories_per_100_grams)" \
+              " VALUES (%s,NOW(),%s,%s);"
+
+    name = 'name from fe'
+    food_type_base = 'milky'
+    calories_per_100_grams = '50'
+
     mycursor = mydb.cursor()
-    mycursor.execute(cmd)
+    values = (name, food_type_base, calories_per_100_grams)
+    mycursor.execute(sql_cmd, values)
     mydb.commit()
     return "good"
 
