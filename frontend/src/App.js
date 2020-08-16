@@ -1,12 +1,17 @@
+import { Container, Typography } from "@material-ui/core";
 import React, { Component } from "react";
 import "./App.css";
+import CollapsibleTablele from "./components/Table";
 
 class App extends Component {
   render() {
     return (
-      <div className="App">
-        <h1>app</h1>
-      </div>
+      <Container maxWidth="sm">
+        <Typography variant="h3" gutterBottom>
+          Dininig Room
+        </Typography>
+        <CollapsibleTablele />;
+      </Container>
     );
   }
 }
