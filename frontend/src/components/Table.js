@@ -12,7 +12,9 @@ import TableRow from "@material-ui/core/TableRow";
 import Typography from "@material-ui/core/Typography";
 import KeyboardArrowDownIcon from "@material-ui/icons/KeyboardArrowDown";
 import KeyboardArrowUpIcon from "@material-ui/icons/KeyboardArrowUp";
-import React from "react";
+import axios from "axios";
+import React, { Component } from "react";
+
 const useRowStyles = makeStyles({
   root: {
     "& > *": {
@@ -21,31 +23,10 @@ const useRowStyles = makeStyles({
   },
 });
 
-function createData(name, calories) {
-  return {
-    name,
-    calories,
-    dishes: [
-      {
-        created_date: "date",
-        dishName: "חציל",
-        type_food_base: "meat",
-        calories_per_100_gram: 3,
-      },
-      {
-        created_date: "date1",
-        dishName: "ממולא",
-        type_food_base: "meat",
-        calories_per_100_gram: 3,
-      },
-
-      // { date: "2020-01-02", customerId: "Anonymous", amount: 1 },
-    ],
-  };
-}
-
 function Row(props) {
-  const { row } = props;
+  const menu = props.row;
+  console.log(menu.dishes);
+  // console.log(this.state.menus);
   const [open, setOpen] = React.useState(false);
   const classes = useRowStyles();
 
@@ -61,35 +42,42 @@ function Row(props) {
             {open ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
           </IconButton>
         </TableCell>
-        <TableCell component="th" scope="row">
-          {row.name}
+        <TableCell align="center">{menu.day_part}</TableCell>
+        <TableCell align="center">
+          {menu.start_time} to {menu.end_time}{" "}
         </TableCell>
-        <TableCell align="right">{row.calories}</TableCell>
       </TableRow>
       <TableRow>
         <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={6}>
           <Collapse in={open} timeout="auto" unmountOnExit>
             <Box margin={1}>
-              <Typography variant="h6" gutterBottom component="div">
-                dishes
+              <Typography
+                align="left"
+                variant="h6"
+                gutterBottom
+                component="div"
+              >
+                Dishes
               </Typography>
               <Table size="small" aria-label="purchases">
                 <TableHead>
                   <TableRow>
-                    <TableCell>Dish Name</TableCell>
-                    <TableCell>Food Type Base</TableCell>
-                    <TableCell align="right">calories per 100 gram</TableCell>
+                    <TableCell align="center">Dish Name</TableCell>
+                    <TableCell align="center">Food Type Base</TableCell>
+                    <TableCell align="center">calories per 100 gram</TableCell>
                   </TableRow>
                 </TableHead>
                 <TableBody>
-                  {row.dishes.map((dishesRow) => (
-                    <TableRow key={dishesRow.created_date}>
-                      <TableCell component="th" scope="row">
-                        {dishesRow.dishName}
+                  {menu.dishes.map((dish) => (
+                    <TableRow key={dish.iddish}>
+                      <TableCell align="center" component="th" scope="row">
+                        {dish.name}
                       </TableCell>
-                      <TableCell>{dishesRow.type_food_base}</TableCell>
-                      <TableCell align="right">
-                        {dishesRow.calories_per_100_gram}
+                      <TableCell align="center">
+                        {dish.food_type_base}
+                      </TableCell>
+                      <TableCell align="center">
+                        {dish.calories_per_100_grams}
                       </TableCell>
                     </TableRow>
                   ))}
@@ -103,29 +91,36 @@ function Row(props) {
   );
 }
 
-const rows = [
-  createData("Frozen yoghurt", "Frozen yoghurt", 159),
-  createData("Ice cream sandwich", "Frozen yoghurt", 237),
-  createData("Eclair", "Eclair", 262),
-];
+export class CollapsibleTable extends Component {
+  state = {
+    menus: [],
+  };
 
-export default function CollapsibleTable() {
-  return (
-    <TableContainer component={Paper}>
-      <Table aria-label="collapsible table">
-        <TableHead>
-          <TableRow>
-            <TableCell />
-            <TableCell>Meal</TableCell>
-            <TableCell align="right">Service Time</TableCell>
-          </TableRow>
-        </TableHead>
-        <TableBody>
-          {rows.map((row) => (
-            <Row key={row.name} row={row} />
-          ))}
-        </TableBody>
-      </Table>
-    </TableContainer>
-  );
+  componentDidMount() {
+    axios.get(`${process.env.REACT_APP_BE_URL}/opennighours`).then((res) => {
+      const menus = res.data;
+      this.setState({ menus });
+    });
+  }
+  render() {
+    return (
+      <TableContainer component={Paper}>
+        <Table aria-label="collapsible table">
+          <TableHead>
+            <TableRow>
+              <TableCell />
+              <TableCell align="center">Meal</TableCell>
+              <TableCell align="center">Service Time</TableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {this.state.menus.map((menu) => (
+              <Row key={menu.idmenu} row={menu} />
+            ))}
+          </TableBody>
+        </Table>
+      </TableContainer>
+    );
+  }
 }
+export default CollapsibleTable;

@@ -1,24 +1,16 @@
 import { Container, Typography } from "@material-ui/core";
-import axios from "axios";
 import React, { Component } from "react";
 import "./App.css";
-import Table from "./components/Table";
+import CollapsibleTablele from "./components/Table";
 
-const api = axios.create({
-  baseURL: "http://127.0.0.1:5000",
-});
 class App extends Component {
-  constructor() {
-    super();
-    api.get("/opennighours").then((res) => {});
-  }
   render() {
     return (
       <Container maxWidth="sm">
         <Typography variant="h3" gutterBottom>
           Dininig Room
         </Typography>
-        <Table />;
+        <CollapsibleTablele />;
       </Container>
     );
   }
