@@ -5,6 +5,7 @@ from datetime import date
 
 import mysql.connector
 from flask import Flask, jsonify, request
+from flask_cors import CORS
 
 import menu
 
@@ -17,6 +18,9 @@ mydb = mysql.connector.connect(
 
 app = Flask(__name__)
 
+# TODO: handle it in prod
+CORS(app)
+
 
 @app.route("/")
 def Index():
@@ -28,8 +32,7 @@ def Index():
 def add_new_dish():
     sql_cmd = (
         "INSERT INTO listerical_db.dish (name, created_date, food_type_base,calories_per_100_grams)"
-        " VALUES (%s,NOW(),%s,%s);"
-    )
+        " VALUES (%s,NOW(),%s,%s);")
 
     name = "name from fe1"
     food_type_base = "milky"
