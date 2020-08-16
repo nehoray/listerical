@@ -10,9 +10,7 @@ const api = axios.create({
 class App extends Component {
   constructor() {
     super();
-    api.get("/").then((res) => {
-      console.log(res.data);
-    });
+    api.get("/opennighours").then((res) => {});
   }
   render() {
     return (
