@@ -1,3 +1,5 @@
+from datetime import datetime
+
 from mysql.connector import FieldType
 
 _DATE_TYPES = ["TIME"]
@@ -9,6 +11,7 @@ def parse_result(cursor):
     for row in data:
         for col in cursor.description:
             if FieldType.get_info(col[1]) in _DATE_TYPES:
+                # TODO: change format
                 row[col[0]] = str(row[col[0]])
 
     return data

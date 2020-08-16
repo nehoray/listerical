@@ -2,11 +2,10 @@
 import os
 import sys
 from datetime import date
-
 import mysql.connector
 from flask import Flask, jsonify, request
 from flask_cors import CORS
-
+import dish
 import menu
 
 mydb = mysql.connector.connect(
@@ -17,7 +16,6 @@ mydb = mysql.connector.connect(
 )
 
 app = Flask(__name__)
-
 # TODO: handle it in prod
 CORS(app)
 
@@ -63,7 +61,11 @@ def get_opennig_hours(chosen_date):
         chosen_date = date.today().strftime("%Y-%m-%d")
 
     data = menu.get_opennig_hours_sql(chosen_date, mydb)
-    return jsonify(data=data)
+    for cur_menu in data:
+        cur_menu['dishes'] = dish.get_dishes_by_menu_sql(
+            cur_menu['idmenu'], mydb)
+        # print(dish.get_dishes_by_menu_sql(cur_menu['idmenu'], mydb))
+    return jsonify(data)
 
 
 if __name__ == "__main__":
