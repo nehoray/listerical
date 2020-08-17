@@ -14,7 +14,7 @@ import KeyboardArrowDownIcon from "@material-ui/icons/KeyboardArrowDown";
 import KeyboardArrowUpIcon from "@material-ui/icons/KeyboardArrowUp";
 import axios from "axios";
 import React, { Component } from "react";
-
+import Datepicker from "./Datepicker";
 const useRowStyles = makeStyles({
   root: {
     "& > *": {
@@ -25,8 +25,6 @@ const useRowStyles = makeStyles({
 
 function Row(props) {
   const menu = props.row;
-  console.log(menu.dishes);
-  // console.log(this.state.menus);
   const [open, setOpen] = React.useState(false);
   const classes = useRowStyles();
 
@@ -44,11 +42,18 @@ function Row(props) {
         </TableCell>
         <TableCell align="center">{menu.day_part}</TableCell>
         <TableCell align="center">
-          {menu.start_time} to {menu.end_time}{" "}
+          {menu.start_time}
+          to {menu.end_time}
         </TableCell>
       </TableRow>
       <TableRow>
-        <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={6}>
+        <TableCell
+          style={{
+            paddingBottom: 0,
+            paddingTop: 0,
+          }}
+          colSpan={6}
+        >
           <Collapse in={open} timeout="auto" unmountOnExit>
             <Box margin={1}>
               <Typography
@@ -95,16 +100,34 @@ export class CollapsibleTable extends Component {
   state = {
     menus: [],
   };
-
   componentDidMount() {
-    axios.get(`${process.env.REACT_APP_BE_URL}/opennighours`).then((res) => {
-      const menus = res.data;
-      this.setState({ menus });
-    });
+    this.readMenuData();
   }
+
+  // 2 uses: 1.for default render. 2. for datepicker
+  readMenuData(chosen_date = null) {
+    let path = `${process.env.REACT_APP_BE_URL}/opennighours`;
+    console.log(this);
+    axios
+      .get(path, {
+        params: { chosen_date: chosen_date },
+      })
+      .then((res) => {
+        console.log(this);
+        this.setState({ menus: res.data });
+      });
+    // .then((res) => {
+    //   const menus = res.data;
+    //   setState({
+    //     menus,
+    //   });
+    // });
+  }
+
   render() {
     return (
       <TableContainer component={Paper}>
+        <Datepicker readMenusFunc={this.readMenuData.bind(this)} />
         <Table aria-label="collapsible table">
           <TableHead>
             <TableRow>

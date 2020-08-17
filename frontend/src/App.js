@@ -9,7 +9,7 @@ class App extends Component {
         <Typography variant="h3" gutterBottom align="center">
           Dininig Room
         </Typography>
-        <CollapsibleTablele />;
+        <CollapsibleTablele />
       </Container>
     );
   }

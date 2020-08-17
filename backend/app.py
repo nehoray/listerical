@@ -1,12 +1,13 @@
-# app.py
 import os
 import sys
 from datetime import date
+
 import mysql.connector
 from flask import Flask, jsonify, request
 from flask_cors import CORS
-import dish
-import menu
+
+from dish import DishModel
+from menu import MenuModel
 
 mydb = mysql.connector.connect(
     host=os.environ.get("host"),
@@ -14,10 +15,12 @@ mydb = mysql.connector.connect(
     password=os.environ.get("password"),
     database=os.environ.get("database"),
 )
+dish = DishModel(mydb)
+menu = MenuModel(mydb)
 
 app = Flask(__name__)
 # TODO: handle it in prod
-CORS(app)
+CORS(app, resorces="http://localhost:5000/")
 
 
 @app.route("/")
@@ -40,31 +43,18 @@ def add_new_dish():
     values = (name, food_type_base, calories_per_100_grams)
     mycursor.execute(sql_cmd, values)
     mydb.commit()
-    return "good"
-
-
-# TODO: pass date parameter from FE
-@app.route("/menu", methods=["GET"])
-def get_menu_by_date():
-    chosen_date = str(request.args.get("date"))
-    data = menu.get_menu_by_date_sql(chosen_date, mydb)
-    return jsonify(data=data)
+    return jsonify(True)
 
 
 # if date param is'nt sent, the function will use today's date
-@app.route("/opennighours", defaults={"chosen_date": None})
-@app.route("/opennighours/<chosen_date>", methods=["GET"])
+@app.route("/opennighours")
 # TODO: decide functions names
-def get_opennig_hours(chosen_date):
-    if chosen_date == None:
-        date.today()
-        chosen_date = date.today().strftime("%Y-%m-%d")
-
-    data = menu.get_opennig_hours_sql(chosen_date, mydb)
+def get_opennig_hours():
+    print(request.args)
+    chosen_date = request.args.get('chosen_date') or date.today()
+    data = menu.get_opennig_hours(chosen_date)
     for cur_menu in data:
-        cur_menu['dishes'] = dish.get_dishes_by_menu_sql(
-            cur_menu['idmenu'], mydb)
-        # print(dish.get_dishes_by_menu_sql(cur_menu['idmenu'], mydb))
+        cur_menu['dishes'] = dish.get_dishes_by_menu_sql(cur_menu['idmenu'])
     return jsonify(data)
 
 
