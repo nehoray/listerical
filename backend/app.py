@@ -31,30 +31,38 @@ def Index():
 #  TODO: pass parameters from FE
 @app.route("/dish/add")
 def add_new_dish():
-    sql_cmd = (
-        "INSERT INTO listerical_db.dish (name, created_date, food_type_base,calories_per_100_grams)"
-        " VALUES (%s,NOW(),%s,%s);")
+    """
 
-    name = "name from fe1"
-    food_type_base = "milky"
-    calories_per_100_grams = "50"
+    :return:
+    """
+    # sql_cmd = """   INSERT INTO listerical_db.dish (name, created_date, food_type_base,calories_per_100_grams)
+    #                 VALUES (%s,NOW(),%s,%s);"""
 
-    mycursor = mydb.cursor()
-    values = (name, food_type_base, calories_per_100_grams)
-    mycursor.execute(sql_cmd, values)
-    mydb.commit()
+    name = request.args.get('name')
+    food_type_base = request.args.get('food_type')
+    calories_per_100_grams = request.args.get('calories')
+
+    # mycursor = mydb.cursor()
+    # values = (name, food_type_base, calories_per_100_grams)
+    # mycursor.execute(sql_cmd, values)
+    # mydb.commit()
+    dish.add_new_dish(name=name,
+                      food_type_base=food_type_base,
+                      calories_per_100_grams=calories_per_100_grams)
     return jsonify(True)
 
 
-# if date param is'nt sent, the function will use today's date
 @app.route("/opennighours")
 # TODO: decide functions names
-def get_opennig_hours():
-    print(request.args)
+def get_full_menu():
+    """
+    if date param is'nt sent, the function will use today's date
+    :return: full menu (indcluding dishes) of today or menu of other date if such arg is given.
+    """
     chosen_date = request.args.get('chosen_date') or date.today()
-    data = menu.get_opennig_hours(chosen_date)
+    data = menu.get_full_menu(chosen_date)
     for cur_menu in data:
-        cur_menu['dishes'] = dish.get_dishes_by_menu_sql(cur_menu['idmenu'])
+        cur_menu['dishes'] = dish.get_dishes_by_menu(cur_menu['idmenu'])
     return jsonify(data)
 
 
