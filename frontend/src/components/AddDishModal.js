@@ -1,20 +1,54 @@
+import Button from "@material-ui/core/Button";
+import TextField from "@material-ui/core/TextField";
+import axios from "axios";
 import React, { Component } from "react";
 import Modal from "react-modal";
-
-const MODAL_A = "modal_a";
-const MODAL_B = "modal_b";
-
-const DEFAULT_TITLE = "Default title";
+import { Snackbar } from "./Snackbar";
 
 export class AddDishModal extends Component {
   constructor(props) {
     super(props);
 
-    this.state = { isOpen: false };
+    this.state = {
+      isOpen: false,
+      name: "",
+      calories: "",
+      food_type: "",
+    };
   }
 
+  snackbarRef = React.createRef();
+
+  _showSnackbarHandler = (msg) => {
+    this.snackbarRef.current.openSnackBar(msg);
+  };
+
+  mySubmitHandler = (event) => {
+    event.preventDefault();
+    let path = `${process.env.REACT_APP_BE_URL}/dish/add`;
+    axios
+      .get(path, {
+        params: {
+          name: this.state.name,
+          calories: this.state.calories,
+          food_type: this.state.food_type,
+        },
+      })
+      .then((res) => {
+        if (String(res.data) === "true") {
+          this._showSnackbarHandler(this.state.name + " added successfully");
+          this.toggleModal();
+        }
+      });
+  };
+  myChangeHandler = (event) => {
+    //console.log(event.target.value);
+    console.log(event.target.id);
+    let stateName = `${event.target.id}`;
+    this.setState({ [stateName]: event.target.value });
+  };
+
   toggleModal = (event) => {
-    console.log(event);
     const { isOpen } = this.state;
     this.setState({ isOpen: !isOpen });
   };
@@ -24,14 +58,19 @@ export class AddDishModal extends Component {
 
     return (
       <div>
-        <button className="btn btn-primary" onClick={this.toggleModal}>
-          Open Modal
-        </button>
+        <Button
+          className="add-dish-button"
+          variant="contained"
+          color="primary"
+          onClick={this.toggleModal}
+        >
+          Add new dish
+        </Button>
+
         <Modal
+          dialogClassName="custom-dialog"
           id="modal_with_forms"
           isOpen={isOpen}
-          closeTimeoutMS={150}
-          contentLabel="modalB"
           shouldCloseOnOverlayClick={true}
           onRequestClose={this.toggleModal}
           aria={{
@@ -39,36 +78,46 @@ export class AddDishModal extends Component {
             describedby: "fulldescription",
           }}
         >
-          <h1 id="heading">Forms!</h1>
+          <h1 id="heading">New Dish</h1>
           <div id="fulldescription" tabIndex="0" role="document">
-            <p>This is a description of what it does: nothing :)</p>
-            <form>
-              <fieldset>
-                <input type="text" />
-                <input type="text" />
-              </fieldset>
-              <fieldset>
-                <legend>Radio buttons</legend>
-                <label>
-                  <input id="radio-a" name="radios" type="radio" /> A
-                </label>
-                <label>
-                  <input id="radio-b" name="radios" type="radio" /> B
-                </label>
-              </fieldset>
-              <fieldset>
-                <legend>Checkbox buttons</legend>
-                <label>
-                  <input id="checkbox-a" name="checkbox-a" type="checkbox" /> A
-                </label>
-                <label>
-                  <input id="checkbox-b" name="checkbox-b" type="checkbox" /> B
-                </label>
-              </fieldset>
-              <input type="text" />
+            <form onSubmit={this.mySubmitHandler}>
+              <TextField
+                onChange={this.myChangeHandler}
+                autoFocus
+                margin="dense"
+                id="name"
+                label="Dish name"
+                type="text"
+                inputProps={{ maxLength: 20 }}
+              />
+              <TextField
+                onChange={this.myChangeHandler}
+                autoFocus
+                margin="dense"
+                id="food_type"
+                label="Food Type"
+                type="text"
+                inputProps={{ maxLength: 5 }}
+              />
+              <TextField
+                autoFocus
+                onChange={this.myChangeHandler}
+                margin="dense"
+                id="calories"
+                label="calories per 100 grams"
+                type="number"
+                inputProps={{ min: "0" }}
+                onInput={(e) => {
+                  e.target.value = e.target.value.slice(0, 5);
+                }}
+              />
+              <Button variant="contained" color="primary" type="submit">
+                Primary
+              </Button>
             </form>
           </div>
         </Modal>
+        <Snackbar ref={this.snackbarRef} />
       </div>
     );
   }
