@@ -2,7 +2,7 @@ import Box from "@material-ui/core/Box";
 import Collapse from "@material-ui/core/Collapse";
 import IconButton from "@material-ui/core/IconButton";
 import Paper from "@material-ui/core/Paper";
-import { makeStyles } from "@material-ui/core/styles";
+import { makeStyles, withStyles } from "@material-ui/core/styles";
 import Table from "@material-ui/core/Table";
 import TableBody from "@material-ui/core/TableBody";
 import TableCell from "@material-ui/core/TableCell";
@@ -15,6 +15,7 @@ import KeyboardArrowUpIcon from "@material-ui/icons/KeyboardArrowUp";
 import axios from "axios";
 import React, { Component } from "react";
 import Datepicker from "./Datepicker";
+
 const useRowStyles = makeStyles({
   root: {
     "& > *": {
@@ -22,6 +23,24 @@ const useRowStyles = makeStyles({
     },
   },
 });
+
+const StyledTableCell = withStyles((theme) => ({
+  head: {
+    backgroundColor: theme.palette.common.black,
+    color: theme.palette.common.white,
+  },
+  body: {
+    fontSize: 14,
+  },
+}))(TableCell);
+
+const StyledTableRow = withStyles((theme) => ({
+  root: {
+    "&:nth-of-type(odd)": {
+      backgroundColor: theme.palette.action.hover,
+    },
+  },
+}))(TableRow);
 
 function Row(props) {
   const menu = props.row;
@@ -31,7 +50,7 @@ function Row(props) {
   return (
     <React.Fragment>
       <TableRow className={classes.root}>
-        <TableCell>
+        <StyledTableCell>
           <IconButton
             aria-label="expand row"
             size="small"
@@ -39,15 +58,14 @@ function Row(props) {
           >
             {open ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
           </IconButton>
-        </TableCell>
-        <TableCell align="center">{menu.day_part}</TableCell>
-        <TableCell align="center">
-          {menu.start_time}
-          to {menu.end_time}
-        </TableCell>
+        </StyledTableCell>
+        <StyledTableCell align="center">{menu.day_part}</StyledTableCell>
+        <StyledTableCell align="center">
+          {menu.start_time} to {menu.end_time}
+        </StyledTableCell>
       </TableRow>
       <TableRow>
-        <TableCell
+        <StyledTableCell
           style={{
             paddingBottom: 0,
             paddingTop: 0,
@@ -67,30 +85,38 @@ function Row(props) {
               <Table size="small" aria-label="purchases">
                 <TableHead>
                   <TableRow>
-                    <TableCell align="center">Dish Name</TableCell>
-                    <TableCell align="center">Food Type Base</TableCell>
-                    <TableCell align="center">calories per 100 gram</TableCell>
+                    <StyledTableCell align="center">Dish Name</StyledTableCell>
+                    <StyledTableCell align="center">
+                      Food Type Base
+                    </StyledTableCell>
+                    <StyledTableCell align="center">
+                      calories per 100 gram
+                    </StyledTableCell>
                   </TableRow>
                 </TableHead>
                 <TableBody>
                   {menu.dishes.map((dish) => (
-                    <TableRow key={dish.iddish}>
-                      <TableCell align="center" component="th" scope="row">
+                    <StyledTableRow key={dish.iddish}>
+                      <StyledTableCell
+                        align="center"
+                        component="th"
+                        scope="row"
+                      >
                         {dish.name}
-                      </TableCell>
-                      <TableCell align="center">
+                      </StyledTableCell>
+                      <StyledTableCell align="center">
                         {dish.food_type_base}
-                      </TableCell>
-                      <TableCell align="center">
+                      </StyledTableCell>
+                      <StyledTableCell align="center">
                         {dish.calories_per_100_grams}
-                      </TableCell>
-                    </TableRow>
+                      </StyledTableCell>
+                    </StyledTableRow>
                   ))}
                 </TableBody>
               </Table>
             </Box>
           </Collapse>
-        </TableCell>
+        </StyledTableCell>
       </TableRow>
     </React.Fragment>
   );
@@ -107,21 +133,13 @@ export class CollapsibleTable extends Component {
   // 2 uses: 1.for default render. 2. for datepicker
   readMenuData(chosen_date = null) {
     let path = `${process.env.REACT_APP_BE_URL}/opennighours`;
-    console.log(this);
     axios
       .get(path, {
         params: { chosen_date: chosen_date },
       })
       .then((res) => {
-        console.log(this);
         this.setState({ menus: res.data });
       });
-    // .then((res) => {
-    //   const menus = res.data;
-    //   setState({
-    //     menus,
-    //   });
-    // });
   }
 
   render() {
@@ -131,9 +149,9 @@ export class CollapsibleTable extends Component {
         <Table aria-label="collapsible table">
           <TableHead>
             <TableRow>
-              <TableCell />
-              <TableCell align="center">Meal</TableCell>
-              <TableCell align="center">Service Time</TableCell>
+              <StyledTableCell />
+              <StyledTableCell align="center">Meal</StyledTableCell>
+              <StyledTableCell align="center">Service Time</StyledTableCell>
             </TableRow>
           </TableHead>
           <TableBody>
