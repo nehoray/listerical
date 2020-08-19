@@ -5,8 +5,8 @@ import React, { Fragment, useState } from "react";
 function Datepicker(props) {
   const [selectedDate, setSelectedDate] = useState(new Date());
   return (
-    <MuiPickersUtilsProvider utils={DateFnsUtils}>
-      <Fragment>
+    <Fragment>
+      <MuiPickersUtilsProvider utils={DateFnsUtils}>
         <DatePicker
           openTo="date"
           format="dd/MM/yyyy"
@@ -25,9 +25,9 @@ function Datepicker(props) {
             props.readMenusFunc(dateRes);
           }}
           dateformat="dd/MM/yyyy"
-        />
-      </Fragment>{" "}
-    </MuiPickersUtilsProvider>
+        />{" "}
+      </MuiPickersUtilsProvider>
+    </Fragment>
   );
 }
 export default Datepicker;

@@ -196,7 +196,9 @@ export class CollapsibleTable extends Component {
   render() {
     return (
       <TableContainer component={Paper}>
-        <Datepicker readMenusFunc={this.readMenuData.bind(this)} />
+        <React.Fragment>
+          <Datepicker readMenusFunc={this.readMenuData.bind(this)} />
+        </React.Fragment>
         <Table aria-label="collapsible table">
           <TableHead>
             <TableRow>
