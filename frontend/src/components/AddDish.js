@@ -4,7 +4,6 @@ import MuiDialogContent from "@material-ui/core/DialogContent";
 import MuiDialogTitle from "@material-ui/core/DialogTitle";
 import Grid from "@material-ui/core/Grid";
 import IconButton from "@material-ui/core/IconButton";
-// import { Snackbar } from "./Snackbar";
 import Snackbar from "@material-ui/core/Snackbar";
 import { withStyles } from "@material-ui/core/styles";
 import TextField from "@material-ui/core/TextField";
@@ -61,18 +60,16 @@ const DialogActions = withStyles((theme) => ({
 export default class CustomizedDialogs extends Component {
   constructor(props) {
     super(props);
-    // this.mySubmitHandler = this.mySubmitHandler.bind(this);
 
     this.state = {
-      isOpen: false,
-      name: "",
-      calories: "",
-      food_type: "",
-      idmenu: 0,
+      formErrors: {
+        name: "",
+        calories: "",
+        food_type: "",
+      },
     };
   }
 
-  // TODO: fix snack
   snackbarRef = React.createRef();
   _showSnackbarHandler = (msg) => {
     console.log("_showSnackbarHandler");
@@ -80,7 +77,6 @@ export default class CustomizedDialogs extends Component {
   };
 
   mySubmitHandler = (event) => {
-    console.log(event);
     event.preventDefault();
     let path = `${process.env.REACT_APP_BE_URL}/dish/add`;
     console.log(this.props.idmenu);
@@ -97,9 +93,6 @@ export default class CustomizedDialogs extends Component {
       })
       .then((res) => {
         if (String(res.data) === "true") {
-          //// TODO: fix snack
-          // this._showSnackbarHandler(this.state.name + " added successfully");
-          // console.log("snack");
           this.toggleModal();
           this.setState({
             open: true,
@@ -109,12 +102,53 @@ export default class CustomizedDialogs extends Component {
         }
         console.log(this.state);
       });
+    console.log("valid");
   };
   myChangeHandler = (event) => {
+    event.preventDefault(); // maybe delete
     let stateName = `${event.target.id}`;
+    let value = event.target.value;
     this.setState({
       [stateName]: event.target.value,
     });
+
+    const name = stateName;
+    let formErrors = { name: "", calories: "", food_type: "" };
+    switch (name) {
+      case "name":
+        formErrors.name = value.length < 1 ? "must be more than 1" : "";
+
+        if (value.length < 2) {
+          formErrors.name = "must be more than 1";
+        }
+        if (value.match(/^[A-Za-zא-ת]+$/) == null) {
+          formErrors.name = "can not conatin numbers";
+        }
+        break;
+
+      case "food_type":
+        if (value.length < 3) {
+          formErrors.food_type = "must be more than 2";
+        }
+        if (value.match(/^[A-Za-zא-ת]+$/) == null) {
+          formErrors.food_type = "can not conatin numbers";
+        }
+        break;
+
+      case "calories":
+        if (value.length < 0) {
+          formErrors.food_type = "can not be empty";
+        }
+        if (value.match(/^[1-9]\d*$/) == null) {
+          formErrors.calories = "can not start with 0";
+        }
+        break;
+
+      default:
+        break;
+    }
+
+    this.setState({ formErrors, [name]: value }, console.log(this.state));
   };
 
   toggleModal = (event) => {
@@ -125,6 +159,7 @@ export default class CustomizedDialogs extends Component {
   };
 
   render() {
+    const { formErrors } = this.state;
     return (
       <div>
         <AwesomeButton type="primary" onPress={this.toggleModal}>
@@ -146,19 +181,23 @@ export default class CustomizedDialogs extends Component {
                   alignItems="baseline"
                 >
                   <TextField
-                    onChange={this.myChangeHandler}
                     autoFocus
+                    onChange={this.myChangeHandler}
                     margin="dense"
                     id="name"
                     label="Dish name"
                     type="text"
                     inputProps={{
-                      maxLength: 20,
+                      maxLength: 12,
                     }}
-                  />{" "}
+                  />
+                  {formErrors.name.length > 0 && (
+                    <span className="errorMessage">{formErrors.name}</span>
+                  )}{" "}
                   <TextField
+                    required
+                    helponfocus="true"
                     onChange={this.myChangeHandler}
-                    autoFocus
                     margin="dense"
                     id="food_type"
                     label="Food Type"
@@ -167,12 +206,16 @@ export default class CustomizedDialogs extends Component {
                       maxLength: 5,
                     }}
                   />{" "}
+                  {formErrors.food_type.length > 0 && (
+                    <span className="errorMessage">{formErrors.food_type}</span>
+                  )}
                   <TextField
-                    autoFocus
+                    required
+                    helponfocus="true"
                     onChange={this.myChangeHandler}
                     margin="dense"
                     id="calories"
-                    label="calories per 100 grams"
+                    label="Calories per 100 grams"
                     type="number"
                     inputProps={{
                       min: "0",
@@ -181,6 +224,9 @@ export default class CustomizedDialogs extends Component {
                       e.target.value = e.target.value.slice(0, 5);
                     }}
                   />
+                  {formErrors.calories.length > 0 && (
+                    <span className="errorMessage">{formErrors.calories}</span>
+                  )}
                 </Grid>
               </div>
               {/*  */}
