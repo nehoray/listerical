@@ -188,7 +188,6 @@ export class CollapsibleTable extends Component {
         } else {
           this.setState({ menus: res.data });
           console.log("res.data.length > 0 |  state is :");
-          console.log(this.state);
         } // else
       });
   }
