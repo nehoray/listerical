@@ -4,6 +4,8 @@ import MuiDialogContent from "@material-ui/core/DialogContent";
 import MuiDialogTitle from "@material-ui/core/DialogTitle";
 import Grid from "@material-ui/core/Grid";
 import IconButton from "@material-ui/core/IconButton";
+// import { Snackbar } from "./Snackbar";
+import Snackbar from "@material-ui/core/Snackbar";
 import { withStyles } from "@material-ui/core/styles";
 import TextField from "@material-ui/core/TextField";
 import Typography from "@material-ui/core/Typography";
@@ -12,8 +14,6 @@ import axios from "axios";
 import React, { Component } from "react";
 import { AwesomeButton } from "react-awesome-button";
 import "react-awesome-button/dist/styles.css";
-import { Snackbar } from "./Snackbar";
-
 const styles = (theme) => ({
   root: {
     margin: 0,
@@ -80,6 +80,7 @@ export default class CustomizedDialogs extends Component {
   };
 
   mySubmitHandler = (event) => {
+    console.log(event);
     event.preventDefault();
     let path = `${process.env.REACT_APP_BE_URL}/dish/add`;
     console.log(this.props.idmenu);
@@ -92,15 +93,17 @@ export default class CustomizedDialogs extends Component {
           calories: this.state.calories,
           food_type: this.state.food_type,
           idmenu: this.props.idmenu,
-          day_part: this.props.day_part,
         },
       })
       .then((res) => {
         if (String(res.data) === "true") {
           //// TODO: fix snack
-          this._showSnackbarHandler(this.state.name + " added successfully");
-          console.log("snack");
+          // this._showSnackbarHandler(this.state.name + " added successfully");
+          // console.log("snack");
           this.toggleModal();
+          this.setState({
+            open: true,
+          });
         } else {
           console.log("no snack");
         }
@@ -132,7 +135,7 @@ export default class CustomizedDialogs extends Component {
           aria-labelledby="customized-dialog-title"
           open={this.state.isOpen}
         >
-          <form onSubmit={this.mySubmitHandler}>
+          <form onSubmit={(e) => this.myChangeHandler(e)} target="#">
             <DialogContent dividers>
               <div>
                 <h1 id="heading"> New Dish </h1>{" "}
@@ -183,16 +186,31 @@ export default class CustomizedDialogs extends Component {
               {/*  */}
             </DialogContent>
             <DialogActions>
-              <AwesomeButton
+              {/* <AwesomeButton
                 type="primary"
                 onPress={(e) => this.mySubmitHandler(e)}
               >
                 Add dish
-              </AwesomeButton>
+              </AwesomeButton> */}
+              <button
+                type="button"
+                className="button"
+                onClick={(e) => this.mySubmitHandler(e)}
+              >
+                Add dish
+              </button>
             </DialogActions>
           </form>
         </Dialog>
-        <Snackbar ref={this.snackbarRef} />
+        {/* <Snackbar ref={this.snackbarRef} /> */}
+        <Snackbar
+          autoHideDuration={3000}
+          open={this.state.open}
+          message={this.state.name + " added successfully"}
+          onClose={() => {
+            this.setState({ open: false });
+          }}
+        ></Snackbar>
       </div>
     );
   }

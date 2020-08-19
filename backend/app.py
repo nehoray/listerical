@@ -41,14 +41,11 @@ def add_new_dish():
     name = request.args.get('name')
     food_type_base = request.args.get('food_type')
     calories_per_100_grams = request.args.get('calories')
-
-    # mycursor = mydb.cursor()
-    # values = (name, food_type_base, calories_per_100_grams)
-    # mycursor.execute(sql_cmd, values)
-    # mydb.commit()
-    dish.add_new_dish(name=name,
-                      food_type_base=food_type_base,
-                      calories_per_100_grams=calories_per_100_grams)
+    idmenu = request.args.get('idmenu')
+    dish.add_dish_to_menu(name=name,
+                          food_type_base=food_type_base,
+                          calories_per_100_grams=calories_per_100_grams,
+                          idmenu=idmenu)
     return jsonify(True)
 
 

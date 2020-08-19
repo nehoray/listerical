@@ -1,5 +1,5 @@
 import React, { PureComponent } from "react";
-import Styles from "./snackbar.css";
+import Styles from "./Snackbar.css";
 
 export class Snackbar extends PureComponent {
   snackbarRef = React.createRef();
