@@ -2,6 +2,8 @@ import React, { PureComponent } from "react";
 import Styles from "./snackbar.css";
 
 export class Snackbar extends PureComponent {
+  snackbarRef = React.createRef();
+
   message = "";
 
   state = {
@@ -9,12 +11,15 @@ export class Snackbar extends PureComponent {
   };
 
   openSnackBar = (message = "Something went wrong...") => {
+    console.log("snack starts");
+
     this.message = message;
     this.setState({ isActive: true }, () => {
       setTimeout(() => {
         this.setState({ isActive: false });
       }, 3000);
     });
+    console.log("snack is done");
   };
 
   render() {

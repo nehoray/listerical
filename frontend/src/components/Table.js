@@ -1,5 +1,6 @@
 import Box from "@material-ui/core/Box";
 import Collapse from "@material-ui/core/Collapse";
+import Grid from "@material-ui/core/Grid";
 import IconButton from "@material-ui/core/IconButton";
 import Paper from "@material-ui/core/Paper";
 import { makeStyles, withStyles } from "@material-ui/core/styles";
@@ -14,8 +15,8 @@ import KeyboardArrowDownIcon from "@material-ui/icons/KeyboardArrowDown";
 import KeyboardArrowUpIcon from "@material-ui/icons/KeyboardArrowUp";
 import axios from "axios";
 import React, { Component } from "react";
+import CustomizedDialogs from "./AddDish";
 import Datepicker from "./Datepicker";
-
 const useRowStyles = makeStyles({
   root: {
     "& > *": {
@@ -59,7 +60,9 @@ function Row(props) {
             {open ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
           </IconButton>
         </StyledTableCell>
-        <StyledTableCell align="center">{menu.day_part}</StyledTableCell>
+        <StyledTableCell align="center">
+          {menu.day_part} {menu.idmenu}
+        </StyledTableCell>
         <StyledTableCell align="center">
           {menu.start_time} to {menu.end_time}
         </StyledTableCell>
@@ -75,12 +78,25 @@ function Row(props) {
           <Collapse in={open} timeout="auto" unmountOnExit>
             <Box margin={1}>
               <Typography
-                align="left"
+                fxlayout="row"
+                fxlayoutalign="space-between center"
+                align="center"
                 variant="h6"
                 gutterBottom
-                component="div"
+                // component="div"
               >
-                Dishes
+                <Grid
+                  container
+                  direction="row"
+                  justify="space-between"
+                  alignItems="center"
+                >
+                  Dishes:{" "}
+                  <CustomizedDialogs
+                    idmenu={menu.idmenu}
+                    day_part={menu.day_part}
+                  />
+                </Grid>
               </Typography>
               <Table size="small" aria-label="purchases">
                 <TableHead>
@@ -138,7 +154,42 @@ export class CollapsibleTable extends Component {
         params: { chosen_date: chosen_date },
       })
       .then((res) => {
-        this.setState({ menus: res.data });
+        let defaultData = [
+          {
+            day_part: "morning",
+            dishes: [],
+            end_time: "Not set",
+            idmenu: 0,
+            start_time: "Not set",
+          },
+          {
+            day_part: "noon",
+            dishes: [],
+            end_time: "not set",
+            idmenu: 0,
+            start_time: "not set",
+          },
+          {
+            day_part: "evening",
+            dishes: [],
+            idmenu: 0,
+            end_time: "not set",
+            start_time: "not set",
+          },
+        ];
+        // empty response
+        if (res.data.length === 0) {
+          this.setState({
+            menus: defaultData,
+          });
+          console.log("res.data.length === 0 |  state is :");
+          console.log(this.state);
+          // response with data
+        } else {
+          this.setState({ menus: res.data });
+          console.log("res.data.length > 0 |  state is :");
+          console.log(this.state);
+        } // else
       });
   }
 
@@ -156,7 +207,7 @@ export class CollapsibleTable extends Component {
           </TableHead>
           <TableBody>
             {this.state.menus.map((menu) => (
-              <Row key={menu.idmenu} row={menu} />
+              <Row key={menu.day_part} row={menu} />
             ))}
           </TableBody>
         </Table>
