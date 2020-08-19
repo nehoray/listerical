@@ -60,11 +60,11 @@ function Row(props) {
             {open ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
           </IconButton>
         </StyledTableCell>
+        <StyledTableCell align="center">{menu.day_part}</StyledTableCell>
         <StyledTableCell align="center">
-          {menu.day_part} {menu.idmenu}
-        </StyledTableCell>
-        <StyledTableCell align="center">
-          {menu.start_time} to {menu.end_time}
+          {menu.start_time
+            ? `${menu.start_time} to ${menu.end_time}`
+            : "To be determined"}
         </StyledTableCell>
       </TableRow>
       <TableRow>
@@ -158,23 +158,23 @@ export class CollapsibleTable extends Component {
           {
             day_part: "morning",
             dishes: [],
-            end_time: "Not set",
+            end_time: "",
             idmenu: 0,
-            start_time: "Not set",
+            start_time: "",
           },
           {
             day_part: "noon",
             dishes: [],
-            end_time: "not set",
+            end_time: "",
             idmenu: 0,
-            start_time: "not set",
+            start_time: "",
           },
           {
             day_part: "evening",
             dishes: [],
             idmenu: 0,
-            end_time: "not set",
-            start_time: "not set",
+            end_time: "",
+            start_time: "",
           },
         ];
         // empty response
