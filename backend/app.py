@@ -1,22 +1,14 @@
-import os
 import sys
 from datetime import date
 
-import mysql.connector
 from flask import Flask, jsonify, request
 from flask_cors import CORS
 
 from dish import DishModel
 from menu import MenuModel
 
-mydb = mysql.connector.connect(
-    host=os.environ.get("host"),
-    user=os.environ.get("user"),
-    password=os.environ.get("password"),
-    database=os.environ.get("database"),
-)
-dish = DishModel(mydb)
-menu = MenuModel(mydb)
+dish = DishModel()
+menu = MenuModel()
 
 app = Flask(__name__)
 # TODO: handle it in prod
@@ -57,9 +49,20 @@ def get_full_menu():
     :return: full menu (indcluding dishes) of today or menu of other date if such arg is given.
     """
     chosen_date = request.args.get('chosen_date') or date.today()
+    print(chosen_date)
     data = menu.get_full_menu(chosen_date)
-    for cur_menu in data:
+    print("**************************************************************")
+    print(data)
+    for cur_menu in data or []:
         cur_menu['dishes'] = dish.get_dishes_by_menu(cur_menu['idmenu'])
+    print(data)
+    return jsonify(data)
+
+
+@app.route("/menus/dates")
+def get_menus_dates():
+    data = menu.get_menus_dates()
+    print(data)
     return jsonify(data)
 
 

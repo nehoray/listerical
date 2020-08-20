@@ -1,4 +1,7 @@
-from utils import parse_result
+import mysql.connector
+
+from MysqlManger import execute_insertion, execute_selection
+from utils import closing, connetion_params, parse_result
 
 _SQL_SELECT_DISH = """  SELECT  dish.iddish, dish.name, dish.food_type_base,dish.calories_per_100_grams 
                         FROM    listerical_db.dish AS dish 
@@ -9,51 +12,50 @@ _SQL_SELECT_DISH = """  SELECT  dish.iddish, dish.name, dish.food_type_base,dish
                     """
 _SQL_INSERT_DISH_TO_DISH_TABLE = """    INSERT INTO listerical_db.dish (name, created_date, food_type_base,calories_per_100_grams)
                                         VALUES (%s,NOW(),%s,%s);
-                    """
+                                    """
 _SQL_INSERT_DISH_TO_MENU = """  INSERT INTO listerical_db.menuid_dishid (idmenu,iddish)
                                 VALUES(%s,%s)
 
-"""
+                            """
 
 
 class DishModel:
-    def __init__(self, db):
-        self.db = db
-
     def get_dishes_by_menu(self, idmenu):
         """
         gets dishes of menu with id idmenu from db
         :param idmenu: id of the requested menu dishes
         :return: query result
         """
-        mycursor = self.db.cursor(dictionary=True)
-        mycursor.execute(_SQL_SELECT_DISH, [idmenu])
-        return parse_result(mycursor)
+        # with closing(mysql.connector.connect(**connetion_params)) as db:
+        #     with closing(db.cursor(dictionary=True, buffered=True)) as cursor:
+        #         print('before: _SQL_SELECT_DISH')
+        #         cursor.execute(_SQL_SELECT_DISH, [idmenu])
+        #         print('after: _SQL_SELECT_DISH')
+        #         data = parse_result(cursor)
+        #         return data
+        data = execute_selection(sql=_SQL_SELECT_DISH, values=(idmenu))
+        return data
 
     def add_dish_to_menu(self, name, food_type_base, calories_per_100_grams,
                          idmenu):
         # adding dish to dish table:
-        mycursor = self.db.cursor(dictionary=True)
-        values = (name, food_type_base, calories_per_100_grams)
-        mycursor.execute(_SQL_INSERT_DISH_TO_DISH_TABLE, values)
-        self.db.commit()
-
-        #linking dish to menu in db
-        iddish = mycursor.lastrowid
-        print(iddish)
-
-        values = (idmenu, iddish)
-        print(values)
-        mycursor.execute(_SQL_INSERT_DISH_TO_MENU, values)
-        self.db.commit()
-        return True
+        with closing(mysql.connector.connect(**connetion_params)) as db:
+            with closing(db.cursor(dictionary=True, buffered=True)) as cursor:
+                values = (name, food_type_base, calories_per_100_grams)
+                cursor.execute(_SQL_INSERT_DISH_TO_DISH_TABLE, values)
+                db.commit()
+                #linking dish to menu in db
+                iddish = cursor.lastrowid
+                values = (idmenu, iddish)
+                cursor.execute(_SQL_INSERT_DISH_TO_MENU, values)
+                db.commit()
+                return True
 
     # Add linkage between dish and menu
     def link_dish_to_menu(self, idmenu):
-        mycursor = self.db.cursor(dictionary=True)
-        iddish = mycursor.lastrowid
-        values = (idmenu, iddish)
-        print(mycursor.lastrowid)
-        mycursor.execute(_SQL_INSERT_DISH_TO_MENU, values)
-        self.db.commit()
-        return True
+        with closing(mysql.connector.connect(**connetion_params)) as db:
+            with closing(db.cursor(dictionary=True, buffered=True)) as cursor:
+                iddish = cursor.lastrowid
+                values = (idmenu, iddish)
+                res = execute_insertion(_SQL_INSERT_DISH_TO_MENU, values)
+                return res
