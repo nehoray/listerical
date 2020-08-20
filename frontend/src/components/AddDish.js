@@ -58,7 +58,7 @@ const DialogActions = withStyles((theme) => ({
 }))(MuiDialogActions);
 
 export default class CustomizedDialogs extends Component {
-  constructor(props) {
+  constructor (props) {
     super(props);
 
     this.state = {
@@ -72,15 +72,12 @@ export default class CustomizedDialogs extends Component {
 
   snackbarRef = React.createRef();
   _showSnackbarHandler = (msg) => {
-    console.log("_showSnackbarHandler");
     this.snackbarRef.current.openSnackBar(msg);
   };
 
   mySubmitHandler = (event) => {
     event.preventDefault();
     let path = `${process.env.REACT_APP_BE_URL}/dish/add`;
-    console.log(this.props.idmenu);
-    console.log(this.props.day_part);
 
     axios
       .get(path, {
@@ -147,7 +144,7 @@ export default class CustomizedDialogs extends Component {
         break;
     }
 
-    this.setState({ formErrors, [name]: value }, console.log(this.state));
+    this.setState({ formErrors, [name]: value });
   };
 
   toggleModal = (event) => {

@@ -4,11 +4,7 @@ import "axios";
 import axios from "axios";
 import moment from 'moment';
 import React, { Component, Fragment } from "react";
-// change to get all dates with data
-// function disableDates(date) {
-//   console.log(date);
-//   // return goodDates.includes(date);
-// }
+
 export class Datepicker extends Component {
   constructor (props) {
     super(props);
@@ -33,11 +29,6 @@ export class Datepicker extends Component {
   }
 
   disableDates(date) {
-    let parsedDate = new Date(date).toISOString().split("T")[0];
-    if (new Date(date).getDate() == "20") {
-      console.log(date);
-      console.log(this.convert(date));
-    }
     return !this.state.goodDates.includes(this.convert(date));
   }
 
@@ -52,15 +43,12 @@ export class Datepicker extends Component {
       <Fragment>
         <MuiPickersUtilsProvider utils={DateFnsUtils}>
           <DatePicker
-            shouldDisableDate={(date) => {
-              return this.disableDates(date);
-            }}
+            // shouldDisableDate={(date) => {
+            //   return this.disableDates(date);
+            // }}
             openTo="date"
             format="dd/MM/yyyy"
             minDate={moment().toDate()}
-            // filterDate={(date) => {
-            //   return moment().add(1, "days").calendar() > date;
-            // }}
             label="Choose Date"
             views={["year", "month", "date"]}
             selected={this.state.selectedDate}

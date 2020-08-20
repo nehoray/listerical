@@ -15,8 +15,11 @@ import KeyboardArrowDownIcon from "@material-ui/icons/KeyboardArrowDown";
 import KeyboardArrowUpIcon from "@material-ui/icons/KeyboardArrowUp";
 import axios from "axios";
 import React, { Component } from "react";
+import { AwesomeButton } from "react-awesome-button";
+import Card from 'react-bootstrap/Card';
 import CustomizedDialogs from "./AddDish";
 import Datepicker from "./Datepicker";
+import './Table.css';
 const useRowStyles = makeStyles({
   root: {
     "& > *": {
@@ -83,7 +86,7 @@ function Row(props) {
                 align="center"
                 variant="h6"
                 gutterBottom
-                // component="div"
+              // component="div"
               >
                 <Grid
                   container
@@ -155,50 +158,18 @@ export class CollapsibleTable extends Component {
       })
       .then((res) => {
         this.setState({ menus: res.data });
-        console.log("res.data.length > 0 |  state is :");
+        if (res.data.length === 0) {
+          this.setState({ noMenuData: true })
+        }
+        else {
+          this.setState({ noMenuData: false })
+        }
       });
   }
 
-  tableWithData() {
+  tableContent() {
     return (
       <TableContainer component={Paper}>
-        <React.Fragment>
-          <Datepicker readMenusFunc={this.readMenuData.bind(this)} />
-        </React.Fragment>
-        <Table aria-label="collapsible table">
-          <TableHead>
-            <TableRow>
-              <StyledTableCell />
-              <StyledTableCell align="center">Meal</StyledTableCell>
-              <StyledTableCell align="center">Service Time</StyledTableCell>
-            </TableRow>
-          </TableHead>
-          {this.state.menu > 0 ? (
-            <TableBody>
-              {this.state.menus.map((menu) => (
-                <Row key={menu.day_part} row={menu} />
-              ))}
-            </TableBody>
-          ) : (
-            <TableRow>
-              <StyledTableCell />
-              <StyledTableCell align="center">No Data</StyledTableCell>
-              <StyledTableCell align="center">No Data</StyledTableCell>
-            </TableRow>
-          )}
-        </Table>
-      </TableContainer>
-    );
-  }
-  tableWithOutData() {
-    return <TableContainer>no data yet</TableContainer>;
-  }
-  render() {
-    return (
-      <TableContainer component={Paper}>
-        <React.Fragment>
-          <Datepicker readMenusFunc={this.readMenuData.bind(this)} />
-        </React.Fragment>
         <Table aria-label="collapsible table">
           <TableHead>
             <TableRow>
@@ -214,6 +185,34 @@ export class CollapsibleTable extends Component {
           </TableBody>
         </Table>
       </TableContainer>
+    )
+  }
+  noMenuDataCard() {
+    return (
+      <>
+        <Card className="no-menu-data">
+          <Card.Header>Featured</Card.Header>
+          <Card.Body>
+            <Card.Title>Special title treatment</Card.Title>
+            <Card.Text>
+              With supporting text below as a natural lead-in to additional content.
+        </Card.Text>
+            <AwesomeButton type="primary">
+              Add new dish
+        </AwesomeButton>
+          </Card.Body>
+        </Card>
+      </>
+    )
+  }
+  render() {
+    return (
+      <>
+        <React.Fragment>
+          <Datepicker readMenusFunc={this.readMenuData.bind(this)} />
+        </React.Fragment>
+        {this.state.noMenuData ? this.noMenuDataCard() : this.tableContent()}
+      </>
     );
   }
 }
