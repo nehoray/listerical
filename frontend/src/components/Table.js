@@ -154,44 +154,45 @@ export class CollapsibleTable extends Component {
         params: { chosen_date: chosen_date },
       })
       .then((res) => {
-        let defaultData = [
-          {
-            day_part: "morning",
-            dishes: [],
-            end_time: "",
-            idmenu: 0,
-            start_time: "",
-          },
-          {
-            day_part: "noon",
-            dishes: [],
-            end_time: "",
-            idmenu: 0,
-            start_time: "",
-          },
-          {
-            day_part: "evening",
-            dishes: [],
-            idmenu: 0,
-            end_time: "",
-            start_time: "",
-          },
-        ];
-        // empty response
-        if (res.data.length === 0) {
-          this.setState({
-            menus: defaultData,
-          });
-          console.log("res.data.length === 0 |  state is :");
-          console.log(this.state);
-          // response with data
-        } else {
-          this.setState({ menus: res.data });
-          console.log("res.data.length > 0 |  state is :");
-        } // else
+        this.setState({ menus: res.data });
+        console.log("res.data.length > 0 |  state is :");
       });
   }
 
+  tableWithData() {
+    return (
+      <TableContainer component={Paper}>
+        <React.Fragment>
+          <Datepicker readMenusFunc={this.readMenuData.bind(this)} />
+        </React.Fragment>
+        <Table aria-label="collapsible table">
+          <TableHead>
+            <TableRow>
+              <StyledTableCell />
+              <StyledTableCell align="center">Meal</StyledTableCell>
+              <StyledTableCell align="center">Service Time</StyledTableCell>
+            </TableRow>
+          </TableHead>
+          {this.state.menu > 0 ? (
+            <TableBody>
+              {this.state.menus.map((menu) => (
+                <Row key={menu.day_part} row={menu} />
+              ))}
+            </TableBody>
+          ) : (
+            <TableRow>
+              <StyledTableCell />
+              <StyledTableCell align="center">No Data</StyledTableCell>
+              <StyledTableCell align="center">No Data</StyledTableCell>
+            </TableRow>
+          )}
+        </Table>
+      </TableContainer>
+    );
+  }
+  tableWithOutData() {
+    return <TableContainer>no data yet</TableContainer>;
+  }
   render() {
     return (
       <TableContainer component={Paper}>

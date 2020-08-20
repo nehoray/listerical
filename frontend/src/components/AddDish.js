@@ -160,11 +160,12 @@ export default class CustomizedDialogs extends Component {
   render() {
     const { formErrors } = this.state;
     return (
-      <div>
+      <div className="wrap-div">
         <AwesomeButton type="primary" onPress={this.toggleModal}>
           Add new dish
         </AwesomeButton>
         <Dialog
+          maxWidth="maxWidth"
           onClose={this.toggleModal}
           aria-labelledby="customized-dialog-title"
           open={this.state.isOpen}

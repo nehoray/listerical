@@ -1,52 +1,87 @@
 import DateFnsUtils from "@date-io/date-fns";
 import { DatePicker, MuiPickersUtilsProvider } from "@material-ui/pickers";
 import "axios";
-import moment from "moment";
-import React, { Fragment, useState } from "react";
+import axios from "axios";
+import moment from 'moment';
+import React, { Component, Fragment } from "react";
 // change to get all dates with data
-// function disableWeekends(date) {
+// function disableDates(date) {
 //   console.log(date);
 //   // return goodDates.includes(date);
 // }
-function Datepicker(props) {
-  const [selectedDate, setSelectedDate] = useState(new Date());
+export class Datepicker extends Component {
+  constructor (props) {
+    super(props);
+    this.disableDates = this.disableDates.bind(this);
 
-  // let path = `${process.env.REACT_APP_BE_URL}/menus/dates`;
-  // let goodDates;
-  // axios.get(path).then((res) => {
-  //   goodDates = res.data;
-  // });
-  // console.log(goodDates);
+    this.state = {
+      selectedDate: new Date(),
+      goodDates: [],
+    };
+  }
 
-  return (
-    <Fragment>
-      <MuiPickersUtilsProvider utils={DateFnsUtils}>
-        <DatePicker
-          // shouldDisableDate={disableWeekends}
-          openTo="date"
-          format="dd/MM/yyyy"
-          minDate={moment().toDate()}
-          filterDate={(date) => {
-            return moment().add(1, "days").calendar() > date;
-          }}
-          label="Choose Date"
-          views={["year", "month", "date"]}
-          selected={selectedDate}
-          value={selectedDate}
-          onChange={(dateSelected) => {
-            setSelectedDate(dateSelected);
-            var dateObject = new Date(dateSelected);
-            var dateRes = new Intl.DateTimeFormat("en-GB")
-              .format(dateObject)
-              .split("/")
-              .reverse()
-              .join("-");
-            props.readMenusFunc(dateRes);
-          }}
-          dateformat="dd/MM/yyyy"
-        />{" "}
-      </MuiPickersUtilsProvider>
-    </Fragment>
-  );
+  componentDidMount() {
+    let path = `${process.env.REACT_APP_BE_URL}/menus/dates`;
+    axios
+      .get(path)
+      .then((res) => {
+        this.setState({ goodDates: res.data });
+      })
+      .catch((e) => {
+        console.error(e);
+      });
+  }
+
+  disableDates(date) {
+    let parsedDate = new Date(date).toISOString().split("T")[0];
+    if (new Date(date).getDate() == "20") {
+      console.log(date);
+      console.log(this.convert(date));
+    }
+    return !this.state.goodDates.includes(this.convert(date));
+  }
+
+  convert(str) {
+    var date = new Date(str),
+      mnth = ("0" + (date.getMonth() + 1)).slice(-2),
+      day = ("0" + date.getDate()).slice(-2);
+    return [date.getFullYear(), mnth, day].join("-");
+  }
+  render() {
+    return (
+      <Fragment>
+        <MuiPickersUtilsProvider utils={DateFnsUtils}>
+          <DatePicker
+            shouldDisableDate={(date) => {
+              return this.disableDates(date);
+            }}
+            openTo="date"
+            format="dd/MM/yyyy"
+            minDate={moment().toDate()}
+            // filterDate={(date) => {
+            //   return moment().add(1, "days").calendar() > date;
+            // }}
+            label="Choose Date"
+            views={["year", "month", "date"]}
+            selected={this.state.selectedDate}
+            value={this.state.selectedDate}
+            onChange={(dateSelected) => {
+              this.setState({
+                selectedDate: dateSelected,
+              });
+              var dateObject = new Date(dateSelected);
+              var dateRes = new Intl.DateTimeFormat("en-GB")
+                .format(dateObject)
+                .split("/")
+                .reverse()
+                .join("-");
+              this.props.readMenusFunc(dateRes);
+            }}
+            dateformat="dd/MM/yyyy"
+          />{" "}
+        </MuiPickersUtilsProvider>
+      </Fragment>
+    );
+  }
 }
 export default Datepicker;
