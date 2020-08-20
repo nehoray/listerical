@@ -98,11 +98,10 @@ export default class CustomizedDialogs extends Component {
             open: true,
           });
         } else {
-          console.log("no snack");
+          // TODO:
+          console.log("Error");
         }
-        console.log(this.state);
       });
-    console.log("valid");
   };
   myChangeHandler = (event) => {
     event.preventDefault(); // maybe delete
