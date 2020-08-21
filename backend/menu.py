@@ -33,6 +33,5 @@ class MenuModel:
         res = execute_selection(sql=_SQL_GET_MENUS_DATES)
         data = []
         for index in range(len(res) - 1):
-            print
             data.append(res[index]['menu_date'])
         return data

@@ -49,20 +49,15 @@ def get_full_menu():
     :return: full menu (indcluding dishes) of today or menu of other date if such arg is given.
     """
     chosen_date = request.args.get('chosen_date') or date.today()
-    print(chosen_date)
     data = menu.get_full_menu(chosen_date)
-    print("**************************************************************")
-    print(data)
     for cur_menu in data or []:
         cur_menu['dishes'] = dish.get_dishes_by_menu(cur_menu['idmenu'])
-    print(data)
     return jsonify(data)
 
 
 @app.route("/menus/dates")
 def get_menus_dates():
     data = menu.get_menus_dates()
-    print(data)
     return jsonify(data)
 
 

@@ -26,13 +26,6 @@ class DishModel:
         :param idmenu: id of the requested menu dishes
         :return: query result
         """
-        # with closing(mysql.connector.connect(**connetion_params)) as db:
-        #     with closing(db.cursor(dictionary=True, buffered=True)) as cursor:
-        #         print('before: _SQL_SELECT_DISH')
-        #         cursor.execute(_SQL_SELECT_DISH, [idmenu])
-        #         print('after: _SQL_SELECT_DISH')
-        #         data = parse_result(cursor)
-        #         return data
         data = execute_selection(sql=_SQL_SELECT_DISH, values=(idmenu))
         return data
 
