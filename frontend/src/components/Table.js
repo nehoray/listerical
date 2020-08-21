@@ -190,15 +190,16 @@ export class CollapsibleTable extends Component {
   noMenuDataCard() {
     return (
       <>
-        <Card className="no-menu-data">
-          <Card.Header>Featured</Card.Header>
+        <Card className="no-menu-card">
           <Card.Body>
-            <Card.Title>Special title treatment</Card.Title>
             <Card.Text>
-              With supporting text below as a natural lead-in to additional content.
-        </Card.Text>
-            <AwesomeButton type="primary">
-              Add new dish
+              There is no menu for this date yet.
+            </Card.Text>
+            <Card.Text className="no-menu-msg" >
+              you can create one right now.
+            </Card.Text>
+            <AwesomeButton type="primary" >
+              Create menu
         </AwesomeButton>
           </Card.Body>
         </Card>

@@ -13,6 +13,7 @@ import axios from "axios";
 import React, { Component } from "react";
 import { AwesomeButton } from "react-awesome-button";
 import "react-awesome-button/dist/styles.css";
+import './AddDish.css';
 const styles = (theme) => ({
   root: {
     margin: 0,
@@ -157,18 +158,19 @@ export default class CustomizedDialogs extends Component {
   render() {
     const { formErrors } = this.state;
     return (
-      <div className="wrap-div">
+      <div>
         <AwesomeButton type="primary" onPress={this.toggleModal}>
           Add new dish
         </AwesomeButton>
         <Dialog
-          maxWidth="maxWidth"
+          // maxWidth="maxWidth"
           onClose={this.toggleModal}
           aria-labelledby="customized-dialog-title"
           open={this.state.isOpen}
         >
-          <form onSubmit={(e) => this.myChangeHandler(e)} target="#">
-            <DialogContent dividers>
+          <form onSubmit={(e) => this.myChangeHandler(e)} target="#" >
+            <DialogContent dividers className="dialog"
+            >
               <div>
                 <h1 id="heading"> New Dish </h1>{" "}
                 <Grid
@@ -229,12 +231,6 @@ export default class CustomizedDialogs extends Component {
               {/*  */}
             </DialogContent>
             <DialogActions>
-              {/* <AwesomeButton
-                type="primary"
-                onPress={(e) => this.mySubmitHandler(e)}
-              >
-                Add dish
-              </AwesomeButton> */}
               <button
                 type="button"
                 className="button"
@@ -245,7 +241,6 @@ export default class CustomizedDialogs extends Component {
             </DialogActions>
           </form>
         </Dialog>
-        {/* <Snackbar ref={this.snackbarRef} /> */}
         <Snackbar
           autoHideDuration={3000}
           open={this.state.open}
