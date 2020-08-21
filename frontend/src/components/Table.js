@@ -15,8 +15,11 @@ import KeyboardArrowDownIcon from "@material-ui/icons/KeyboardArrowDown";
 import KeyboardArrowUpIcon from "@material-ui/icons/KeyboardArrowUp";
 import axios from "axios";
 import React, { Component } from "react";
+import { AwesomeButton } from "react-awesome-button";
+import Card from 'react-bootstrap/Card';
 import CustomizedDialogs from "./AddDish";
 import Datepicker from "./Datepicker";
+import './Table.css';
 const useRowStyles = makeStyles({
   root: {
     "& > *": {
@@ -83,7 +86,7 @@ function Row(props) {
                 align="center"
                 variant="h6"
                 gutterBottom
-                // component="div"
+              // component="div"
               >
                 <Grid
                   container
@@ -154,50 +157,19 @@ export class CollapsibleTable extends Component {
         params: { chosen_date: chosen_date },
       })
       .then((res) => {
-        let defaultData = [
-          {
-            day_part: "morning",
-            dishes: [],
-            end_time: "",
-            idmenu: 0,
-            start_time: "",
-          },
-          {
-            day_part: "noon",
-            dishes: [],
-            end_time: "",
-            idmenu: 0,
-            start_time: "",
-          },
-          {
-            day_part: "evening",
-            dishes: [],
-            idmenu: 0,
-            end_time: "",
-            start_time: "",
-          },
-        ];
-        // empty response
+        this.setState({ menus: res.data });
         if (res.data.length === 0) {
-          this.setState({
-            menus: defaultData,
-          });
-          console.log("res.data.length === 0 |  state is :");
-          console.log(this.state);
-          // response with data
-        } else {
-          this.setState({ menus: res.data });
-          console.log("res.data.length > 0 |  state is :");
-        } // else
+          this.setState({ noMenuData: true })
+        }
+        else {
+          this.setState({ noMenuData: false })
+        }
       });
   }
 
-  render() {
+  tableContent() {
     return (
       <TableContainer component={Paper}>
-        <React.Fragment>
-          <Datepicker readMenusFunc={this.readMenuData.bind(this)} />
-        </React.Fragment>
         <Table aria-label="collapsible table">
           <TableHead>
             <TableRow>
@@ -213,6 +185,35 @@ export class CollapsibleTable extends Component {
           </TableBody>
         </Table>
       </TableContainer>
+    )
+  }
+  noMenuDataCard() {
+    return (
+      <>
+        <Card className="no-menu-card">
+          <Card.Body>
+            <Card.Text>
+              There is no menu for this date yet.
+            </Card.Text>
+            <Card.Text className="no-menu-msg" >
+              you can create one right now.
+            </Card.Text>
+            <AwesomeButton type="primary" >
+              Create menu
+        </AwesomeButton>
+          </Card.Body>
+        </Card>
+      </>
+    )
+  }
+  render() {
+    return (
+      <>
+        <React.Fragment>
+          <Datepicker readMenusFunc={this.readMenuData.bind(this)} />
+        </React.Fragment>
+        {this.state.noMenuData ? this.noMenuDataCard() : this.tableContent()}
+      </>
     );
   }
 }

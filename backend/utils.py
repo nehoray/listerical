@@ -1,8 +1,18 @@
+import os
+from contextlib import closing
 from datetime import datetime
 
+import mysql.connector
 from mysql.connector import FieldType
 
 _DATE_TYPES = ["TIME"]
+
+connetion_params = {
+    'host': os.environ.get("host"),
+    'user': os.environ.get("user"),
+    'password': os.environ.get("password"),
+    'database': os.environ.get("database"),
+}
 
 
 def parse_result(cursor):

@@ -11,7 +11,6 @@ export class Snackbar extends PureComponent {
   };
 
   openSnackBar = (message = "Something went wrong...") => {
-    console.log("snack starts");
 
     this.message = message;
     this.setState({ isActive: true }, () => {
@@ -19,7 +18,6 @@ export class Snackbar extends PureComponent {
         this.setState({ isActive: false });
       }, 3000);
     });
-    console.log("snack is done");
   };
 
   render() {

@@ -13,6 +13,7 @@ import axios from "axios";
 import React, { Component } from "react";
 import { AwesomeButton } from "react-awesome-button";
 import "react-awesome-button/dist/styles.css";
+import './AddDish.css';
 const styles = (theme) => ({
   root: {
     margin: 0,
@@ -58,7 +59,7 @@ const DialogActions = withStyles((theme) => ({
 }))(MuiDialogActions);
 
 export default class CustomizedDialogs extends Component {
-  constructor(props) {
+  constructor (props) {
     super(props);
 
     this.state = {
@@ -72,15 +73,12 @@ export default class CustomizedDialogs extends Component {
 
   snackbarRef = React.createRef();
   _showSnackbarHandler = (msg) => {
-    console.log("_showSnackbarHandler");
     this.snackbarRef.current.openSnackBar(msg);
   };
 
   mySubmitHandler = (event) => {
     event.preventDefault();
     let path = `${process.env.REACT_APP_BE_URL}/dish/add`;
-    console.log(this.props.idmenu);
-    console.log(this.props.day_part);
 
     axios
       .get(path, {
@@ -98,11 +96,10 @@ export default class CustomizedDialogs extends Component {
             open: true,
           });
         } else {
-          console.log("no snack");
+          // TODO:
+          console.log("Error");
         }
-        console.log(this.state);
       });
-    console.log("valid");
   };
   myChangeHandler = (event) => {
     event.preventDefault(); // maybe delete
@@ -148,7 +145,7 @@ export default class CustomizedDialogs extends Component {
         break;
     }
 
-    this.setState({ formErrors, [name]: value }, console.log(this.state));
+    this.setState({ formErrors, [name]: value });
   };
 
   toggleModal = (event) => {
@@ -166,12 +163,14 @@ export default class CustomizedDialogs extends Component {
           Add new dish
         </AwesomeButton>
         <Dialog
+          // maxWidth="maxWidth"
           onClose={this.toggleModal}
           aria-labelledby="customized-dialog-title"
           open={this.state.isOpen}
         >
-          <form onSubmit={(e) => this.myChangeHandler(e)} target="#">
-            <DialogContent dividers>
+          <form onSubmit={(e) => this.myChangeHandler(e)} target="#" >
+            <DialogContent dividers className="dialog"
+            >
               <div>
                 <h1 id="heading"> New Dish </h1>{" "}
                 <Grid
@@ -232,12 +231,6 @@ export default class CustomizedDialogs extends Component {
               {/*  */}
             </DialogContent>
             <DialogActions>
-              {/* <AwesomeButton
-                type="primary"
-                onPress={(e) => this.mySubmitHandler(e)}
-              >
-                Add dish
-              </AwesomeButton> */}
               <button
                 type="button"
                 className="button"
@@ -248,7 +241,6 @@ export default class CustomizedDialogs extends Component {
             </DialogActions>
           </form>
         </Dialog>
-        {/* <Snackbar ref={this.snackbarRef} /> */}
         <Snackbar
           autoHideDuration={3000}
           open={this.state.open}
