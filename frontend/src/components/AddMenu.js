@@ -36,6 +36,8 @@ export default class AddMenuDialog extends Component {
                 timeError: ""
             },
             dishRow: []
+            ,
+            isOpen: false
         };
 
         this.removeDish = this.removeDish.bind(this)
@@ -144,7 +146,7 @@ export default class AddMenuDialog extends Component {
             dishRow.map((dish) => {
                 if (dish.mealName == mealName) {
                     return (
-                        <React.Fragment>
+                        <React.Fragment key={mealName + dish.name}>
                             <div className="added-dish">
                                 <div id="dish.name" type="text">{dish.name} ({dish.food_type}) with {dish.calories} calories (100 g)</div>
                                 <IconButton className="delete" onClick={() => this.removeDish(dish.name, dishRow)}>
@@ -159,11 +161,14 @@ export default class AddMenuDialog extends Component {
     }
     removeDish(name, dishRow) {
         let removeIndex = dishRow.map(function (item) { return item.name }).indexOf(name)
+        console.log(removeIndex)
+        console.log(name)
+        console.log(dishRow)
         let updatedDishRow
         if (removeIndex > -1) {
-            updatedDishRow = dishRow.splice(removeIndex)
+            dishRow.splice(removeIndex, 1)
         }
-        this.setState({ dishRow: updatedDishRow })
+        this.setState({ dishRow: dishRow })
     }
 
     render() {
@@ -191,9 +196,9 @@ export default class AddMenuDialog extends Component {
                                 >
                                     {this.mealsNames.map(mealName => {
                                         return (
-                                            <div className="morning">
+                                            <div className="morning" key={mealName}>
                                                 <div className="time-and-button">
-                                                    <text className="meal-text">{mealName}:</text>
+                                                    <span className="meal-text">{mealName}:</span>
                                                     <TextField
                                                         onChange={this.changeHandler}
                                                         id={mealName + "_start"}
@@ -207,7 +212,7 @@ export default class AddMenuDialog extends Component {
                                                             step: 300, // 5 min
                                                         }}
                                                     />
-                                                    <text className="to-text"> To </text>
+                                                    <span className="to-text"> To </span>
                                                     <TextField
                                                         onChange={this.changeHandler}
                                                         id={mealName + "_end"}

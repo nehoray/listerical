@@ -5,7 +5,7 @@ import axios from "axios";
 import moment from 'moment';
 import React, { Component, Fragment } from "react";
 
-export class Datepicker extends Component {
+class Datepicker extends Component {
   constructor (props) {
     super(props);
     this.disableDates = this.disableDates.bind(this);

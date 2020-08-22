@@ -36,6 +36,7 @@ export default class CustomizedDialogs extends Component {
         calories: "",
         food_type: "",
       },
+      isOpen: false
     };
   }
 
