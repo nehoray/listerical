@@ -62,16 +62,18 @@ class MenuModel:
                 datetime.time(*(map(int, meals_times[time].split(':')))))
         # creating the menus
         for meal in meals_res.keys():
-            if meals_res[meal] != []:
-                values = (meal, meals_times[meal + "_start"],
-                          meals_times[meal + "_end"])
 
-                with closing(
-                        mysql.connector.connect(**connetion_params)) as db:
-                    with closing(db.cursor(dictionary=True,
-                                           buffered=True)) as cursor:
-                        cursor.execute(_SQL_ADD_MENU, values)
-                        db.commit()
+            values = (meal, meals_times[meal + "_start"],
+                      meals_times[meal + "_end"])
+
+            with closing(mysql.connector.connect(**connetion_params)) as db:
+                with closing(db.cursor(dictionary=True,
+                                       buffered=True)) as cursor:
+                    # creates menus for all 3 meals
+                    cursor.execute(_SQL_ADD_MENU, values)
+                    db.commit()
+                    # inserting the data to the meals we have data about
+                    if meals_res[meal] != []:
                         # get new menu id
                         idmenu = cursor.lastrowid
                         # menuids_day_parts[meal] = idmenu
