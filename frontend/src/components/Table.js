@@ -15,9 +15,9 @@ import KeyboardArrowDownIcon from "@material-ui/icons/KeyboardArrowDown";
 import KeyboardArrowUpIcon from "@material-ui/icons/KeyboardArrowUp";
 import axios from "axios";
 import React, { Component } from "react";
-import { AwesomeButton } from "react-awesome-button";
 import Card from 'react-bootstrap/Card';
-import CustomizedDialogs from "./AddDish";
+import AddDishDialog from "./AddDish";
+import AddMenuDialog from './AddMenu';
 import Datepicker from "./Datepicker";
 import './Table.css';
 const useRowStyles = makeStyles({
@@ -95,7 +95,7 @@ function Row(props) {
                   alignItems="center"
                 >
                   Dishes:{" "}
-                  <CustomizedDialogs
+                  <AddDishDialog
                     idmenu={menu.idmenu}
                     day_part={menu.day_part}
                   />
@@ -165,6 +165,11 @@ export class CollapsibleTable extends Component {
           this.setState({ noMenuData: false })
         }
       });
+
+    chosen_date = chosen_date ? chosen_date : new Date()
+
+    // for add menu dialog
+    this.setState({ menuDate: chosen_date })
   }
 
   tableContent() {
@@ -198,9 +203,7 @@ export class CollapsibleTable extends Component {
             <Card.Text className="no-menu-msg" >
               you can create one right now.
             </Card.Text>
-            <AwesomeButton type="primary" >
-              Create menu
-        </AwesomeButton>
+            <AddMenuDialog menuDate={this.state.menuDate} />
           </Card.Body>
         </Card>
       </>

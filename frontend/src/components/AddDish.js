@@ -1,49 +1,16 @@
 import Dialog from "@material-ui/core/Dialog";
 import MuiDialogActions from "@material-ui/core/DialogActions";
 import MuiDialogContent from "@material-ui/core/DialogContent";
-import MuiDialogTitle from "@material-ui/core/DialogTitle";
 import Grid from "@material-ui/core/Grid";
-import IconButton from "@material-ui/core/IconButton";
 import Snackbar from "@material-ui/core/Snackbar";
 import { withStyles } from "@material-ui/core/styles";
 import TextField from "@material-ui/core/TextField";
-import Typography from "@material-ui/core/Typography";
-import CloseIcon from "@material-ui/icons/Close";
 import axios from "axios";
 import React, { Component } from "react";
 import { AwesomeButton } from "react-awesome-button";
 import "react-awesome-button/dist/styles.css";
 import './AddDish.css';
-const styles = (theme) => ({
-  root: {
-    margin: 0,
-    padding: theme.spacing(2),
-  },
-  closeButton: {
-    position: "absolute",
-    right: theme.spacing(1),
-    top: theme.spacing(1),
-    color: theme.palette.grey[500],
-  },
-});
 
-const DialogTitle = withStyles(styles)((props) => {
-  const { children, classes, onClose, ...other } = props;
-  return (
-    <MuiDialogTitle disableTypography className={classes.root} {...other}>
-      <Typography variant="h6">{children}</Typography>
-      {onClose ? (
-        <IconButton
-          aria-label="close"
-          className={classes.closeButton}
-          onClick={onClose}
-        >
-          <CloseIcon />
-        </IconButton>
-      ) : null}
-    </MuiDialogTitle>
-  );
-});
 
 const DialogContent = withStyles((theme) => ({
   root: {
@@ -63,6 +30,7 @@ export default class CustomizedDialogs extends Component {
     super(props);
 
     this.state = {
+      isError: false,
       formErrors: {
         name: "",
         calories: "",
@@ -78,29 +46,40 @@ export default class CustomizedDialogs extends Component {
 
   mySubmitHandler = (event) => {
     event.preventDefault();
-    let path = `${process.env.REACT_APP_BE_URL}/dish/add`;
-
-    axios
-      .get(path, {
-        params: {
-          name: this.state.name,
-          calories: this.state.calories,
-          food_type: this.state.food_type,
-          idmenu: this.props.idmenu,
-        },
-      })
-      .then((res) => {
-        if (String(res.data) === "true") {
-          this.toggleModal();
-          this.setState({
-            open: true,
+    if (this.state.isError === false) {
+      let path = `${process.env.REACT_APP_BE_URL}/dish/add`;
+      let idmenu = this.props.idmenu
+      // when creating to a new menu - this will be udefined. 
+      if (idmenu) {
+        axios
+          .get(path, {
+            params: {
+              name: this.state.name,
+              calories: this.state.calories,
+              food_type: this.state.food_type,
+              idmenu: idmenu,
+            },
+          })
+          .then((res) => {
+            if (String(res.data) === "true") {
+              this.toggleModal();
+              this.setState({
+                open: true,
+              });
+            } else {
+              // TODO:
+              console.log("Error");
+            }
           });
-        } else {
-          // TODO:
-          console.log("Error");
-        }
-      });
-  };
+      }
+      // used in the addMenu dialog
+      else {
+        this.handleSubmitToParent()
+        this.toggleModal();
+
+      }
+    };
+  }
   myChangeHandler = (event) => {
     event.preventDefault(); // maybe delete
     let stateName = `${event.target.id}`;
@@ -108,45 +87,75 @@ export default class CustomizedDialogs extends Component {
     this.setState({
       [stateName]: event.target.value,
     });
-
     const name = stateName;
+    this.setState({ isError: false });
+    let isError = false;
     let formErrors = { name: "", calories: "", food_type: "" };
+
     switch (name) {
       case "name":
-        formErrors.name = value.length < 1 ? "must be more than 1" : "";
-
+        if (value.match(/^[A-Za-zא-ת]+$/) === null) {
+          formErrors.name = "can not conatin numbers";
+          isError = true;
+        } else {
+          formErrors.name = ""
+        }
         if (value.length < 2) {
           formErrors.name = "must be more than 1";
+          isError = true;
         }
-        if (value.match(/^[A-Za-zא-ת]+$/) == null) {
-          formErrors.name = "can not conatin numbers";
+        else {
+          formErrors.name = ""
         }
         break;
 
       case "food_type":
+        if (value.match(/^[A-Za-zא-ת]+$/) === null) {
+          formErrors.food_type = "can not conatin numbers";
+          isError = true;
+        } else {
+          formErrors.name = ""
+        }
         if (value.length < 3) {
           formErrors.food_type = "must be more than 2";
-        }
-        if (value.match(/^[A-Za-zא-ת]+$/) == null) {
-          formErrors.food_type = "can not conatin numbers";
+          isError = true;
+        } else {
+          formErrors.food_type = ""
         }
         break;
 
       case "calories":
         if (value.length < 0) {
           formErrors.food_type = "can not be empty";
+          isError = true;
+
+        }
+        else {
+          formErrors.name = ""
         }
         if (value.match(/^[1-9]\d*$/) == null) {
           formErrors.calories = "can not start with 0";
+          isError = true;
+
+        } else {
+          formErrors.calories = ""
         }
         break;
 
       default:
         break;
     }
-
+    this.setState({ isError: isError })
     this.setState({ formErrors, [name]: value });
   };
+
+  // if this component works as a child of addMenu component
+  handleSubmitToParent() {
+    if (this.props.onSubmit) {
+      this.props.onSubmit(this.state)
+    }
+
+  }
 
   toggleModal = (event) => {
     const { isOpen } = this.state;
@@ -154,6 +163,12 @@ export default class CustomizedDialogs extends Component {
       isOpen: !isOpen,
     });
   };
+  // returns true if no errors
+  checkForm() {
+    let err = this.state.formErrors;
+    console.log((err.name.length === 0 && err.food_type === 0 && err.calories === 0))
+    return (err.name.length === 0 && err.food_type === 0 && err.calories === 0)
+  }
 
   render() {
     const { formErrors } = this.state;
@@ -181,7 +196,8 @@ export default class CustomizedDialogs extends Component {
                 >
                   <TextField
                     autoFocus
-                    onChange={this.myChangeHandler}
+                    onSubmit={this.handleSubmitToParent}
+                    onChange={(e) => { this.myChangeHandler(e) }}
                     margin="dense"
                     id="name"
                     label="Dish name"
@@ -196,7 +212,8 @@ export default class CustomizedDialogs extends Component {
                   <TextField
                     required
                     helponfocus="true"
-                    onChange={this.myChangeHandler}
+                    onSubmit={this.handleSubmitToParent}
+                    onChange={(e) => { this.myChangeHandler(e) }}
                     margin="dense"
                     id="food_type"
                     label="Food Type"
@@ -211,7 +228,8 @@ export default class CustomizedDialogs extends Component {
                   <TextField
                     required
                     helponfocus="true"
-                    onChange={this.myChangeHandler}
+                    onSubmit={this.handleSubmitToParent}
+                    onChange={(e) => { this.myChangeHandler(e) }}
                     margin="dense"
                     id="calories"
                     label="Calories per 100 grams"
@@ -230,11 +248,12 @@ export default class CustomizedDialogs extends Component {
               </div>
               {/*  */}
             </DialogContent>
+            {/* {this.addDishButtonComponent} */}
             <DialogActions>
               <button
                 type="button"
                 className="button"
-                onClick={(e) => this.mySubmitHandler(e)}
+                onClick={(e) => { (this.checkForm() === false) ? this.mySubmitHandler(e) : void (0) }}
               >
                 Add dish
               </button>
@@ -249,7 +268,7 @@ export default class CustomizedDialogs extends Component {
             this.setState({ open: false });
           }}
         ></Snackbar>
-      </div>
+      </div >
     );
   }
 }
