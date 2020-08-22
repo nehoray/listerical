@@ -8,7 +8,7 @@ import React, { Component, Fragment } from "react";
 class Datepicker extends Component {
   constructor (props) {
     super(props);
-    this.disableDates = this.disableDates.bind(this);
+    // this.disableDates = this.disableDates.bind(this);
 
     this.state = {
       selectedDate: new Date(),
@@ -24,7 +24,8 @@ class Datepicker extends Component {
         this.setState({ goodDates: res.data });
       })
       .catch((e) => {
-        console.error(e);
+        console.error("e");
+
       });
   }
 
@@ -43,9 +44,9 @@ class Datepicker extends Component {
       <Fragment>
         <MuiPickersUtilsProvider utils={DateFnsUtils}>
           <DatePicker
-            // shouldDisableDate={(date) => {
-            //   return this.disableDates(date);
-            // }}
+            shouldDisableDate={(date) => {
+              return this.disableDates(date);
+            }}
             openTo="date"
             format="dd/MM/yyyy"
             minDate={moment().toDate()}
@@ -66,7 +67,7 @@ class Datepicker extends Component {
               this.props.readMenusFunc(dateRes);
             }}
             dateformat="dd/MM/yyyy"
-          />{" "}
+          />
         </MuiPickersUtilsProvider>
       </Fragment>
     );
