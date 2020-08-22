@@ -71,17 +71,20 @@ export default class AddMenuDialog extends Component {
         console.log('adding menu')
         console.log(this.state)
         console.log(this.props.menuDate)
-        let path = `${process.env.REACT_APP_BE_URL}/menu/add`;
+        let path = `${process.env.REACT_APP_BE_URL}/menu`;
+        const headers = {
+            'Content-Type': 'application/json',
+        }
+        const data = {
 
-        console.log(this.state)
+            dishes: this.state.dishRow,
+            meals_times: this.state.mealsTimes,
+            menu_date: this.props.menuDate
+
+        }
+        console.log(this.state.dishRow)
         axios
-            .get(path, {
-                params: {
-                    dishes: this.state.dishRow,
-                    meals_times: this.state.mealsTimes,
-                    menu_date: this.props.menuDate
-                },
-            })
+            .post(path, data, headers)
             .then((res) => {
                 if (String(res.data) === "true") {
                     this.toggleModal();
