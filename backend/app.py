@@ -61,5 +61,15 @@ def get_menus_dates():
     return jsonify(data)
 
 
+@app.route("/menu", methods=['POST'])
+def add_menu():
+    dishes = request.json['dishes']
+    menu_date = request.json['menu_date']
+    meals_times = request.json['meals_times']
+    menu.add_menu(dishes, meals_times, menu_date)
+    # here making url localhost/?
+    return jsonify(True)
+
+
 if __name__ == "__main__":
     app.run(debug=True)
