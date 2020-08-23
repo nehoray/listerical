@@ -1,14 +1,17 @@
 import sys
 from datetime import date
 
-from flask import Flask, jsonify, request
+from flask import Response
 from flask_cors import CORS
 
 from dish import DishModel
+from login import LoginModel
 from menu import MenuModel
+from utils import Flask, jsonify, request
 
 dish = DishModel()
 menu = MenuModel()
+login_model = LoginModel()
 
 app = Flask(__name__)
 # TODO: handle it in prod
@@ -69,6 +72,20 @@ def add_menu():
     menu.add_menu(dishes, meals_times, menu_date)
     # here making url localhost/?
     return jsonify(True)
+
+
+@app.route("/login", methods=['POST'])
+def login():
+    username = request.json['username']
+    password = request.json['password']
+    jwt = login_model.authenticate(username, password)
+    if (jwt != False):
+        print(jwt)
+        return jwt
+    else:
+        return Response("wrong user name or password",
+                        status=201,
+                        mimetype='application/json')
 
 
 if __name__ == "__main__":
