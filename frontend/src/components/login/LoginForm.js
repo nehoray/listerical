@@ -1,19 +1,19 @@
-import login from '';
 import { TextField } from '@material-ui/core';
+import axios from "axios";
 import React from "react";
-import connect from 'react-redux';
 import "./loginForm.css";
+
 export class LoginForm extends React.Component {
     constructor () {
         super()
         this.state = {
             username: "",
             password: "",
-            errors: {},
+            error: '',
             isLoading: false
         }
         this.handleSubmit = this.handleSubmit.bind(this)
-        this.changeHandler = this.handleSubmit.bind(this)
+        this.changeHandler = this.changeHandler.bind(this)
     }
 
 
@@ -23,13 +23,27 @@ export class LoginForm extends React.Component {
 
     handleSubmit(event) {
         event.preventDefault();
-        console.log(this.state)
-        this.setState({ errors: {}, isLoading: true })
-        this.props.login(this.state).then(
-            (res) => this.context.router.push('/'),
-            (err) => this.setState({ errors: err.data.errors, isLoading: false })
-        )
-
+        // send req to be get jwt
+        let path = `${process.env.REACT_APP_BE_URL}/login`;
+        const data = {
+            username: this.state.username,
+            password: this.state.password
+        }
+        axios
+            .post(path, data)
+            .then((res) => {
+                console.log(res)
+                if (res['status'] == 200) {
+                    // setting the jwt in localStorage
+                    localStorage.setItem('jst', res['data'])
+                }
+                else {
+                    this.setState({ error: "User name or password do not match" })
+                    console.log(this.state.error)
+                }
+                console.log('111111')
+                console.log(res['data'])
+            });
     }
 
     changeHandler = (event) => {
@@ -41,11 +55,10 @@ export class LoginForm extends React.Component {
         });
     };
 
+
     render() {
-        const { errors, username, password, isLoading } = this.state
         return (
             <div className="Login" >
-
                 <form onSubmit={this.handleSubmit} className="form">
                     <h3>Sign In</h3>
                     <TextField
@@ -74,18 +87,12 @@ export class LoginForm extends React.Component {
                         }}
                     />
 
-                    <button type="submit" disabled={isLoading}>sumnit</button>
+                    <button className="button" type="submit" disabled={this.isLoading}>Sign In</button>
+                    <div vs className="error">{this.state.error}</div>
                 </form>
             </div >
         )
     }
 }
 
-LoginForm.propType = {
-    login: React.PropTypes.func.isRequired
-}
-
-LoginForm.contextType = {
-    router: React.propsTypes.object.isRequired
-}
-export default connect(null, { login })(LoginForm)
+export default LoginForm
