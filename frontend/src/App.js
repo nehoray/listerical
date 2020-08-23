@@ -1,16 +1,15 @@
-import { Container, Typography } from "@material-ui/core";
 import React, { Component } from "react";
-import "./App.css";
-import CollapsibleTablele from "./components/Table";
+import { BrowserRouter as Router, Route } from 'react-router-dom';
+import DiningRoom from './components/DiningRoom';
+import LoginForm from './components/login/LoginForm';
 class App extends Component {
+
   render() {
     return (
-      <Container maxWidth="sm">
-        <Typography variant="h3" gutterBottom align="center">
-          Dininig Room
-        </Typography>
-        <CollapsibleTablele />
-      </Container>
+      <Router>
+        <Route path="/" exact component={DiningRoom} />
+        <Route path="/login" component={LoginForm} />
+      </Router>
     );
   }
 }

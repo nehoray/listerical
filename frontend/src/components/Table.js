@@ -15,7 +15,6 @@ import KeyboardArrowDownIcon from "@material-ui/icons/KeyboardArrowDown";
 import KeyboardArrowUpIcon from "@material-ui/icons/KeyboardArrowUp";
 import axios from "axios";
 import React, { Component } from "react";
-import Card from 'react-bootstrap/Card';
 import AddDishDialog from "./AddDish";
 import AddMenuDialog from './AddMenu';
 import Datepicker from "./Datepicker";
@@ -195,17 +194,17 @@ export class CollapsibleTable extends Component {
   noMenuDataCard() {
     return (
       <>
-        <Card className="no-menu-card">
-          <Card.Body>
-            <Card.Text>
+        <span className="no-menu-card">
+          <div>
+            <div>
               There is no menu for this date yet.
-            </Card.Text>
-            <Card.Text className="no-menu-msg" >
+            </div>
+            <div className="no-menu-msg" >
               you can create one right now.
-            </Card.Text>
+            </div>
             <AddMenuDialog menuDate={this.state.menuDate} />
-          </Card.Body>
-        </Card>
+          </div>
+        </span>
       </>
     )
   }

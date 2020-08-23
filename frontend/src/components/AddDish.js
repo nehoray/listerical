@@ -82,7 +82,7 @@ export default class CustomizedDialogs extends Component {
     };
   }
   myChangeHandler = (event) => {
-    event.preventDefault(); // maybe delete
+    event.preventDefault();
     let stateName = `${event.target.id}`;
     let value = event.target.value;
     this.setState({
