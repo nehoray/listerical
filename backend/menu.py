@@ -40,9 +40,11 @@ class MenuModel:
 
     def get_menus_dates(self):
         res = execute_selection(sql=_SQL_GET_MENUS_DATES)
+        print(res)
         data = []
-        for index in range(len(res) - 1):
+        for index in range(len(res)):
             data.append(res[index]['menu_date'])
+        print(data)
         return data
 
     def add_menu(self, dishes, meals_times, menu_date):
