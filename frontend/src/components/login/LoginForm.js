@@ -34,8 +34,10 @@ export class LoginForm extends React.Component {
             .then((res) => {
                 console.log(res)
                 if (res['status'] == 200) {
+                    this.props.history.push('/');
                     // setting the jwt in localStorage
-                    localStorage.setItem('jst', res['data'])
+                    localStorage.setItem('jwt', res['data'])
+                    localStorage.setItem('username', this.state.username)
                 }
                 else {
                     this.setState({ error: "User name or password do not match" })
@@ -59,8 +61,11 @@ export class LoginForm extends React.Component {
     render() {
         return (
             <div className="Login" >
+
                 <form onSubmit={this.handleSubmit} className="form">
-                    <h3>Sign In</h3>
+                    <h3 className="sign-in">Sign In</h3>
+                    <div className="hello">Hello guest</div>
+
                     <TextField
                         type="text"
                         required
@@ -88,7 +93,7 @@ export class LoginForm extends React.Component {
                     />
 
                     <button className="button" type="submit" disabled={this.isLoading}>Sign In</button>
-                    <div vs className="error">{this.state.error}</div>
+                    <div className="error">{this.state.error}</div>
                 </form>
             </div >
         )
