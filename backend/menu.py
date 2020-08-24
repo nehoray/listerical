@@ -85,3 +85,4 @@ class MenuModel:
                                                        dish['food_type'],
                                                        dish['calories'],
                                                        idmenu)
+        return True

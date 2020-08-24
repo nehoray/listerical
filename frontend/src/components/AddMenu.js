@@ -74,8 +74,10 @@ export default class AddMenuDialog extends Component {
         console.log(this.state)
         console.log(this.props.menuDate)
         let path = `${process.env.REACT_APP_BE_URL}/menu`;
+        let token = localStorage.getItem('jwt')
+
         const headers = {
-            'Content-Type': 'application/json',
+            'Content-Type': 'application/json', "Authorization": `Bearer ${token}`
         }
         const data = {
 
@@ -86,7 +88,7 @@ export default class AddMenuDialog extends Component {
         }
         console.log(this.state.dishRow)
         axios
-            .post(path, data, headers)
+            .post(path, data, { headers: headers })
             .then((res) => {
                 if (String(res.data) === "true") {
                     this.toggleModal();

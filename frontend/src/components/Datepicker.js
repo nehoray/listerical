@@ -44,9 +44,9 @@ class Datepicker extends Component {
       <Fragment>
         <MuiPickersUtilsProvider utils={DateFnsUtils}>
           <DatePicker
-            shouldDisableDate={(date) => {
-              return this.disableDates(date);
-            }}
+            // shouldDisableDate={(date) => {
+            //   return this.disableDates(date);
+            // }}
             openTo="date"
             format="dd/MM/yyyy"
             minDate={moment().toDate()}

@@ -1,0 +1,50 @@
+@media all and (min-width: 480px) {
+
+    .Login form {
+      /* margin:  auto;
+      max-width: 200px; */
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+       min-height:80vh; 
+    }
+  }
+
+  .form{
+    display: flex;
+    flex-direction: column;
+    align-content: center;
+    justify-content:space-between
+  }
+
+.error{
+  color:red;
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+
+.button {
+    transition-duration: 0.4s;
+    width: 200px;
+    width: 30vh;
+    font-size: 4vh;
+    background-color: #1E88E5;
+    color:white
+
+}
+  
+  .button:hover {
+    background-color: white; 
+    color:#1E88E5;
+  
+  }
+.sign-in{
+  padding-bottom: 4vh;
+}
+.hello{
+  width: 30vh;
+  text-align: left;
+
+}

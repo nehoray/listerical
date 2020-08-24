@@ -15,10 +15,9 @@ import KeyboardArrowDownIcon from "@material-ui/icons/KeyboardArrowDown";
 import KeyboardArrowUpIcon from "@material-ui/icons/KeyboardArrowUp";
 import axios from "axios";
 import React, { Component } from "react";
-import Card from 'react-bootstrap/Card';
 import AddDishDialog from "./AddDish";
 import AddMenuDialog from './AddMenu';
-import Datepicker from "./Datepicker";
+import Datepicker from './Datepicker';
 import './Table.css';
 const useRowStyles = makeStyles({
   root: {
@@ -145,8 +144,14 @@ export class CollapsibleTable extends Component {
   state = {
     menus: [],
   };
+  _isMounted = false;
+
   componentDidMount() {
+    this._isMounted = true
     this.readMenuData();
+  }
+  componentWillUnmount() {
+    this._isMounted = false;
   }
 
   // 2 uses: 1.for default render. 2. for datepicker
@@ -157,19 +162,23 @@ export class CollapsibleTable extends Component {
         params: { chosen_date: chosen_date },
       })
       .then((res) => {
-        this.setState({ menus: res.data });
-        if (res.data.length === 0) {
-          this.setState({ noMenuData: true })
-        }
-        else {
-          this.setState({ noMenuData: false })
+        if (this._isMounted) {
+          this.setState({ menus: res.data });
+          if (res.data.length === 0) {
+            this.setState({ noMenuData: true })
+          }
+          else {
+            this.setState({ noMenuData: false })
+          }
         }
       });
 
     chosen_date = chosen_date ? chosen_date : new Date()
 
     // for add menu dialog
-    this.setState({ menuDate: chosen_date })
+    if (this._isMounted) {
+      this.setState({ menuDate: chosen_date })
+    }
   }
 
   tableContent() {
@@ -195,29 +204,33 @@ export class CollapsibleTable extends Component {
   noMenuDataCard() {
     return (
       <>
-        <Card className="no-menu-card">
-          <Card.Body>
-            <Card.Text>
+        <span className="no-menu-card">
+          <div>
+            <div>
               There is no menu for this date yet.
-            </Card.Text>
-            <Card.Text className="no-menu-msg" >
+            </div>
+            <div className="no-menu-msg" >
               you can create one right now.
-            </Card.Text>
+            </div>
             <AddMenuDialog menuDate={this.state.menuDate} />
-          </Card.Body>
-        </Card>
+          </div>
+        </span>
       </>
     )
   }
   render() {
-    return (
-      <>
-        <React.Fragment>
-          <Datepicker readMenusFunc={this.readMenuData.bind(this)} />
-        </React.Fragment>
-        {this.state.noMenuData ? this.noMenuDataCard() : this.tableContent()}
-      </>
-    );
+    if (this._isMounted) {
+      return (
+        <>
+          <React.Fragment>
+            <Datepicker readMenusFunc={this.readMenuData.bind(this)} />
+          </React.Fragment>
+          {this.state.noMenuData ? this.noMenuDataCard() : this.tableContent()}
+        </>
+      );
+    } else {
+      return <></>
+    }
   }
 }
 export default CollapsibleTable;

@@ -48,19 +48,23 @@ export default class CustomizedDialogs extends Component {
   mySubmitHandler = (event) => {
     event.preventDefault();
     if (this.state.isError === false) {
-      let path = `${process.env.REACT_APP_BE_URL}/dish/add`;
+      let path = `${process.env.REACT_APP_BE_URL}/dish`;
       let idmenu = this.props.idmenu
+
       // when creating to a new menu - this will be udefined. 
       if (idmenu) {
+        let data = {
+          name: this.state.name,
+          calories: this.state.calories,
+          food_type: this.state.food_type,
+          idmenu: idmenu
+        }
+        let token = localStorage.getItem('jwt')
+        const headers = {
+          "Authorization": `Bearer ${token}`
+        }
         axios
-          .get(path, {
-            params: {
-              name: this.state.name,
-              calories: this.state.calories,
-              food_type: this.state.food_type,
-              idmenu: idmenu,
-            },
-          })
+          .post(path, data, { headers: headers })
           .then((res) => {
             if (String(res.data) === "true") {
               this.toggleModal();
@@ -82,7 +86,7 @@ export default class CustomizedDialogs extends Component {
     };
   }
   myChangeHandler = (event) => {
-    event.preventDefault(); // maybe delete
+    event.preventDefault();
     let stateName = `${event.target.id}`;
     let value = event.target.value;
     this.setState({

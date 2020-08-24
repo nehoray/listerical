@@ -18,6 +18,6 @@ def execute_selection(sql, values=None):
 def execute_insertion(sql, values):
     with closing(mysql.connector.connect(**connetion_params)) as db:
         with closing(db.cursor(dictionary=True, buffered=True)) as cursor:
-            cursor.execute(sql, [values])
+            cursor.execute(sql, values)
             db.commit()
             return True
