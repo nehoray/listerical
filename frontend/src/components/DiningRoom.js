@@ -23,12 +23,13 @@ export default class DiningRoom extends React.Component {
     logout() {
         localStorage.removeItem('username')
         localStorage.removeItem('jwt')
+        localStorage.removeItem('user_type')
         this.props.history.push('/login')
     }
     render() {
         return (
             <Container maxWidth="sm">
-                <div className="hello">Hello {this.username}
+                <div className="hello">Hello {localStorage.getItem('username')}
                     <a href="/login" className="logout" onClick={(e) => this.logout()}>Logout</a>
                 </div>
                 <Typography variant="h3" gutterBottom align="center">
