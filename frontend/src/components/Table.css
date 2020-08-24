@@ -4,3 +4,6 @@
 .no-menu-msg{
     padding-bottom: 5px;
 }
+.menu-table{
+    max-height: 73vh;
+}

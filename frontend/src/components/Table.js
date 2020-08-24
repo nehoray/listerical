@@ -183,8 +183,8 @@ export class CollapsibleTable extends Component {
 
   tableContent() {
     return (
-      <TableContainer component={Paper}>
-        <Table aria-label="collapsible table">
+      <TableContainer className="menu-table" component={Paper}>
+        <Table aria-label="collapsible table" >
           <TableHead>
             <TableRow>
               <StyledTableCell />
