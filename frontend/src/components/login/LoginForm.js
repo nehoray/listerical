@@ -34,10 +34,12 @@ export class LoginForm extends React.Component {
             .then((res) => {
                 console.log(res)
                 if (res['status'] == 200) {
-                    this.props.history.push('/');
+                    console.log('code 200')
                     // setting the jwt in localStorage
-                    localStorage.setItem('jwt', res['data'])
+                    localStorage.setItem('jwt', res['data']['access_token'])
                     localStorage.setItem('username', this.state.username)
+                    this.props.history.push('/');
+
                 }
                 else {
                     this.setState({ error: "User name or password do not match" })

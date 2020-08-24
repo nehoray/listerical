@@ -6,14 +6,20 @@ import CollapsibleTablele from "./Table";
 
 export default class DiningRoom extends React.Component {
 
+    _isMounted = false
+    username = ''
+    jwt = ''
 
-    username = localStorage.getItem('username');
-    jwt = localStorage.getItem('jwt');
-    componentWillUnmount() {
+    componentDidMount() {
+        this._isMounted = true;
+        this.username = localStorage.getItem('username')
+        this.jwt = localStorage.getItem('jwt');
         if (!this.username || !this.jwt) {
             this.logout()
         }
     }
+
+
     logout() {
         localStorage.removeItem('username')
         localStorage.removeItem('jwt')
@@ -23,7 +29,7 @@ export default class DiningRoom extends React.Component {
         return (
             <Container maxWidth="sm">
                 <div className="hello">Hello {this.username}
-                    <a className="logout" onClick={(e) => this.logout()}>Logout</a>
+                    <a href="/login" className="logout" onClick={(e) => this.logout()}>Logout</a>
                 </div>
                 <Typography variant="h3" gutterBottom align="center">
                     Dininig Room
