@@ -186,15 +186,15 @@ export default class AddMenuDialog extends Component {
     render() {
         const { formErrors } = this.state;
         return (
-            <div>
+            <div >
                 {this.addMenuButton()}
                 <Dialog
                     onClose={this.toggleModal}
                     aria-labelledby="customized-dialog-title"
                     open={this.state.isOpen}
                 >
-                    <form onSubmit={(e) => this.changeHandler(e)} target="#" >
-                        <DialogContent dividers className="dialog"
+                    <form onSubmit={(e) => this.changeHandler(e)} target="#">
+                        <DialogContent dividers className="dialog" className="add-menu-dialog"
                         >
                             <div>
                                 <h1 id="heading"> New Menu </h1>{" "}
@@ -223,7 +223,7 @@ export default class AddMenuDialog extends Component {
                                                         }}
                                                     />
                                                     <span className="to-text"> To </span>
-                                                    <TextField
+                                                    <TextField className="end-time"
                                                         onChange={this.changeHandler}
                                                         id={mealName + "_end"}
                                                         label="end"

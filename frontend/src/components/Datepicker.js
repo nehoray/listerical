@@ -3,7 +3,7 @@ import { DatePicker, MuiPickersUtilsProvider } from "@material-ui/pickers";
 import "axios";
 import axios from "axios";
 import React, { Component, Fragment } from "react";
-
+import '../components/datepicker.css';
 class Datepicker extends Component {
   constructor (props) {
     super(props);
@@ -51,15 +51,14 @@ class Datepicker extends Component {
   }
   render() {
     return (
-      <Fragment>
+      <Fragment >
         <MuiPickersUtilsProvider utils={DateFnsUtils}>
-          <DatePicker
+          <DatePicker className="datepicker"
             shouldDisableDate={(date) => {
               return this.disableDates(date);
             }}
             openTo="date"
             format="dd/MM/yyyy"
-            // minDate={moment().toDate()}
             label="Choose Date"
             views={["year", "month", "date"]}
             selected={this.state.selectedDate}
