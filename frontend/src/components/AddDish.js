@@ -180,7 +180,7 @@ export default class CustomizedDialogs extends Component {
     if (userType == 'admin') {
       return (
         <AwesomeButton type="primary" onPress={this.toggleModal}>
-          Add new dish
+          Add dish
         </AwesomeButton>
       )
     }
