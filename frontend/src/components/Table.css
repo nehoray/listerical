@@ -1,6 +1,14 @@
 .no-menu-card{
     padding-top: 10px;
+    display: flex;
+    flex-direction: column;
+    /* justify-content: center; */
+    align-content: center;
+    text-align: center;
 }
 .no-menu-msg{
-    padding-bottom: 5px;
+    padding-bottom: 2vh;
+}
+.menu-table{
+    max-height: 73vh;
 }

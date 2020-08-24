@@ -1,6 +1,6 @@
 .dialog {
     width: 100%;
-    min-width: 400px;
+    min-width: 44vh;
   }
   
   .time-and-button{
@@ -33,4 +33,10 @@
   .delete{
     color:black;
     padding: 0 !important;
+  }
+
+  .add-menu-dialog{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
   }

@@ -36,8 +36,10 @@
 }
   
   .button:hover {
-    background-color: white; 
+    background-color: #ffffff; 
     color:#1E88E5;
+    cursor: pointer;
+
   
   }
 .sign-in{

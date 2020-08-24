@@ -183,8 +183,8 @@ export class CollapsibleTable extends Component {
 
   tableContent() {
     return (
-      <TableContainer component={Paper}>
-        <Table aria-label="collapsible table">
+      <TableContainer className="menu-table" component={Paper}>
+        <Table aria-label="collapsible table" >
           <TableHead>
             <TableRow>
               <StyledTableCell />
@@ -205,15 +205,11 @@ export class CollapsibleTable extends Component {
     return (
       <>
         <span className="no-menu-card">
-          <div>
-            <div>
-              There is no menu for this date yet.
+          <div className="no-menu-msg">
+            There is no menu for this date yet. <br />
+                You can create one right now.
             </div>
-            <div className="no-menu-msg" >
-              you can create one right now.
-            </div>
-            <AddMenuDialog menuDate={this.state.menuDate} />
-          </div>
+          <AddMenuDialog menuDate={this.state.menuDate} />
         </span>
       </>
     )
