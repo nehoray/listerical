@@ -5,64 +5,47 @@ import hashlib
 import jwt
 
 from MysqlManger import execute_insertion, execute_selection
+from user import User
 from utils import jsonify, os
 
 _SQL_GET_USER_PASSWORD_HASH = """
-                                SELECT  password
+                                SELECT  userid,password
                                 FROM    listerical_db.user
                                 WHERE   username = %s
                                 """
-
-_SQL_SET_JWT = """
-                UPDATE listerical_db.user SET jwt = %s 
-                WHERE username = %s;
-
-                """
+_SQL_GET_USER = """
+                            SELECT username, user_type FROM listerical_db.user
+                            WHERE userid=%s
+                        """
 
 
 class LoginModel:
 
     #check if the username and password are ok
     def authenticate(self, username, password):
-        hash = execute_selection(sql=_SQL_GET_USER_PASSWORD_HASH,
+        self.user_type = ''
+        data = execute_selection(sql=_SQL_GET_USER_PASSWORD_HASH,
                                  values=(username))
-        if len(hash) == 0:
+
+        if len(data) == 0:
             return False
-
-        hash = hash[0]['password']
-
+        hash = data[0]['password']
+        userid = data[0]['userid']
         # if the user and pass are ok
-        if (self.verify_password(hash, password)):
-            jwt = self.create_jwt(username)
-            # insert jwt to db:
-            res = self.set_jwt(username, jwt)
-            if (res):
-                return jwt
-        else:
-            return False
+        return userid if self.verify_password(hash, password) else False
 
-    def set_jwt(self, username, jwt):
-        values = (jwt, username)
-        res = execute_insertion(_SQL_SET_JWT, values)
-        return res
+    def get_user(self, userid):
+        user = User(**execute_selection(sql=_SQL_GET_USER, values=(userid))[0])
+        print(user)
+        return user
 
-    def create_jwt(self, username):
-        payload = {
-            'iat': datetime.datetime.utcnow(),
-            'exp': datetime.datetime.utcnow() +
-            datetime.timedelta(seconds=86400),  # a day
-            'username': username
-        }
-        jwt_res = jwt.encode(payload, 'secret', algorithm='HS256')
-        return jwt_res
-
-    def hash_password(self, password):
-        """Hash a password for storing."""
-        salt = hashlib.sha256(os.urandom(60)).hexdigest().encode('ascii')
-        pwdhash = hashlib.pbkdf2_hmac('sha512', password.encode('utf-8'), salt,
-                                      100000)
-        pwdhash = binascii.hexlify(pwdhash)
-        return (salt + pwdhash).decode('ascii')
+    # def hash_password(self, password):
+    #     """Hash a password for storing."""
+    #     salt = hashlib.sha256(os.urandom(60)).hexdigest().encode('ascii')
+    #     pwdhash = hashlib.pbkdf2_hmac('sha512', password.encode('utf-8'), salt,
+    #                                   100000)
+    #     pwdhash = binascii.hexlify(pwdhash)
+    #     return (salt + pwdhash).decode('ascii')
 
     def verify_password(self, stored_password, provided_password):
         """Verify a stored password against one provided by user"""
@@ -73,11 +56,3 @@ class LoginModel:
                                       salt.encode('ascii'), 100000)
         pwdhash = binascii.hexlify(pwdhash).decode('ascii')
         return pwdhash == stored_password
-
-
-# try:
-#     decoded_jwt = jwt.decode(encoded_jwt,'secret',algorithms=['HS256'])
-#     print('encoded_jwt:')
-#     print(decoded_jwt)
-# except jwt.ExpiredSignatureError as e:
-#     return 'jwt.ExpiredSignatureError'
