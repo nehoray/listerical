@@ -173,13 +173,21 @@ export default class AddMenuDialog extends Component {
         this.setState({ dishRow: dishRow })
     }
 
+    addMenuButton() {
+        let userType = localStorage.getItem('user_type')
+        if (userType == 'admin') {
+            return (
+                <AwesomeButton type="primary" onPress={this.toggleModal}>
+                    Add menu
+                </AwesomeButton>
+            )
+        }
+    }
     render() {
         const { formErrors } = this.state;
         return (
             <div>
-                <AwesomeButton type="primary" onPress={this.toggleModal}>
-                    Add menu
-                </AwesomeButton>
+                {this.addMenuButton()}
                 <Dialog
                     onClose={this.toggleModal}
                     aria-labelledby="customized-dialog-title"
