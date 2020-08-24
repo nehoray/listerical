@@ -8,10 +8,16 @@ from MysqlManger import execute_insertion, execute_selection
 from utils import jsonify, os
 
 _SQL_GET_USER_PASSWORD_HASH = """
-                                    SELECT password
-                                    FROM listerical_db.user
-                                    WHERE username = %s
-"""
+                                SELECT  password
+                                FROM    listerical_db.user
+                                WHERE   username = %s
+                                """
+
+_SQL_SET_JWT = """
+                UPDATE listerical_db.user SET jwt = %s 
+                WHERE username = %s;
+
+                """
 
 
 class LoginModel:
@@ -28,15 +34,17 @@ class LoginModel:
         # if the user and pass are ok
         if (self.verify_password(hash, password)):
             jwt = self.create_jwt(username)
-            return jwt
+            # insert jwt to db:
+            res = self.set_jwt(username, jwt)
+            if (res):
+                return jwt
         else:
             return False
-            # try:
-            #     decoded_jwt = jwt.decode(encoded_jwt,'secret',algorithms=['HS256'])
-            #     print('encoded_jwt:')
-            #     print(decoded_jwt)
-            # except jwt.ExpiredSignatureError as e:
-            #     return 'jwt.ExpiredSignatureError'
+
+    def set_jwt(self, username, jwt):
+        values = (jwt, username)
+        res = execute_insertion(_SQL_SET_JWT, values)
+        return res
 
     def create_jwt(self, username):
         payload = {
@@ -65,3 +73,11 @@ class LoginModel:
                                       salt.encode('ascii'), 100000)
         pwdhash = binascii.hexlify(pwdhash).decode('ascii')
         return pwdhash == stored_password
+
+
+# try:
+#     decoded_jwt = jwt.decode(encoded_jwt,'secret',algorithms=['HS256'])
+#     print('encoded_jwt:')
+#     print(decoded_jwt)
+# except jwt.ExpiredSignatureError as e:
+#     return 'jwt.ExpiredSignatureError'
