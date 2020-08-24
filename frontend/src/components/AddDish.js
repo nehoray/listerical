@@ -198,16 +198,14 @@ export default class CustomizedDialogs extends Component {
           aria-labelledby="customized-dialog-title"
           open={this.state.isOpen}
         >
-          <form onSubmit={(e) => this.myChangeHandler(e)} target="#" >
-            <DialogContent dividers className="dialog"
+          <form onSubmit={(e) => this.myChangeHandler(e)} target="#" className className="dialog">
+            <DialogContent dividers
             >
+              <h1 id="heading"> New Dish </h1>{" "}
               <div>
-                <h1 id="heading"> New Dish </h1>{" "}
                 <Grid
                   container
                   direction="column"
-                  justify="flex-start"
-                  alignItems="baseline"
                 >
                   <TextField
                     autoFocus
@@ -263,7 +261,6 @@ export default class CustomizedDialogs extends Component {
               </div>
               {/*  */}
             </DialogContent>
-            {/* {this.addDishButtonComponent} */}
             <DialogActions>
               <button
                 type="button"
