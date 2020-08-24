@@ -175,13 +175,23 @@ export default class CustomizedDialogs extends Component {
     return (err.name.length === 0 && err.food_type === 0 && err.calories === 0)
   }
 
+  addNewDishButton() {
+    let userType = localStorage.getItem('user_type')
+    if (userType == 'admin') {
+      return (
+        <AwesomeButton type="primary" onPress={this.toggleModal}>
+          Add new dish
+        </AwesomeButton>
+      )
+    }
+  }
+
+
   render() {
     const { formErrors } = this.state;
     return (
       <div>
-        <AwesomeButton type="primary" onPress={this.toggleModal}>
-          Add new dish
-        </AwesomeButton>
+        {this.addNewDishButton()}
         <Dialog
           // maxWidth="maxWidth"
           onClose={this.toggleModal}

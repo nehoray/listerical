@@ -101,11 +101,11 @@ def login():
     username = request.json['username']
     password = request.json['password']
     userid = login_model.authenticate(username, password)  # user pass are ok
-    print('print:')
-    print(userid)
     if userid:
         access_token = create_access_token(identity=userid)
-        return jsonify(access_token=access_token)
+        user = login_model.get_user(userid)
+
+        return jsonify(access_token=access_token, user_type=user.user_type)
     else:
         return Response("wrong user name or password",
                         status=201,

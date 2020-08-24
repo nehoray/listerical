@@ -2,13 +2,12 @@ import DateFnsUtils from "@date-io/date-fns";
 import { DatePicker, MuiPickersUtilsProvider } from "@material-ui/pickers";
 import "axios";
 import axios from "axios";
-import moment from 'moment';
 import React, { Component, Fragment } from "react";
 
 class Datepicker extends Component {
   constructor (props) {
     super(props);
-    // this.disableDates = this.disableDates.bind(this);
+    this.disableDates = this.disableDates.bind(this);
 
     this.state = {
       selectedDate: new Date(),
@@ -30,7 +29,18 @@ class Datepicker extends Component {
   }
 
   disableDates(date) {
-    return !this.state.goodDates.includes(this.convert(date));
+
+    let user_type = localStorage.getItem('user_type')
+    let isEmpty = !this.state.goodDates.includes(this.convert(date));
+    let now = new Date(Date.now()).setHours(0, 0, 0, 0)
+    let curDate = (new Date(date)).getTime()
+    let isPast = curDate < now
+
+    if (user_type == 'admin') { // see all future so he can add menus
+      return isPast == true // disabled past
+    } else {
+      return isPast || isEmpty // disabled past and empty
+    }
   }
 
   convert(str) {
@@ -44,12 +54,12 @@ class Datepicker extends Component {
       <Fragment>
         <MuiPickersUtilsProvider utils={DateFnsUtils}>
           <DatePicker
-            // shouldDisableDate={(date) => {
-            //   return this.disableDates(date);
-            // }}
+            shouldDisableDate={(date) => {
+              return this.disableDates(date);
+            }}
             openTo="date"
             format="dd/MM/yyyy"
-            minDate={moment().toDate()}
+            // minDate={moment().toDate()}
             label="Choose Date"
             views={["year", "month", "date"]}
             selected={this.state.selectedDate}
