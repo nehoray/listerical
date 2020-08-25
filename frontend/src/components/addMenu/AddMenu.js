@@ -67,8 +67,8 @@ export default class AddMenuDialog extends Component {
     // runs when add menu button is clicked
     SubmitHandler = (event) => {
         event.preventDefault();
-        let path = `${process.env.REACT_APP_BE_URL}/menu`;
-        let token = localStorage.getItem('jwt')
+        const path = `${process.env.REACT_APP_BE_URL}/menu`;
+        const token = localStorage.getItem('jwt')
         const headers = {
             "Authorization": `Bearer ${token}`
         }
@@ -95,8 +95,8 @@ export default class AddMenuDialog extends Component {
     // updates state every input change
     changeHandler = (event) => {
         event.preventDefault();
-        let stateName = `${event.target.id}`;
-        let value = event.target.value;
+        const stateName = `${event.target.id}`;
+        const value = event.target.value;
         let arr = this.state.mealsTimes
         arr[stateName] = value
         this.setState({
@@ -106,7 +106,7 @@ export default class AddMenuDialog extends Component {
 
     // adding a new dish to the menu state
     handleChildAddDish(childState, mealName) {
-        let newDish = {
+        const newDish = {
             name: childState.name,
             calories: childState.calories,
             food_type: childState.food_type,
@@ -149,8 +149,7 @@ export default class AddMenuDialog extends Component {
 
     // remove dish from state and from dialog
     removeDish(name, dishRow) {
-        let removeIndex = dishRow.map(function (item) { return item.name }).indexOf(name)
-        let updatedDishRow
+        const removeIndex = dishRow.map(function (item) { return item.name }).indexOf(name)
         if (removeIndex > -1) {
             dishRow.splice(removeIndex, 1)
         }
@@ -159,7 +158,7 @@ export default class AddMenuDialog extends Component {
 
     // add menu button (cant see if not admin)
     addMenuButton() {
-        let userType = localStorage.getItem('user_type')
+        const userType = localStorage.getItem('user_type')
         if (userType == 'admin') {
             return (
                 <AwesomeButton type="primary" onPress={this.toggleModal}>

@@ -47,20 +47,18 @@ export default class AddDish extends Component {
   mySubmitHandler = (event) => {
     event.preventDefault();
     if (this.state.isError === false) {
-      let path = `${process.env.REACT_APP_BE_URL}/dish`;
-      let idmenu = this.props.idmenu
+      const path = `${process.env.REACT_APP_BE_URL}/dish`;
+      const idmenu = this.props.idmenu
 
       // when creating to a new menu - this will be udefined. 
       if (idmenu) {
-
-
         const data = {
           name: this.state.name,
           calories: this.state.calories,
           food_type: this.state.food_type,
           idmenu: idmenu
         }
-        let token = localStorage.getItem('jwt')
+        const token = localStorage.getItem('jwt')
         const headers = {
           "Authorization": `Bearer ${token}`
         }
@@ -88,8 +86,8 @@ export default class AddDish extends Component {
   }
   myChangeHandler = (event) => {
     event.preventDefault();
-    let stateName = `${event.target.id}`;
-    let value = event.target.value;
+    const stateName = `${event.target.id}`;
+    const value = event.target.value;
     this.setState({
       [stateName]: event.target.value,
     });
@@ -171,13 +169,13 @@ export default class AddDish extends Component {
   };
   // returns true if no errors
   checkForm() {
-    let err = this.state.formErrors;
+    const err = this.state.formErrors;
     console.log((err.name.length === 0 && err.food_type === 0 && err.calories === 0))
     return (err.name.length === 0 && err.food_type === 0 && err.calories === 0)
   }
 
   addNewDishButton() {
-    let userType = localStorage.getItem('user_type')
+    const userType = localStorage.getItem('user_type')
     if (userType == 'admin') {
       return (
         <AwesomeButton type="primary" onPress={this.toggleModal}>

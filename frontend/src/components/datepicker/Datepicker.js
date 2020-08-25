@@ -18,7 +18,7 @@ class Datepicker extends Component {
   }
 
   componentDidMount() {
-    let path = `${process.env.REACT_APP_BE_URL}/menus/dates`;
+    const path = `${process.env.REACT_APP_BE_URL}/menus/dates`;
     axios
       .get(path)
       .then((res) => {
@@ -30,11 +30,11 @@ class Datepicker extends Component {
   }
 
   disableDates(date) {
-    let user_type = localStorage.getItem('user_type')
-    let isEmpty = !this.state.goodDates.includes(this.convert(date));
-    let now = new Date(Date.now()).setHours(0, 0, 0, 0)
-    let curDate = (new Date(date)).getTime()
-    let isPast = curDate < now
+    const user_type = localStorage.getItem('user_type')
+    const isEmpty = !this.state.goodDates.includes(this.convert(date));
+    const now = new Date(Date.now()).setHours(0, 0, 0, 0)
+    const curDate = (new Date(date)).getTime()
+    const isPast = curDate < now
 
     if (user_type == 'admin') {
       return isPast == true // disabled past
@@ -44,10 +44,10 @@ class Datepicker extends Component {
   }
 
   convert(str) {
-    var date = new Date(str),
-      mnth = ("0" + (date.getMonth() + 1)).slice(-2),
+    const date = new Date(str),
+      month = ("0" + (date.getMonth() + 1)).slice(-2),
       day = ("0" + date.getDate()).slice(-2);
-    return [date.getFullYear(), mnth, day].join("-");
+    return [date.getFullYear(), month, day].join("-");
   }
 
   render() {
@@ -68,8 +68,8 @@ class Datepicker extends Component {
               this.setState({
                 selectedDate: dateSelected,
               });
-              var dateObject = new Date(dateSelected);
-              var dateRes = new Intl.DateTimeFormat("en-GB")
+              const dateObject = new Date(dateSelected);
+              const dateRes = new Intl.DateTimeFormat("en-GB")
                 .format(dateObject)
                 .split("/")
                 .reverse()
