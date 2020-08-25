@@ -22,14 +22,6 @@ app.config['JWT_SECRET_KEY'] = 'super-secret'  # TODO:Change this!
 jwt = JWTManager(app)
 
 
-@app.route("/")
-def Index():
-    return "hello world"
-
-
-#  TODO: pass parameters from FE
-
-
 @app.route("/dish", methods=['POST'])
 @jwt_required
 def add_new_dish():
@@ -55,7 +47,7 @@ def add_new_dish():
         return jsonify(False), 403
 
 
-@app.route("/opennighours")
+@app.route("/")
 # TODO: decide functions names
 def get_full_menu():
     """
