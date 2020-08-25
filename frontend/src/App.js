@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import { BrowserRouter as Router, Route } from 'react-router-dom';
-import DiningRoom from './components/DiningRoom';
+import DiningRoom from './components/diningRoom/DiningRoom';
 import LoginForm from './components/login/LoginForm';
 class App extends Component {
 

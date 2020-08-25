@@ -15,9 +15,9 @@ import KeyboardArrowDownIcon from "@material-ui/icons/KeyboardArrowDown";
 import KeyboardArrowUpIcon from "@material-ui/icons/KeyboardArrowUp";
 import axios from "axios";
 import React, { Component } from "react";
-import AddDishDialog from "./AddDish";
-import AddMenuDialog from './AddMenu';
-import Datepicker from './Datepicker';
+import AddMenuDialog from '../addMenu/AddMenu';
+import Datepicker from '../datepicker/Datepicker';
+import AddDishDialog from "../newDish/AddDish";
 import './Table.css';
 const useRowStyles = makeStyles({
   root: {

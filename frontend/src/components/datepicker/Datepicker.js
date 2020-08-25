@@ -3,7 +3,7 @@ import { DatePicker, MuiPickersUtilsProvider } from "@material-ui/pickers";
 import "axios";
 import axios from "axios";
 import React, { Component, Fragment } from "react";
-import '../components/datepicker.css';
+import '../datepicker/datepicker.css';
 class Datepicker extends Component {
   constructor (props) {
     super(props);

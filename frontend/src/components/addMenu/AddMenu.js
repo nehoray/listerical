@@ -9,7 +9,7 @@ import axios from "axios";
 import React, { Component } from "react";
 import { AwesomeButton } from "react-awesome-button";
 import "react-awesome-button/dist/styles.css";
-import AddDishDialog from './AddDish';
+import AddDishDialog from '../newDish/AddDish';
 import './AddMenu.css';
 
 const DialogContent = withStyles((theme) => ({

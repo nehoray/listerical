@@ -1,8 +1,8 @@
 
 import { Container, Typography } from "@material-ui/core";
 import React from "react";
+import CollapsibleTablele from "../table/Table";
 import "./DiningRoom.css";
-import CollapsibleTablele from "./Table";
 
 export default class DiningRoom extends React.Component {
 
