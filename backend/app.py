@@ -34,7 +34,6 @@ def Index():
 @jwt_required
 def add_new_dish():
     """
-
     :return:
     """
     # sql_cmd = """   INSERT INTO listerical_db.dish (name, created_date, food_type_base,calories_per_100_grams)
@@ -80,20 +79,17 @@ def get_menus_dates():
 @jwt_required
 def add_menu():
 
-    userid = get_jwt_identity()  # decoded
-    print('add_menu:')
-    print(request.headers)
+    userid = get_jwt_identity()  # decoded jwt
     user = login_model.get_user(userid)  # object user
-    print(user)
-    print(user.user_type == 'admin')
+
     if user.user_type == 'admin':
         dishes = request.json['dishes']
         menu_date = request.json['menu_date']
         meals_times = request.json['meals_times']
         res = menu.add_menu(dishes, meals_times, menu_date)
+        return jsonify(res)
     else:
         return jsonify(False), 403
-    return jsonify(True)
 
 
 @app.route("/login", methods=['POST'])
@@ -101,6 +97,7 @@ def login():
     username = request.json['username']
     password = request.json['password']
     userid = login_model.authenticate(username, password)  # user pass are ok
+
     if userid:
         access_token = create_access_token(identity=userid)
         user = login_model.get_user(userid)
