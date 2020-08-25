@@ -88,6 +88,7 @@ export default class AddMenuDialog extends Component {
                     this.setState({
                         open: true,
                     });
+                    window.location.reload(false);
                 }
             }).catch(err => {
                 console.log(err)
