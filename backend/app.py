@@ -29,8 +29,6 @@ def add_new_dish():
     
     :returns: True on success, False and code 403 on failure 
     """
-    print('add')
-
     userid = get_jwt_identity()  # decoded
     user = login_model.get_user(userid)  # object user
     if user.user_type == 'admin':

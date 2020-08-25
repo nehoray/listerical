@@ -52,7 +52,7 @@ class MenuModel:
         :param dishes: menu dishes
         :param meals_times: meals time
         :param menu_date: date the menu is served
-        :reutrns: 
+        :reutrns: True
         """
         # orgenize the dishes so it would be easy to create menu object for each meal
         meals_res = {'morning': [], 'noon': [], 'evening': []}

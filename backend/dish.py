@@ -12,11 +12,11 @@ _SQL_SELECT_DISH = """  SELECT  dish.iddish, dish.name, dish.food_type_base,dish
                                                         WHERE md.idmenu = m.idmenu AND md.idmenu =%s)
                     """
 
-_SQL_INSERT_DISH_TO_DISH_TABLE = """    INSERT INTO listerical_db.dish (name, created_date, food_type_base,calories_per_100_grams)
+_SQL_INSERT_DISH_TO_DISH_TABLE = """ INSERT INTO listerical_db.dish (name, created_date, food_type_base,calories_per_100_grams)
                                         VALUES (%s,NOW(),%s,%s);
                                     """
 # link dish and menu in menuid_dishid table
-_SQL_INSERT_DISH_TO_MENU = """  INSERT INTO listerical_db.menuid_dishid (idmenu,iddish)
+_SQL_INSERT_DISH_TO_MENU = """ INSERT INTO listerical_db.menuid_dishid (idmenu,iddish)
                                 VALUES(%s,%s)
 
                             """
@@ -58,6 +58,7 @@ class DishModel:
 
     def link_dish_to_menu(self, idmenu):
         """Link dish to menu. adds idmenu and iddish linkage to db
+
         :param: idmenu: menu id
         :return: True on success
         """
