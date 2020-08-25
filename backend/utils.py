@@ -9,11 +9,12 @@ from mysql.connector import FieldType
 _DATE_TYPES = ["TIME"]
 
 connetion_params = {
-    'host': os.environ.get("host"),
-    'user': os.environ.get("user"),
-    'password': os.environ.get("password"),
-    'database': os.environ.get("database"),
+    'host': os.environ.get("HOST"),
+    'user': os.environ.get("USER"),
+    'password': os.environ.get("PASSWORD"),
+    'database': os.environ.get("DATABASE"),
 }
+print(connetion_params)
 
 
 def parse_result(cursor):
