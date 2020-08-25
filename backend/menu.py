@@ -12,33 +12,34 @@ _SQL_MENU_BY_DATE = '''
                     FROM	listerical_db.menu 
                     WHERE	DATE(start_time) = %s
                     '''
-#TODO: change add condition of all menu parts
+# all the dates which has data
 _SQL_GET_MENUS_DATES = '''
                         SELECT	DISTINCT DATE_FORMAT(DATE(start_time),"%Y-%m-%d") AS menu_date
                         FROM	listerical_db.menu 
-                    
-'''
+                        '''
 _SQL_ADD_MENU = '''
-INSERT INTO listerical_db.menu (day_part,start_time,end_time)
-                              values  (%s, TIMESTAMP(%s), TIMESTAMP (%s))
-
-'''
+                INSERT  INTO listerical_db.menu (day_part,start_time,end_time)
+                VALUES  (%s, TIMESTAMP(%s), TIMESTAMP (%s))
+                '''
 
 
 class MenuModel:
     def __init__(self):
         self.dish = DishModel()
 
-    def get_full_menu(self, chosen_date):
-        """
-        gets menu details of the menu served on date chosen_date
+    def get_menu(self, chosen_date):
+        """Gets menu details of the menu served on date chosen_date
+
         :param chosen_date: date of menu to be returned
-        :return: menu of the date chosen_date
+        :returns: menu of the date chosen_date
         """
         data = execute_selection(sql=_SQL_MENU_BY_DATE, values=(chosen_date))
         return data
 
     def get_menus_dates(self):
+        """ 
+        :returns: all the dates with menu data 
+        """
         res = execute_selection(sql=_SQL_GET_MENUS_DATES)
         data = []
         for index in range(len(res)):
@@ -46,7 +47,13 @@ class MenuModel:
         return data
 
     def add_menu(self, dishes, meals_times, menu_date):
+        """Add new menu
 
+        :param dishes: menu dishes
+        :param meals_times: meals time
+        :param menu_date: date the menu is served
+        :reutrns: 
+        """
         # orgenize the dishes so it would be easy to create menu object for each meal
         meals_res = {'morning': [], 'noon': [], 'evening': []}
         for meal in meals_res.keys():

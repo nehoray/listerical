@@ -25,11 +25,12 @@ jwt = JWTManager(app)
 @app.route("/dish", methods=['POST'])
 @jwt_required
 def add_new_dish():
+    """Add new dish to an exsiting menu.
+    
+    :returns: True on success, False and code 403 on failure 
     """
-    :return:
-    """
-    # sql_cmd = """   INSERT INTO listerical_db.dish (name, created_date, food_type_base,calories_per_100_grams)
-    #                 VALUES (%s,NOW(),%s,%s);"""
+    print('add')
+
     userid = get_jwt_identity()  # decoded
     user = login_model.get_user(userid)  # object user
     if user.user_type == 'admin':
@@ -48,14 +49,13 @@ def add_new_dish():
 
 
 @app.route("/")
-# TODO: decide functions names
-def get_full_menu():
-    """
-    if date param is'nt sent, the function will use today's date
-    :return: full menu (indcluding dishes) of today or menu of other date if such arg is given.
+def get_menu():
+    """If date param is'nt sent, the function will use today's date
+
+    return: full menu (indcluding dishes) of today or menu of other date if such arg is given.
     """
     chosen_date = request.args.get('chosen_date') or date.today()
-    data = menu.get_full_menu(chosen_date)
+    data = menu.get_menu(chosen_date)
     for cur_menu in data or []:
         cur_menu['dishes'] = dish.get_dishes_by_menu(cur_menu['idmenu'])
     return jsonify(data)
@@ -63,6 +63,9 @@ def get_full_menu():
 
 @app.route("/menus/dates")
 def get_menus_dates():
+    """
+    return: all dates with menu data.
+    """
     data = menu.get_menus_dates()
     return jsonify(data)
 
@@ -70,7 +73,10 @@ def get_menus_dates():
 @app.route("/menu", methods=['POST'])
 @jwt_required
 def add_menu():
+    """Adding new menu 
 
+    return: True on success, False and code 403 on failure
+    """
     userid = get_jwt_identity()  # decoded jwt
     user = login_model.get_user(userid)  # object user
 
@@ -86,6 +92,11 @@ def add_menu():
 
 @app.route("/login", methods=['POST'])
 def login():
+    """Log the user in by username and password.
+    create jwt token for the user.
+    
+    return: access token on success, False and code 403 on failure
+    """
     username = request.json['username']
     password = request.json['password']
     userid = login_model.authenticate(username, password)  # user pass are ok
@@ -97,7 +108,7 @@ def login():
         return jsonify(access_token=access_token, user_type=user.user_type)
     else:
         return Response("wrong user name or password",
-                        status=201,
+                        status=403,
                         mimetype='application/json')
 
 
