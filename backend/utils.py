@@ -14,7 +14,6 @@ connetion_params = {
     'password': os.environ.get("PASSWORD"),
     'database': os.environ.get("DATABASE"),
 }
-print(connetion_params)
 
 
 def parse_result(cursor):
