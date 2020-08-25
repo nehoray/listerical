@@ -36,7 +36,7 @@ export default class DiningRoom extends React.Component {
                 <Typography variant="h3" gutterBottom align="center">
                     Dininig Room
                 </Typography>
-                <MenuTablele />
+                <MenuTablele logout={this.logout.bind(this)} />
             </Container>
         )
     }
