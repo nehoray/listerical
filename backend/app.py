@@ -1,3 +1,4 @@
+import os
 import sys
 from datetime import date
 
@@ -17,8 +18,10 @@ login_model = LoginModel()
 
 app = Flask(__name__)
 # TODO: handle it in prod
-CORS(app, resorces="http://localhost:5000/")
-app.config['JWT_SECRET_KEY'] = 'super-secret'  # TODO:Change this!
+CORS(app)
+app.config['JWT_SECRET_KEY'] = os.environ.get(
+    'JWT_SECRET', 'super-secret')  #TODO: remove default
+
 jwt = JWTManager(app)
 
 
