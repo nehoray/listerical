@@ -53,7 +53,9 @@ export default class CustomizedDialogs extends Component {
 
       // when creating to a new menu - this will be udefined. 
       if (idmenu) {
-        let data = {
+
+
+        const data = {
           name: this.state.name,
           calories: this.state.calories,
           food_type: this.state.food_type,
