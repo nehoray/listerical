@@ -15,9 +15,9 @@ import KeyboardArrowDownIcon from "@material-ui/icons/KeyboardArrowDown";
 import KeyboardArrowUpIcon from "@material-ui/icons/KeyboardArrowUp";
 import axios from "axios";
 import React, { Component } from "react";
+import AddDishDialog from "../addDish/AddDish";
 import AddMenuDialog from '../addMenu/AddMenu';
 import Datepicker from '../datepicker/Datepicker';
-import AddDishDialog from "../newDish/AddDish";
 import './Table.css';
 const useRowStyles = makeStyles({
   root: {
@@ -44,6 +44,7 @@ const StyledTableRow = withStyles((theme) => ({
     },
   },
 }))(TableRow);
+
 
 function Row(props) {
   const menu = props.row;
@@ -140,7 +141,7 @@ function Row(props) {
   );
 }
 
-export class CollapsibleTable extends Component {
+export class MenuTable extends Component {
   state = {
     menus: [],
   };
@@ -154,7 +155,7 @@ export class CollapsibleTable extends Component {
     this._isMounted = false;
   }
 
-  // 2 uses: 1.for default render. 2. for datepicker
+  // 2 uses: 1.for default render. 2. for datepicker choices
   readMenuData(chosen_date = null) {
     let path = `${process.env.REACT_APP_BE_URL}/opennighours`;
     axios
@@ -172,15 +173,15 @@ export class CollapsibleTable extends Component {
           }
         }
       });
-
     chosen_date = chosen_date ? chosen_date : new Date()
 
-    // for add menu dialog
+    // for adding menu dialog
     if (this._isMounted) {
       this.setState({ menuDate: chosen_date })
     }
   }
 
+  // main menu table
   tableContent() {
     return (
       <TableContainer className="menu-table" component={Paper}>
@@ -201,7 +202,9 @@ export class CollapsibleTable extends Component {
       </TableContainer>
     )
   }
-  noMenuDataCard() {
+
+  // if no menu data for present day show this.
+  noMenuData() {
     return (
       <>
         <span className="no-menu-card">
@@ -221,7 +224,7 @@ export class CollapsibleTable extends Component {
           <React.Fragment>
             <Datepicker readMenusFunc={this.readMenuData.bind(this)} />
           </React.Fragment>
-          {this.state.noMenuData ? this.noMenuDataCard() : this.tableContent()}
+          {this.state.noMenuData ? this.noMenuData() : this.tableContent()}
         </>
       );
     } else {
@@ -229,4 +232,4 @@ export class CollapsibleTable extends Component {
     }
   }
 }
-export default CollapsibleTable;
+export default MenuTable;

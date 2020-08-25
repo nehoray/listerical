@@ -4,6 +4,8 @@ import "axios";
 import axios from "axios";
 import React, { Component, Fragment } from "react";
 import '../datepicker/datepicker.css';
+
+// allow user to choose menus by dates
 class Datepicker extends Component {
   constructor (props) {
     super(props);
@@ -24,19 +26,17 @@ class Datepicker extends Component {
       })
       .catch((e) => {
         console.error("e");
-
       });
   }
 
   disableDates(date) {
-
     let user_type = localStorage.getItem('user_type')
     let isEmpty = !this.state.goodDates.includes(this.convert(date));
     let now = new Date(Date.now()).setHours(0, 0, 0, 0)
     let curDate = (new Date(date)).getTime()
     let isPast = curDate < now
 
-    if (user_type == 'admin') { // see all future so he can add menus
+    if (user_type == 'admin') {
       return isPast == true // disabled past
     } else {
       return isPast || isEmpty // disabled past and empty
@@ -49,6 +49,7 @@ class Datepicker extends Component {
       day = ("0" + date.getDate()).slice(-2);
     return [date.getFullYear(), mnth, day].join("-");
   }
+
   render() {
     return (
       <Fragment >

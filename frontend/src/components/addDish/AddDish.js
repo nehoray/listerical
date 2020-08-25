@@ -11,7 +11,6 @@ import { AwesomeButton } from "react-awesome-button";
 import "react-awesome-button/dist/styles.css";
 import './AddDish.css';
 
-
 const DialogContent = withStyles((theme) => ({
   root: {
     padding: theme.spacing(2),
@@ -25,7 +24,7 @@ const DialogActions = withStyles((theme) => ({
   },
 }))(MuiDialogActions);
 
-export default class CustomizedDialogs extends Component {
+export default class AddDish extends Component {
   constructor (props) {
     super(props);
 

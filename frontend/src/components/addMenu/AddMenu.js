@@ -8,9 +8,8 @@ import DeleteForeverIcon from '@material-ui/icons/DeleteForever';
 import axios from "axios";
 import React, { Component } from "react";
 import { AwesomeButton } from "react-awesome-button";
-import "react-awesome-button/dist/styles.css";
-import AddDishDialog from '../newDish/AddDish';
-import './AddMenu.css';
+import AddDishDialog from '../addDish/AddDish';
+import '../addMenu/AddMenu.css';
 
 const DialogContent = withStyles((theme) => ({
     root: {
@@ -18,8 +17,7 @@ const DialogContent = withStyles((theme) => ({
     },
 }))(MuiDialogContent);
 
-
-
+// Dialog of createing new menu
 export default class AddMenuDialog extends Component {
     constructor (props) {
         super(props);
@@ -41,12 +39,12 @@ export default class AddMenuDialog extends Component {
         };
 
         this.removeDish = this.removeDish.bind(this)
-
         this.addDishToState = this.addDishToState.bind(this)
 
     }
     mealsNames = ['morning', 'noon', 'evening']
 
+    // init state rigth after menu adding
     initState() {
         this.setState({
             mealsTimes: {
@@ -64,25 +62,18 @@ export default class AddMenuDialog extends Component {
             }
         })
         this.setState({ dishRow: [] })
-        console.log(this.state)
-
-
     }
-    mySubmitHandler = (event) => {
+
+    // runs when add menu button is clicked
+    SubmitHandler = (event) => {
         event.preventDefault();
         let path = `${process.env.REACT_APP_BE_URL}/menu`;
-        console.log(path)
         let token = localStorage.getItem('jwt')
-        console.log(token)
-
-
         const headers = {
             "Authorization": `Bearer ${token}`
         }
         // 'Content-Type': 'application/json',
-        console.log(headers)
         const data = {
-
             dishes: this.state.dishRow,
             meals_times: this.state.mealsTimes,
             menu_date: this.props.menuDate
@@ -97,15 +88,11 @@ export default class AddMenuDialog extends Component {
                     this.setState({
                         open: true,
                     });
-                    console.log('menu add')
-                } else {
-                    // TODO:
-                    console.log("Error");
                 }
             });
     };
 
-    // editing meals times inside state
+    // updates state every input change
     changeHandler = (event) => {
         event.preventDefault();
         let stateName = `${event.target.id}`;
@@ -117,9 +104,8 @@ export default class AddMenuDialog extends Component {
         });
     };
 
+    // adding a new dish to the menu state
     handleChildAddDish(childState, mealName) {
-        // console.log('i am parent printinig child data:')
-        // console.log(childState)
         let newDish = {
             name: childState.name,
             calories: childState.calories,
@@ -128,9 +114,6 @@ export default class AddMenuDialog extends Component {
         }
         let updatedArr = this.state.dishRow
         updatedArr.push(newDish)
-        // this.setState(prevState => ({
-        //     dishRow: [...prevState.dishRow, newDish]
-        // }))
 
         this.setState({
             dishRow: updatedArr
@@ -144,6 +127,7 @@ export default class AddMenuDialog extends Component {
         });
     };
 
+    // present the new dish every dish adding
     addDishToState(dishRow, mealName) {
         return (
             dishRow.map((dish) => {
@@ -162,11 +146,10 @@ export default class AddMenuDialog extends Component {
             })
         )
     }
+
+    // remove dish from state and from dialog
     removeDish(name, dishRow) {
         let removeIndex = dishRow.map(function (item) { return item.name }).indexOf(name)
-        console.log(removeIndex)
-        console.log(name)
-        console.log(dishRow)
         let updatedDishRow
         if (removeIndex > -1) {
             dishRow.splice(removeIndex, 1)
@@ -174,6 +157,7 @@ export default class AddMenuDialog extends Component {
         this.setState({ dishRow: dishRow })
     }
 
+    // add menu button (cant see if not admin)
     addMenuButton() {
         let userType = localStorage.getItem('user_type')
         if (userType == 'admin') {
@@ -243,46 +227,22 @@ export default class AddMenuDialog extends Component {
                                                 </div>
                                                 {/* adding new dish row onto the dialog each time user add new dish */}
                                                 {this.addDishToState(this.state.dishRow, mealName)}
-                                                {/* {this.state.dishRow.map(function (dish) {
-                                                    if (dish.mealName == mealName) {
-                                                        return (
-                                                            <React.Fragment>
-                                                                <div className="added-dish">
-                                                                    <div id="dish.name" type="text">{dish.name} ({dish.food_type}) with {dish.calories} calories (100 g)</div>
-                                                                    <IconButton className="delete" onClick={this.removeDish(dish.name)}>
-                                                                        <DeleteForeverIcon />
-                                                                    </IconButton>
-                                                                </div>
-                                                            </React.Fragment>
-
-                                                        )
-                                                    }
-                                                })} */}
                                             </div>
                                         )
                                     }
                                     )}
                                 </Grid>
                             </div>
-                            {/*  */}
                             <button
                                 type="button"
                                 className="button"
-                                onClick={(e) => this.mySubmitHandler(e)}
+                                onClick={(e) => this.SubmitHandler(e)}
                             >
                                 Submit meun
                             </button>
                         </DialogContent>
                     </form>
                 </Dialog>
-                {/* <Snackbar
-                    autoHideDuration={3000}
-                    open={this.state.open}
-                    message={this.state.name + " added successfully"}
-                    onClose={() => {
-                        this.setState({ open: false });
-                    }}
-                ></Snackbar> */}
             </div>
         );
     }
