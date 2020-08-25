@@ -157,7 +157,7 @@ export class MenuTable extends Component {
 
   // 2 uses: 1.for default render. 2. for datepicker choices
   readMenuData(chosen_date = null) {
-    const path = `${process.env.REACT_APP_BE_URL}/opennighours`;
+    const path = `${process.env.REACT_APP_BE_URL}`;
     axios
       .get(path, {
         params: { chosen_date: chosen_date },

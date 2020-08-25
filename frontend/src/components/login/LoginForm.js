@@ -23,7 +23,7 @@ export class LoginForm extends React.Component {
 
     handleSubmit(event) {
         event.preventDefault();
-        let path = `${process.env.REACT_APP_BE_URL}/login`;
+        const path = `${process.env.REACT_APP_BE_URL}/login`;
         const data = {
             username: this.state.username,
             password: this.state.password
@@ -47,8 +47,8 @@ export class LoginForm extends React.Component {
 
     changeHandler = (event) => {
         event.preventDefault();
-        let stateName = `${event.target.id}`;
-        let value = event.target.value;
+        const stateName = `${event.target.id}`;
+        const value = event.target.value;
         this.setState({
             [stateName]: event.target.value,
         });
