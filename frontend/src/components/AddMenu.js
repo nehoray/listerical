@@ -70,15 +70,17 @@ export default class AddMenuDialog extends Component {
     }
     mySubmitHandler = (event) => {
         event.preventDefault();
-        console.log('adding menu')
-        console.log(this.state)
-        console.log(this.props.menuDate)
         let path = `${process.env.REACT_APP_BE_URL}/menu`;
+        console.log(path)
         let token = localStorage.getItem('jwt')
+        console.log(token)
+
 
         const headers = {
-            'Content-Type': 'application/json', "Authorization": `Bearer ${token}`
+            "Authorization": `Bearer ${token}`
         }
+        // 'Content-Type': 'application/json',
+        console.log(headers)
         const data = {
 
             dishes: this.state.dishRow,
@@ -86,7 +88,6 @@ export default class AddMenuDialog extends Component {
             menu_date: this.props.menuDate
 
         }
-        console.log(this.state.dishRow)
         axios
             .post(path, data, { headers: headers })
             .then((res) => {

@@ -36,7 +36,6 @@ class LoginModel:
 
     def get_user(self, userid):
         user = User(**execute_selection(sql=_SQL_GET_USER, values=(userid))[0])
-        print(user)
         return user
 
     # def hash_password(self, password):
