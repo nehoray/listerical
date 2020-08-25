@@ -3,7 +3,9 @@ import { DatePicker, MuiPickersUtilsProvider } from "@material-ui/pickers";
 import "axios";
 import axios from "axios";
 import React, { Component, Fragment } from "react";
-import '../components/datepicker.css';
+import '../datepicker/datepicker.css';
+
+// allow user to choose menus by dates
 class Datepicker extends Component {
   constructor (props) {
     super(props);
@@ -16,7 +18,7 @@ class Datepicker extends Component {
   }
 
   componentDidMount() {
-    let path = `${process.env.REACT_APP_BE_URL}/menus/dates`;
+    const path = `${process.env.REACT_APP_BE_URL}/menus/dates`;
     axios
       .get(path)
       .then((res) => {
@@ -24,19 +26,17 @@ class Datepicker extends Component {
       })
       .catch((e) => {
         console.error("e");
-
       });
   }
 
   disableDates(date) {
+    const user_type = localStorage.getItem('user_type')
+    const isEmpty = !this.state.goodDates.includes(this.convert(date));
+    const now = new Date(Date.now()).setHours(0, 0, 0, 0)
+    const curDate = (new Date(date)).getTime()
+    const isPast = curDate < now
 
-    let user_type = localStorage.getItem('user_type')
-    let isEmpty = !this.state.goodDates.includes(this.convert(date));
-    let now = new Date(Date.now()).setHours(0, 0, 0, 0)
-    let curDate = (new Date(date)).getTime()
-    let isPast = curDate < now
-
-    if (user_type == 'admin') { // see all future so he can add menus
+    if (user_type == 'admin') {
       return isPast == true // disabled past
     } else {
       return isPast || isEmpty // disabled past and empty
@@ -44,11 +44,12 @@ class Datepicker extends Component {
   }
 
   convert(str) {
-    var date = new Date(str),
-      mnth = ("0" + (date.getMonth() + 1)).slice(-2),
+    const date = new Date(str),
+      month = ("0" + (date.getMonth() + 1)).slice(-2),
       day = ("0" + date.getDate()).slice(-2);
-    return [date.getFullYear(), mnth, day].join("-");
+    return [date.getFullYear(), month, day].join("-");
   }
+
   render() {
     return (
       <Fragment >
@@ -67,8 +68,8 @@ class Datepicker extends Component {
               this.setState({
                 selectedDate: dateSelected,
               });
-              var dateObject = new Date(dateSelected);
-              var dateRes = new Intl.DateTimeFormat("en-GB")
+              const dateObject = new Date(dateSelected);
+              const dateRes = new Intl.DateTimeFormat("en-GB")
                 .format(dateObject)
                 .split("/")
                 .reverse()

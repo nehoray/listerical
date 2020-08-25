@@ -23,8 +23,7 @@ export class LoginForm extends React.Component {
 
     handleSubmit(event) {
         event.preventDefault();
-        // send req to be get jwt
-        let path = `${process.env.REACT_APP_BE_URL}/login`;
+        const path = `${process.env.REACT_APP_BE_URL}/login`;
         const data = {
             username: this.state.username,
             password: this.state.password
@@ -32,7 +31,6 @@ export class LoginForm extends React.Component {
         axios
             .post(path, data)
             .then((res) => {
-                console.log(res)
                 if (res['status'] == 200) {
                     // TODO: better with redux
                     localStorage.setItem('user_type', res['data']['user_type'])
@@ -49,13 +47,12 @@ export class LoginForm extends React.Component {
 
     changeHandler = (event) => {
         event.preventDefault();
-        let stateName = `${event.target.id}`;
-        let value = event.target.value;
+        const stateName = `${event.target.id}`;
+        const value = event.target.value;
         this.setState({
             [stateName]: event.target.value,
         });
     };
-
 
     render() {
         return (
@@ -90,7 +87,6 @@ export class LoginForm extends React.Component {
                             maxLength: 10,
                         }}
                     />
-
                     <button className="button" type="submit" disabled={this.isLoading}>Sign In</button>
                     <div className="error">{this.state.error}</div>
                 </form>
