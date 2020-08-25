@@ -98,6 +98,7 @@ function Row(props) {
                   <AddDishDialog
                     idmenu={menu.idmenu}
                     day_part={menu.day_part}
+                    logout={props.logout}
                   />
                 </Grid>
               </Typography>
@@ -172,6 +173,11 @@ export class MenuTable extends Component {
             this.setState({ noMenuData: false })
           }
         }
+      }).catch(err => {
+        console.log(err)
+        if (err.response.status === 401 || err.response.status === 422) {
+          this.props.logout()
+        }
       });
     chosen_date = chosen_date ? chosen_date : new Date()
 
@@ -195,7 +201,7 @@ export class MenuTable extends Component {
           </TableHead>
           <TableBody>
             {this.state.menus.map((menu) => (
-              <Row key={menu.day_part} row={menu} />
+              <Row logout={this.props.logout} key={menu.day_part} row={menu} />
             ))}
           </TableBody>
         </Table>
@@ -212,7 +218,7 @@ export class MenuTable extends Component {
             There is no menu for this date yet. <br />
                 You can create one right now.
             </div>
-          <AddMenuDialog menuDate={this.state.menuDate} />
+          <AddMenuDialog logout={this.logout} menuDate={this.state.menuDate} />
         </span>
       </>
     )

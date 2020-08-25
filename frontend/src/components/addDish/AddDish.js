@@ -27,7 +27,6 @@ const DialogActions = withStyles((theme) => ({
 export default class AddDish extends Component {
   constructor (props) {
     super(props);
-
     this.state = {
       isError: false,
       formErrors: {
@@ -70,9 +69,10 @@ export default class AddDish extends Component {
               this.setState({
                 open: true,
               });
-            } else {
-              // TODO:
-              console.log("Error");
+            }
+          }).catch(err => {
+            if (err.response.status === 401 || err.response.status === 422) {
+              this.props.logout()
             }
           });
       }
@@ -170,7 +170,6 @@ export default class AddDish extends Component {
   // returns true if no errors
   checkForm() {
     const err = this.state.formErrors;
-    console.log((err.name.length === 0 && err.food_type === 0 && err.calories === 0))
     return (err.name.length === 0 && err.food_type === 0 && err.calories === 0)
   }
 

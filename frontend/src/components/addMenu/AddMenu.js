@@ -89,6 +89,11 @@ export default class AddMenuDialog extends Component {
                         open: true,
                     });
                 }
+            }).catch(err => {
+                console.log(err)
+                if (err.response.status === 401 || err.response.status === 422) {
+                    this.props.logout()
+                }
             });
     };
 
