@@ -1,7 +1,7 @@
 
 import { Container, Typography } from "@material-ui/core";
 import React from "react";
-import MenuTablele from "../table/Table";
+import MenuTable from "../table/Table";
 import "./DiningRoom.css";
 
 // main component
@@ -36,7 +36,7 @@ export default class DiningRoom extends React.Component {
                 <Typography variant="h3" gutterBottom align="center">
                     Dininig Room
                 </Typography>
-                <MenuTablele logout={this.logout.bind(this)} />
+                <MenuTable logout={this.logout.bind(this)} />
             </Container>
         )
     }
