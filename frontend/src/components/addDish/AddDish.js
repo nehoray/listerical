@@ -69,6 +69,8 @@ export default class AddDish extends Component {
               this.setState({
                 open: true,
               });
+              this.props.updateDishTable()
+              console.log('after')
             }
           }).catch(err => {
             if (err.response.status === 401 || err.response.status === 422) {

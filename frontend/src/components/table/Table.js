@@ -48,6 +48,7 @@ const StyledTableRow = withStyles((theme) => ({
 
 function Row(props) {
   const menu = props.row;
+  console.log(props)
   const [open, setOpen] = React.useState(false);
   const classes = useRowStyles();
 
@@ -99,6 +100,7 @@ function Row(props) {
                     idmenu={menu.idmenu}
                     day_part={menu.day_part}
                     logout={props.logout}
+                    updateDishTable={props.updateDishTable}
                   />
                 </Grid>
               </Typography>
@@ -201,7 +203,7 @@ export class MenuTable extends Component {
           </TableHead>
           <TableBody>
             {this.state.menus.map((menu) => (
-              <Row logout={this.props.logout} key={menu.day_part} row={menu} />
+              <Row logout={this.props.logout} key={menu.day_part} row={menu} updateDishTable={this.readMenuData.bind(this)} />
             ))}
           </TableBody>
         </Table>
