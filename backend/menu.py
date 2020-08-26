@@ -64,16 +64,17 @@ class MenuModel:
         # converting all times to date and time type
         menu_date = menu_date.split("T")[0]
         date_parts = datetime.date(*(map(int, menu_date.split('-'))))
+
+        # combining date with time
         for time in meals_times.keys():
             meals_times[time] = datetime.datetime.combine(
                 date_parts,
                 datetime.time(*(map(int, meals_times[time].split(':')))))
+
         # creating the menus
         for meal in meals_res.keys():
-
             values = (meal, meals_times[meal + "_start"],
                       meals_times[meal + "_end"])
-
             with closing(mysql.connector.connect(**connetion_params)) as db:
                 with closing(db.cursor(dictionary=True,
                                        buffered=True)) as cursor:

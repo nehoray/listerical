@@ -16,7 +16,6 @@ def execute_selection(sql, values=None):
                 cursor.execute(sql)
             else:
                 cursor.execute(sql, [values])
-
             data = parse_result(cursor)
             return data
 
