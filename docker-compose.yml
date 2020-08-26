@@ -1,0 +1,32 @@
+version: "3.8"
+services:
+  frontend:
+    build: ./frontend
+    image: listerical_fe:latest
+    ports:
+      - "80:80"
+    environment:
+      - REACT_APP_BE_URL=http://backend:5000
+  backend:
+    build: ./backend
+    image: listerical_be:latest
+    ports:
+      - "5000:5000" # delete in prod
+    environment:
+      - HOST=db
+      - USER=root
+      - PASSWORD=12345
+      - DATABASE=listerical_db
+  db:
+    image: mysql:latest
+    ports:
+      - "3306:3306" #delete in prod
+    volumes:
+       - db-data:/var/lib/mysql/data
+       - ./db-init:/docker-entrypoint-initdb.d #init with dumps
+    environment:
+      - MYSQL_ROOT_PASSWORD=12345
+      - MYSQL_DATABASE=listerical_db
+      
+volumes:
+  db-data:
