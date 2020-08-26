@@ -43,7 +43,7 @@ export default class AddDish extends Component {
     this.snackbarRef.current.openSnackBar(msg);
   };
 
-  mySubmitHandler = (event) => {
+  onSubmit = (event) => {
     event.preventDefault();
     if (this.state.isError === false) {
       const path = `${process.env.REACT_APP_BE_URL}/dish`;
@@ -85,7 +85,9 @@ export default class AddDish extends Component {
       }
     };
   }
-  myChangeHandler = (event) => {
+
+  // updates the state and validates form
+  onChange = (event) => {
     event.preventDefault();
     const stateName = `${event.target.id}`;
     const value = event.target.value;
@@ -197,7 +199,7 @@ export default class AddDish extends Component {
           aria-labelledby="customized-dialog-title"
           open={this.state.isOpen}
         >
-          <form onSubmit={(e) => this.myChangeHandler(e)} target="#" className="dialog">
+          <form onSubmit={(e) => this.onChange(e)} target="#" className="dialog">
             <DialogContent dividers
             >
               <h1 id="heading"> New Dish </h1>{" "}
@@ -209,7 +211,7 @@ export default class AddDish extends Component {
                   <TextField
                     autoFocus
                     onSubmit={this.handleSubmitToParent}
-                    onChange={(e) => { this.myChangeHandler(e) }}
+                    onChange={(e) => { this.onChange(e) }}
                     margin="dense"
                     id="name"
                     label="Dish name"
@@ -225,7 +227,7 @@ export default class AddDish extends Component {
                     required
                     helponfocus="true"
                     onSubmit={this.handleSubmitToParent}
-                    onChange={(e) => { this.myChangeHandler(e) }}
+                    onChange={(e) => { this.onChange(e) }}
                     margin="dense"
                     id="food_type"
                     label="Food Type"
@@ -241,7 +243,7 @@ export default class AddDish extends Component {
                     required
                     helponfocus="true"
                     onSubmit={this.handleSubmitToParent}
-                    onChange={(e) => { this.myChangeHandler(e) }}
+                    onChange={(e) => { this.onChange(e) }}
                     margin="dense"
                     id="calories"
                     label="Calories per 100 grams"
@@ -264,7 +266,7 @@ export default class AddDish extends Component {
               <button
                 type="button"
                 className="button"
-                onClick={(e) => { (this.checkForm() === false) ? this.mySubmitHandler(e) : void (0) }}
+                onClick={(e) => { (this.checkForm() === false) ? this.onSubmit(e) : void (0) }}
               >
                 Add dish
               </button>

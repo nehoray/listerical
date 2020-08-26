@@ -1,8 +1,6 @@
 @media all and (min-width: 480px) {
 
     .Login form {
-      /* margin:  auto;
-      max-width: 200px; */
       display: flex;
       flex-direction: column;
       justify-content: center;
@@ -24,7 +22,6 @@
   font-family: Arial, Helvetica, sans-serif;
 }
 
-
 .button {
     transition-duration: 0.4s;
     width: 200px;
@@ -38,10 +35,9 @@
   .button:hover {
     background-color: #ffffff; 
     color:#1E88E5;
-    cursor: pointer;
-
-  
+    cursor: pointer;  
   }
+  
 .sign-in{
   padding-bottom: 4vh;
 }

@@ -20,18 +20,18 @@
       text-align: center;
   }
 
-  .added-dish{
+  .added-dish {
     display: flex;
     flex-direction: row;
     align-content: space-between;
-
   }
-  .delete{
+
+  .delete {
     color:black;
     padding: 0 !important;
   }
 
-  .add-menu-dialog{
+  .add-menu-dialog {
     width: 100%;
     min-width: 44vh;
     display: flex;

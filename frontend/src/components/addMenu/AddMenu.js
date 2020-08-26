@@ -72,12 +72,10 @@ export default class AddMenuDialog extends Component {
         const headers = {
             "Authorization": `Bearer ${token}`
         }
-        // 'Content-Type': 'application/json',
         const data = {
             dishes: this.state.dishRow,
             meals_times: this.state.mealsTimes,
             menu_date: this.props.menuDate
-
         }
         axios
             .post(path, data, { headers: headers })
@@ -91,6 +89,7 @@ export default class AddMenuDialog extends Component {
                     console.log('this is here:')
                     this.props.readMenusFunc(this.props.menuDate)
                 }
+                // if token is not valid
             }).catch(err => {
                 if (err.response.status === 401 || err.response.status === 422) {
                     this.props.logout()
@@ -195,6 +194,7 @@ export default class AddMenuDialog extends Component {
                                     justify="flex-start"
                                     alignItems="baseline"
                                 >
+                                    {/* make 3 rows on the form (morinng, noon, evening) */}
                                     {this.mealsNames.map(mealName => {
                                         return (
                                             <div className="morning" key={mealName}>
@@ -210,7 +210,7 @@ export default class AddMenuDialog extends Component {
                                                             shrink: true,
                                                         }}
                                                         inputProps={{
-                                                            step: 300, // 5 min
+                                                            step: 60,
                                                         }}
                                                     />
                                                     <span className="to-text"> To </span>
@@ -224,7 +224,7 @@ export default class AddMenuDialog extends Component {
                                                             shrink: true,
                                                         }}
                                                         inputProps={{
-                                                            step: 300, // 5 min
+                                                            step: 60,
                                                         }}
                                                     />
                                                     <AddDishDialog
