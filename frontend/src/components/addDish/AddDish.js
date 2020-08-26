@@ -95,67 +95,52 @@ export default class AddDish extends Component {
       [stateName]: event.target.value,
     });
     const name = stateName;
-    this.setState({ isError: false });
-    let isError = false;
-    let formErrors = { name: "", calories: "", food_type: "" };
+    this.setState({ isError: this.validate(name, value,) })
+  };
 
+  validate(name, value) {
+    let formErrors = { name: "", calories: "", food_type: "" };
+    let error = false
     switch (name) {
       case "name":
         if (value.match(/^[A-Za-zא-ת]+$/) === null) {
-          formErrors.name = "can not conatin numbers";
-          isError = true;
+          formErrors[name] = "can not conatin numbers";
+          error = true
+        } else if (value.length < 2) {
+          formErrors[name] = "must be more than 1";
+          error = true
         } else {
-          formErrors.name = ""
-        }
-        if (value.length < 2) {
-          formErrors.name = "must be more than 1";
-          isError = true;
-        }
-        else {
-          formErrors.name = ""
+          error = false
         }
         break;
 
       case "food_type":
         if (value.match(/^[A-Za-zא-ת]+$/) === null) {
-          formErrors.food_type = "can not conatin numbers";
-          isError = true;
+          formErrors[name] = "can not conatin numbers";
+          error = true
+        } else if (value.length < 3) {
+          formErrors[name] = "must be more than 2";
+          error = true
         } else {
-          formErrors.name = ""
-        }
-        if (value.length < 3) {
-          formErrors.food_type = "must be more than 2";
-          isError = true;
-        } else {
-          formErrors.food_type = ""
+          error = false
         }
         break;
 
       case "calories":
         if (value.length < 0) {
-          formErrors.food_type = "can not be empty";
-          isError = true;
-
-        }
-        else {
-          formErrors.name = ""
-        }
-        if (value.match(/^[1-9]\d*$/) == null) {
-          formErrors.calories = "can not start with 0";
-          isError = true;
-
+          formErrors[name] = "can not be empty";
+          error = true
+        } else if (value.match(/^[1-9]\d*$/) == null) {
+          formErrors[name] = "can not start with 0";
+          error = true
+          break;
         } else {
-          formErrors.calories = ""
+          error = false
         }
-        break;
-
-      default:
-        break;
     }
-    this.setState({ isError: isError })
-    this.setState({ formErrors, [name]: value });
-  };
-
+    this.setState({ formErrors, formErrors });
+    return error
+  }
   // if this component works as a child of addMenu component
   handleSubmitToParent() {
     if (this.props.onSubmit) {
