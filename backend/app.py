@@ -1,3 +1,4 @@
+import datetime
 import os
 import sys
 from datetime import date
@@ -103,7 +104,9 @@ def login():
     userid = login_model.authenticate(username, password)  # user pass are ok
 
     if userid:
-        access_token = create_access_token(identity=userid)
+        expires = datetime.timedelta(hours=2)
+        access_token = create_access_token(identity=userid,
+                                           expires_delta=expires)
         user = login_model.get_user(userid)
 
         return jsonify(access_token=access_token, user_type=user.user_type)
