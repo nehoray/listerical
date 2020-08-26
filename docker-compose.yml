@@ -3,6 +3,7 @@ services:
   frontend:
     build: ./frontend
     image: listerical_fe:latest
+    restart: always
     stdin_open: true
     ports:
       - "80:3000"
@@ -11,6 +12,7 @@ services:
   backend:
     build: ./backend
     image: listerical_be:latest
+    restart: always
     ports:
       - "5000:5000" # delete in prod
     environment:
@@ -21,6 +23,7 @@ services:
       - NODE_ENV=production
   db:
     image: mysql:latest
+    restart: always
     command: --default-authentication-plugin=mysql_native_password
     ports:
       - "3306:3306" #delete in prod
