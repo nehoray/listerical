@@ -62,6 +62,7 @@ class MenuModel:
             ]
 
         # converting all times to date and time type
+        menu_date = menu_date.split("T")[0]
         date_parts = datetime.date(*(map(int, menu_date.split('-'))))
         for time in meals_times.keys():
             meals_times[time] = datetime.datetime.combine(

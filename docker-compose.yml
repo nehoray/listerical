@@ -18,14 +18,16 @@ services:
       - USER=root
       - PASSWORD=12345
       - DATABASE=listerical_db
+      - NODE_ENV=production
   db:
     image: mysql:latest
     command: --default-authentication-plugin=mysql_native_password
+    privileged: true
     ports:
       - "3306:3306" #delete in prod
-        # volumes:
-        # - ./db-data:/var/lib/mysql/data
-        # - ./db-init:/docker-entrypoint-initdb.d #init with dumps
+    volumes:
+      - ./db-data:/var/lib/mysql
+      - ./db-init:/docker-entrypoint-initdb.d #init with dumps
     environment:
       - MYSQL_ROOT_PASSWORD=12345
       - MYSQL_DATABASE=listerical_db
