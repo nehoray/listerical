@@ -88,7 +88,8 @@ export default class AddMenuDialog extends Component {
                     this.setState({
                         open: true,
                     });
-                    this.props.readMenusFunc()
+                    console.log('this is here:')
+                    this.props.readMenusFunc(this.props.menuDate)
                 }
             }).catch(err => {
                 if (err.response.status === 401 || err.response.status === 422) {
@@ -243,7 +244,7 @@ export default class AddMenuDialog extends Component {
                                 className="button"
                                 onClick={(e) => this.SubmitHandler(e)}
                             >
-                                Submit meun
+                                Submit Menu
                             </button>
                         </DialogContent>
                     </form>
