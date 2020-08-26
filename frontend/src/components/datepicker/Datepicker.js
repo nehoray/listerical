@@ -10,18 +10,19 @@ class Datepicker extends Component {
   constructor (props) {
     super(props);
     this.disableDates = this.disableDates.bind(this);
-
     this.state = {
       selectedDate: new Date(),
       goodDates: [],
     };
   }
 
+
   componentDidMount() {
     const path = `${process.env.REACT_APP_BE_URL}/menus/dates`;
     axios
       .get(path)
       .then((res) => {
+        // goodDates - dates with menu data 
         this.setState({ goodDates: res.data });
       })
       .catch((e) => {
@@ -29,6 +30,7 @@ class Datepicker extends Component {
       });
   }
 
+  // disabling dates according to user type
   disableDates(date) {
     const user_type = localStorage.getItem('user_type')
     const isEmpty = !this.state.goodDates.includes(this.convert(date));
@@ -74,6 +76,7 @@ class Datepicker extends Component {
                 .split("/")
                 .reverse()
                 .join("-");
+              // show the data of the newly created menu
               this.props.readMenusFunc(dateRes);
             }}
             dateformat="dd/MM/yyyy"

@@ -14,7 +14,6 @@ a {
   text-decoration: none;
 }
 
-
   a {
     border-bottom: 1px solid #453886;
     color: #453886;
@@ -37,6 +36,7 @@ a {
     display: flex;
     flex-direction: column;
   }
+
   .logout{
     max-width: 8vh;
   }
