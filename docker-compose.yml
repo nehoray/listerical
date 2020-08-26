@@ -22,12 +22,10 @@ services:
   db:
     image: mysql:latest
     command: --default-authentication-plugin=mysql_native_password
-    privileged: true
     ports:
       - "3306:3306" #delete in prod
     volumes:
       - ./db-data:/var/lib/mysql
-      - ./db-init:/docker-entrypoint-initdb.d #init with dumps
     environment:
       - MYSQL_ROOT_PASSWORD=12345
       - MYSQL_DATABASE=listerical_db
