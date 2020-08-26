@@ -136,7 +136,7 @@ export default class AddMenuDialog extends Component {
     addDishToState(dishRow, mealName) {
         return (
             dishRow.map((dish) => {
-                if (dish.mealName == mealName) {
+                if (dish.mealName === mealName) {
                     return (
                         <React.Fragment key={mealName + dish.name}>
                             <div className="added-dish">
@@ -147,6 +147,8 @@ export default class AddMenuDialog extends Component {
                             </div>
                         </React.Fragment>
                     )
+                } else {
+                    return <></>
                 }
             })
         )
@@ -164,7 +166,7 @@ export default class AddMenuDialog extends Component {
     // add menu button (cant see if not admin)
     addMenuButton() {
         const userType = localStorage.getItem('user_type')
-        if (userType == 'admin') {
+        if (userType === 'admin') {
             return (
                 <AwesomeButton type="primary" onPress={this.toggleModal}>
                     Add menu
@@ -173,7 +175,6 @@ export default class AddMenuDialog extends Component {
         }
     }
     render() {
-        const { formErrors } = this.state;
         return (
             <div >
                 {this.addMenuButton()}
@@ -183,7 +184,7 @@ export default class AddMenuDialog extends Component {
                     open={this.state.isOpen}
                 >
                     <form onSubmit={(e) => this.changeHandler(e)} target="#">
-                        <DialogContent dividers className="dialog" className="add-menu-dialog"
+                        <DialogContent dividers className="add-menu-dialog"
                         >
                             <div>
                                 <h1 id="heading"> New Menu </h1>{" "}

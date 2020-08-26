@@ -36,8 +36,8 @@ class Datepicker extends Component {
     const curDate = (new Date(date)).getTime()
     const isPast = curDate < now
 
-    if (user_type == 'admin') {
-      return isPast == true // disabled past
+    if (user_type === 'admin') {
+      return isPast === true // disabled past
     } else {
       return isPast || isEmpty // disabled past and empty
     }

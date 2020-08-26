@@ -31,7 +31,7 @@ export class LoginForm extends React.Component {
         axios
             .post(path, data)
             .then((res) => {
-                if (res['status'] == 200) {
+                if (res['status'] === 200) {
                     // TODO: better with redux
                     localStorage.setItem('user_type', res['data']['user_type'])
                     localStorage.setItem('jwt', res['data']['access_token'])
@@ -47,7 +47,6 @@ export class LoginForm extends React.Component {
     changeHandler = (event) => {
         event.preventDefault();
         const stateName = `${event.target.id}`;
-        const value = event.target.value;
         this.setState({
             [stateName]: event.target.value,
         });
@@ -68,7 +67,6 @@ export class LoginForm extends React.Component {
                         margin="dense"
                         id="username"
                         label="User Name"
-                        type="text"
                         onChange={(e) => { this.changeHandler(e) }}
                         inputProps={{
                             maxLength: 10,

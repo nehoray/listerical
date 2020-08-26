@@ -176,7 +176,7 @@ export default class AddDish extends Component {
 
   addNewDishButton() {
     const userType = localStorage.getItem('user_type')
-    if (userType == 'admin') {
+    if (userType === 'admin') {
       return (
         <AwesomeButton type="primary" onPress={this.toggleModal}>
           Add dish
@@ -197,7 +197,7 @@ export default class AddDish extends Component {
           aria-labelledby="customized-dialog-title"
           open={this.state.isOpen}
         >
-          <form onSubmit={(e) => this.myChangeHandler(e)} target="#" className className="dialog">
+          <form onSubmit={(e) => this.myChangeHandler(e)} target="#" className="dialog">
             <DialogContent dividers
             >
               <h1 id="heading"> New Dish </h1>{" "}
