@@ -40,7 +40,6 @@ export class LoginForm extends React.Component {
                 }
                 else {
                     this.setState({ error: "User name or password do not match" })
-                    console.log(this.state.error)
                 }
             });
     }

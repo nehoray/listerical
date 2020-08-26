@@ -48,7 +48,6 @@ const StyledTableRow = withStyles((theme) => ({
 
 function Row(props) {
   const menu = props.row;
-  console.log(props)
   const [open, setOpen] = React.useState(false);
   const classes = useRowStyles();
 
@@ -176,7 +175,6 @@ export class MenuTable extends Component {
           }
         }
       }).catch(err => {
-        console.log(err)
         if (err.response.status === 401 || err.response.status === 422) {
           this.props.logout()
         }
@@ -220,7 +218,7 @@ export class MenuTable extends Component {
             There is no menu for this date yet. <br />
                 You can create one right now.
             </div>
-          <AddMenuDialog logout={this.logout} menuDate={this.state.menuDate} />
+          <AddMenuDialog logout={this.logout} menuDate={this.state.menuDate} readMenusFunc={this.readMenuData.bind(this)} />
         </span>
       </>
     )

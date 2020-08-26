@@ -88,10 +88,9 @@ export default class AddMenuDialog extends Component {
                     this.setState({
                         open: true,
                     });
-                    window.location.reload(false);
+                    this.props.readMenusFunc()
                 }
             }).catch(err => {
-                console.log(err)
                 if (err.response.status === 401 || err.response.status === 422) {
                     this.props.logout()
                 }
