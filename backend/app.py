@@ -19,7 +19,7 @@ login_model = LoginModel()
 
 app = Flask(__name__)
 # TODO: handle it in prod
-CORS(app)
+CORS(app,supports_credetials=True)
 app.config['JWT_SECRET_KEY'] = os.environ.get(
     'JWT_SECRET', 'super-secret')  #TODO: remove default
 
