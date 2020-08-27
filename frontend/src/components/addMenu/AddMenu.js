@@ -20,6 +20,7 @@ const DialogContent = withStyles((theme) => ({
 // Dialog of createing new menu
 export default class AddMenuDialog extends Component {
     constructor (props) {
+        console.log(props)
         super(props);
         this.state = {
             mealsTimes: {
@@ -87,7 +88,9 @@ export default class AddMenuDialog extends Component {
                         open: true,
                     });
                     console.log('this is here:')
+                    console.log(this.props)
                     this.props.readMenusFunc(this.props.menuDate)
+
                 }
                 // if token is not valid
             }).catch(err => {

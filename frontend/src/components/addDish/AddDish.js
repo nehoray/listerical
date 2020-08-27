@@ -181,7 +181,7 @@ export default class AddDish extends Component {
     if (userType === 'admin') {
       return (
         <AwesomeButton type="primary" onPress={this.toggleModal}>
-          Add dish
+          New Dish
         </AwesomeButton>
       )
     }

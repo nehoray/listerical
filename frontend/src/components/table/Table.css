@@ -12,3 +12,16 @@
 .menu-table{
     max-height: 73vh;
 }
+
+
+
+.container{
+    display: flex;
+    place-content: space-between ;
+    flex-direction: row ;
+}
+.auto-complete{
+    display: flex;
+    flex-direction: row;
+    place-content: space-between
+}
