@@ -50,12 +50,14 @@ export default class AddDish extends Component {
       const idmenu = this.props.idmenu
 
       // when creating to a new menu - this will be udefined. 
+      // this runs when adding new dish to existing menu
       if (idmenu) {
         const data = {
           name: this.state.name,
           calories: this.state.calories,
           food_type: this.state.food_type,
-          idmenu: idmenu
+          idmenu: idmenu,
+          iddish: false
         }
         const token = localStorage.getItem('jwt')
         const headers = {
