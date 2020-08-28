@@ -48,7 +48,7 @@ class DishModel:
         :param food_type_base: milk or meat based
         :param calories_per_100_grams: self explained
         :param idmenu: id of the menu too add the dish to
-        :return: True or False depends on result
+        :return: dishid of the dish add
         """
         # if this is a new dish that does not exist in db
         if not iddish:
@@ -66,14 +66,14 @@ class DishModel:
                     values = (idmenu, iddish)
                     cursor.execute(_SQL_INSERT_DISH_TO_MENU, values)
                     db.commit()
-                    return True
+                    return iddish
         # if dish is in db alreay
         else:
             print('dish  exsiting my iddish is :')
             print(iddish)
             values = (idmenu, iddish)
             execute_insertion(_SQL_INSERT_DISH_TO_MENU, values)
-            return True
+            return iddish
         return False
 
     # used on menu creation
