@@ -74,12 +74,11 @@ function Row(props) {
   const menuDishedIds = menu.dishes.map(dish => dish.iddish)
   presentedDishes = dbDishes.filter(dish => !menuDishedIds.includes(dish.iddish))
 
-
   function onChange(value) {
     setSelected(value)
     setIsValueSelected(true)
-
   }
+
   function onAdd(idmenu, day_part) {
     // adding to state
     let newDishes = menu.dishes
@@ -121,8 +120,6 @@ function Row(props) {
     newDishes.push(dish)
     menu.dishes = newDishes
     console.log(menu)
-    // setMenu(menu)
-    // console.log(menu)
   }
   function addDishBar() {
     const userType = localStorage.getItem('user_type')
@@ -135,7 +132,6 @@ function Row(props) {
             logout={props.logout}
             updateDishTable={props.updateDishTable}
             onCreate={onCreate}
-
           />
           <div className="auto-complete">
             <Autocomplete
@@ -188,9 +184,6 @@ function Row(props) {
           <Collapse in={open} timeout="auto" unmountOnExit>
             <Box margin={1}>
               {addDishBar()}
-
-
-              {/* </Typography> */}
               <Table size="small" aria-label="purchases">
                 <TableHead>
                   <TableRow>
@@ -254,7 +247,12 @@ export class MenuTable extends Component {
       })
       .then((res) => {
         if (this._isMounted) {
-          this.setState({ menus: res.data });
+
+          this.setState({ menus: res['data'] });
+          console.log('this is the data:')
+          console.log(res)
+          console.log('this is the state:')
+          console.log(this.state.menus)
           if (res.data.length === 0) {
             this.setState({ noMenuData: true })
           }
@@ -266,6 +264,7 @@ export class MenuTable extends Component {
         if (err.response.status === 401 || err.response.status === 422) {
           this.props.logout()
         }
+
       });
     chosen_date = chosen_date ? chosen_date : new Date()
 
@@ -312,6 +311,7 @@ export class MenuTable extends Component {
   }
   render() {
     if (this._isMounted) {
+      console.log("shuold be updating!!!!1")
       return (
         <>
           <React.Fragment>
