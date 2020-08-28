@@ -63,21 +63,30 @@ export default class AddDish extends Component {
         const headers = {
           "Authorization": `Bearer ${token}`
         }
+        let iddish;
         axios
           .post(path, data, { headers: headers })
           .then((res) => {
-            if (String(res.data) === "true") {
+            if (String(res.data) !== "false") {
+              iddish = res['data']
               this.toggleModal();
               this.setState({
                 open: true,
               });
-              this.props.updateDishTable()
+              // tells the dishes table state to update
+              this.props.onCreate({ // works
+                iddish: iddish,
+                name: this.state.name,
+                calories_per_100_grams: this.state.calories,
+                food_type_base: this.state.food_type
+              })
             }
-          }).catch(err => {
-            if (err.response.status === 401 || err.response.status === 422) {
-              this.props.logout()
-            }
-          });
+          })
+        // .catch(err => {
+        //   if (err.response.status === 401 || err.response.status === 422) {
+        //     this.props.logout()
+        //   }
+        // });
       }
       // used in the addMenu dialog
       else {

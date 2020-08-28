@@ -68,7 +68,6 @@ function Row(props) {
   const [isValueSelected, setIsValueSelected] = React.useState(false);
   const [menu, setMenu] = React.useState(props.row)
   const [selected, setSelected] = React.useState(0);
-  console.log(menu.dishes)
   let presentedDishes = []
   let dbDishes = allDbDishes
   // make suer user wont choose an existion dish
@@ -82,14 +81,12 @@ function Row(props) {
 
   }
   function onAdd(idmenu, day_part) {
-    // // adding to state works as mock
-    // let newDishes = menu.dishes
-    // newDishes.push(selected)
-    // menu.dishes = newDishes
-    // console.log(menu)
-    // setMenu(menu)
-    // console.log(menu)
-    // // add to db
+    // adding to state
+    let newDishes = menu.dishes
+    newDishes.push(selected)
+    menu.dishes = newDishes
+    setMenu(menu)
+    // add to db
     const path = `${process.env.REACT_APP_BE_URL}/dish`;
     const data = {
       name: selected.name,
@@ -105,17 +102,59 @@ function Row(props) {
     axios
       .post(path, data, { headers: headers })
       .then((res) => {
-        console.log('post')
-        if (String(res.data) === "true") {
+        if (String(res.data) !== "false") {
+          props.updateDishTable() // use the state to show user the change - works
 
-          props.updateDishTable()
         }
-        // }).catch(err => {
-        //   if (err.response.status === 401 || err.response.status === 422) {
-        //     this.props.logout()
-        //   }
+      }).catch(err => {
+        if (err.response.status === 401 || err.response.status === 422) {
+          this.props.logout()
+        }
       });
-    //reload
+  }
+
+  // when creating a dish, put it the state - works
+  function onCreate(dish) {
+    let newDishes = menu.dishes
+    console.log(newDishes)
+    console.log(dish)
+    newDishes.push(dish)
+    menu.dishes = newDishes
+    console.log(menu)
+    // setMenu(menu)
+    // console.log(menu)
+  }
+  function addDishBar() {
+    const userType = localStorage.getItem('user_type')
+    if (userType === 'admin') {
+      return (
+        <div className="auto-complete">
+          <AddDishDialog
+            idmenu={menu.idmenu}
+            day_part={menu.day_part}
+            logout={props.logout}
+            updateDishTable={props.updateDishTable}
+            onCreate={onCreate}
+
+          />
+          <div className="auto-complete">
+            <Autocomplete
+              size="small"
+              id="combo-box-demo"
+              disableClearable
+              onChange={(e, value) => onChange(value)}
+              options={presentedDishes}
+              getOptionLabel={(option) => `${option.name}`}
+              style={{ width: 300 }}
+              renderInput={(params) => <TextField {...params} label="Choose dish" variant="outlined" />}
+            />
+            <AwesomeButton disabled={!isValueSelected} onPress={(e) => { onAdd(menu.idmenu, menu.day_part) }}>
+              add
+               </AwesomeButton>
+          </div>
+        </div>
+      )
+    }
   }
 
   // data
@@ -148,29 +187,9 @@ function Row(props) {
         >
           <Collapse in={open} timeout="auto" unmountOnExit>
             <Box margin={1}>
-              <div className="auto-complete">
-                <AddDishDialog
-                  idmenu={menu.idmenu}
-                  day_part={menu.day_part}
-                  logout={props.logout}
-                  updateDishTable={props.updateDishTable}
-                />
-                <div className="auto-complete">
-                  <Autocomplete
-                    size="small"
-                    id="combo-box-demo"
-                    disableClearable
-                    onChange={(e, value) => onChange(value)}
-                    options={presentedDishes}
-                    getOptionLabel={(option) => `${option.iddish} ${option.name} with ${option.calories_per_100_grams} calories`}
-                    style={{ width: 300 }}
-                    renderInput={(params) => <TextField {...params} label="Choose dish" variant="outlined" />}
-                  />
-                  <AwesomeButton disabled={!isValueSelected} onPress={(e) => { onAdd(menu.idmenu, menu.day_part) }}>
-                    add
-               </AwesomeButton>
-                </div>
-              </div>
+              {addDishBar()}
+
+
               {/* </Typography> */}
               <Table size="small" aria-label="purchases">
                 <TableHead>
@@ -284,8 +303,7 @@ export class MenuTable extends Component {
       <>
         <span className="no-menu-card">
           <div className="no-menu-msg">
-            There is no menu for this date yet. <br />
-                You can create one right now.
+            There is no menu for this date yet.
             </div>
           <AddMenuDialog logout={this.props.logout} menuDate={this.state.menuDate} readMenusFunc={this.readMenuData.bind(this)} />
         </span>
