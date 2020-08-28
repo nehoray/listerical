@@ -1,12 +1,12 @@
   
-  .time-and-button{
+  .text-and-time{
     line-height: 4;
     display: flex;
     flex-direction: row;
-    align-content: space-between;
+    justify-content: space-evenly;
   }
 
-  .morning{
+  .meal-row{
     display: flex;
     flex-direction: column;
   }
@@ -14,6 +14,10 @@
   .meal-text{
     min-width: 10vh;
   }
+
+.form{
+  margin:25px;
+}
 
   .to-text{
       min-width: 5vh;
@@ -33,8 +37,17 @@
 
   .add-menu-dialog {
     width: 100%;
-    min-width: 44vh;
+    min-width: 60vh;
     display: flex;
     flex-direction: column;
     align-items: center;
   }
+
+.combo-and-button{
+  display: flex;
+  flex-direction: row;
+}
+
+.auto-complete{
+ margin: 0 30px;
+}

@@ -5,11 +5,13 @@ import IconButton from '@material-ui/core/IconButton';
 import { withStyles } from "@material-ui/core/styles";
 import TextField from '@material-ui/core/TextField';
 import DeleteForeverIcon from '@material-ui/icons/DeleteForever';
+import Autocomplete from '@material-ui/lab/Autocomplete';
 import axios from "axios";
 import React, { Component } from "react";
 import { AwesomeButton } from "react-awesome-button";
 import AddDishDialog from '../addDish/AddDish';
 import '../addMenu/AddMenu.css';
+
 
 const DialogContent = withStyles((theme) => ({
     root: {
@@ -185,9 +187,10 @@ export default class AddMenuDialog extends Component {
                     onClose={this.toggleModal}
                     aria-labelledby="customized-dialog-title"
                     open={this.state.isOpen}
+                    class="dialog"
                 >
-                    <form onSubmit={(e) => this.changeHandler(e)} target="#">
-                        <DialogContent dividers className="add-menu-dialog"
+                    <form onSubmit={(e) => this.changeHandler(e)} target="#" className="form">
+                        <div dividers className="add-menu-dialog"
                         >
                             <div>
                                 <h1 id="heading"> New Menu </h1>{" "}
@@ -200,8 +203,9 @@ export default class AddMenuDialog extends Component {
                                     {/* make 3 rows on the form (morinng, noon, evening) */}
                                     {this.mealsNames.map(mealName => {
                                         return (
-                                            <div className="morning" key={mealName}>
-                                                <div className="time-and-button">
+                                            <div className="meal-row" key={mealName}>
+
+                                                <div className="text-and-time">
                                                     <span className="meal-text">{mealName}:</span>
                                                     <TextField
                                                         onChange={this.changeHandler}
@@ -230,10 +234,31 @@ export default class AddMenuDialog extends Component {
                                                             step: 60,
                                                         }}
                                                     />
+                                                </div>
+
+                                                <div className="combo-and-button">
                                                     <AddDishDialog
                                                         onSubmit={(data) => this.handleChildAddDish(data, mealName)}
                                                     />
+                                                    <div className="auto-complete">
+                                                        <Autocomplete
+                                                            size="small"
+                                                            id="combo-box-demo"
+                                                            disableClearable
+                                                            // onChange={(e, value) => onChange(value)}
+                                                            // options={presentedDishes}
+                                                            // getOptionLabel={(option) => `${option.name}`}
+                                                            style={{ width: 300 }}
+                                                            renderInput={(params) => <TextField {...params} label="Choose dish" variant="outlined" />}
+                                                        />
+                                                        <AwesomeButton >
+                                                            add
+                                                        </AwesomeButton>
+                                                    </div>
                                                 </div>
+
+
+
                                                 {/* adding new dish row onto the dialog each time user add new dish */}
                                                 {this.addDishToState(this.state.dishRow, mealName)}
                                             </div>
@@ -249,7 +274,7 @@ export default class AddMenuDialog extends Component {
                             >
                                 Submit Menu
                             </button>
-                        </DialogContent>
+                        </div>
                     </form>
                 </Dialog>
             </div>
