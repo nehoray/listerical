@@ -43,6 +43,11 @@
     align-items: center;
   }
 
+.combo-and-new-dishes{
+  display: flex;
+  flex-direction: column;
+}
+
 .combo-and-button{
   display: flex;
   flex-direction: row;

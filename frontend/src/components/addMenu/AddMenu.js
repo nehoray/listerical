@@ -275,20 +275,22 @@ export default class AddMenuDialog extends Component {
                                                         }}
                                                     />
                                                 </div>
-                                                <div className="combo-and-button">
-                                                    <Autocomplete
-                                                        size="small"
-                                                        id={"combo-box-" + mealName}
-                                                        disableClearable
-                                                        onChange={(e, value) => { this.onComboChange(value, mealName); this.setState({ isSelected: true }) }}
-                                                        options={this.allDbDishes}
-                                                        getOptionLabel={(option) => `${option.name} `}
-                                                        style={{ width: 300 }}
-                                                        renderInput={(params) => <TextField {...params} label="Choose dish" variant="outlined" />}
-                                                    />
-                                                    <AwesomeButton id={mealName + "btn"} onPress={(e) => { this.updateMenuState(mealName) }} disabled={!this.state[`isSelected${mealName}`]}>
-                                                        add
+                                                <div className="combo-and-new-dishes">
+                                                    <div className="combo-and-button">
+                                                        <Autocomplete
+                                                            size="small"
+                                                            id={"combo-box-" + mealName}
+                                                            disableClearable
+                                                            onChange={(e, value) => { this.onComboChange(value, mealName); this.setState({ isSelected: true }) }}
+                                                            options={this.allDbDishes}
+                                                            getOptionLabel={(option) => `${option.name} `}
+                                                            style={{ width: 300 }}
+                                                            renderInput={(params) => <TextField {...params} label="Choose dish" variant="outlined" />}
+                                                        />
+                                                        <AwesomeButton id={mealName + "btn"} onPress={(e) => { this.updateMenuState(mealName) }} disabled={!this.state[`isSelected${mealName}`]}>
+                                                            add
                                                         </AwesomeButton>
+                                                    </div>
                                                     {this.addDishToState(mealName, this.state.dishRow)}
                                                 </div>
                                             </div>
