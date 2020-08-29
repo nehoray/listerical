@@ -208,7 +208,7 @@ export default class AddMenuDialog extends Component {
                     onClose={this.toggleModal}
                     aria-labelledby="customized-dialog-title"
                     open={this.state.isOpen}
-                    class="dialog"
+                    className="dialog"
                 >
                     <form onSubmit={(e) => this.onChange(e)} target="#" className="form">
                         <div className="add-menu-dialog"
