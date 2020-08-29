@@ -85,11 +85,10 @@ class MenuModel:
                     if meals_res[meal] != []:
                         # get new menu id
                         idmenu = cursor.lastrowid
-                        # menuids_day_parts[meal] = idmenu
                         # itarete over the dishes, adding them to db and link them to menu idmenu
                         for dish in meals_res[meal]:
                             self.dish.add_dish_to_menu(dish['name'],
                                                        dish['food_type'],
                                                        dish['calories'],
-                                                       idmenu)
+                                                       idmenu, dish['iddish'])
         return True

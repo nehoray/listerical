@@ -30,7 +30,7 @@ jwt = JWTManager(app)
 @app.route("/menu/dish", methods=['POST'])
 @jwt_required
 def add_new_dish():
-    """Add new dish to an exsiting menu.
+    """Add dish to an exsiting menu.
     
     :returns: True on success, False and code 403 on failure 
     """
@@ -41,7 +41,7 @@ def add_new_dish():
         food_type_base = request.json['food_type']
         calories_per_100_grams = request.json['calories']
         idmenu = request.json['idmenu']
-        iddish = request.json['iddish']  # will be false if adding new dish
+        iddish = request.json['iddish']
         res = dish.add_dish_to_menu(
             name=name,
             food_type_base=food_type_base,
@@ -56,9 +56,10 @@ def add_new_dish():
 @app.route("/dish/check/", defaults={'name': ''})
 @app.route("/dish/check/<name>")
 def check_if_dish_exist(name):
-    """Add new dish to an exsiting menu.
+    """Checks if dish exist in db
     
-    :returns: True on success, False and code 403 on failure 
+    :param name: name of the dish
+    :returns: True if exist, False if not
     """
     res = dish.check_if_dish_exist(name)
     return jsonify(res)
@@ -68,7 +69,7 @@ def check_if_dish_exist(name):
 @app.route("/dish", methods=['POST'])
 @jwt_required
 def create_new_dish():
-    """Add new dish to an exsiting menu.
+    """Creates new dish in db.
     
     :returns: True on success, False and code 403 on failure 
     """
@@ -86,13 +87,12 @@ def create_new_dish():
 
 @app.route("/dishes")
 def get_all_dishes():
+    """Gets all dishes from dish table.
+    
+    :returns: all dishes 
+    """
     res = dish.get_all_dishes()
     return jsonify(res)
-
-
-# @app.route("/menu/<idmenu>/dish/<iddish>", methods=['POST'])
-# def link_dish_to_menu(idmenu, iddish):
-#     dish.link_dish_to_menu(idmenu, iddish)
 
 
 @app.route("/")
@@ -132,7 +132,6 @@ def add_menu():
         menu_date = request.json['menu_date']
         meals_times = request.json['meals_times']
         res = menu.add_menu(dishes, meals_times, menu_date)
-        print(res)
         return jsonify(res)
     else:
         return jsonify(False), 403
@@ -140,7 +139,7 @@ def add_menu():
 
 @app.route("/login", methods=['POST'])
 def login():
-    """Log the user in by username and password.
+    """Logs the user in by username and password.
     create jwt token for the user.
     
     return: access token on success, False and code 403 on failure

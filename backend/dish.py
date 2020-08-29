@@ -41,12 +41,8 @@ class DishModel:
         data = execute_selection(sql=_SQL_SELECT_DISH, values=(idmenu))
         return data
 
-    def add_dish_to_menu(self,
-                         name,
-                         food_type_base,
-                         calories_per_100_grams,
-                         idmenu,
-                         iddish=False):
+    def add_dish_to_menu(self, name, food_type_base, calories_per_100_grams,
+                         idmenu, iddish):
         """Add dish to dish table and then add to chosen menu
 
         :param name: dish name
@@ -55,64 +51,37 @@ class DishModel:
         :param idmenu: id of the menu too add the dish to
         :return: dishid of the dish add
         """
-        # if this is a new dish that does not exist in db
-        if not iddish:
-            print('dish not exsiting my iddish is :')
-            print(iddish)
-            # adding dish to dish table:
-            with closing(mysql.connector.connect(**connetion_params)) as db:
-                with closing(db.cursor(dictionary=True,
-                                       buffered=True)) as cursor:
-                    values = (name, food_type_base, calories_per_100_grams)
-                    cursor.execute(_SQL_INSERT_DISH_TO_DISH_TABLE, values)
-                    db.commit()
-                    #linking dish to menu in db
-                    iddish = cursor.lastrowid
-                    values = (idmenu, iddish)
-                    cursor.execute(_SQL_INSERT_DISH_TO_MENU, values)
-                    db.commit()
-                    return iddish
-        # if dish is in db alreay
-        else:
-            print('dish  exsiting my iddish is :')
-            print(iddish)
-            values = (idmenu, iddish)
-            execute_insertion(_SQL_INSERT_DISH_TO_MENU, values)
-            return iddish
-        return False
-
-    # used on menu creation
-    def link_dish_to_menu(self, idmenu, iddish=None):
-        """Link dish to menu. adds idmenu and iddish linkage to db
-
-        :param: idmenu: menu id
-        :return: True on success
-        """
-        if iddish == None:
-            with closing(mysql.connector.connect(**connetion_params)) as db:
-                with closing(db.cursor(dictionary=True,
-                                       buffered=True)) as cursor:
-                    iddish = cursor.lastrowid
-                    values = (idmenu, iddish)
-                    res = execute_insertion(_SQL_INSERT_DISH_TO_MENU, values)
-                    return res
-        else:
-            values = (idmenu, iddish)
-            execute_insertion(_SQL_INSERT_DISH_TO_MENU, values)
+        values = (idmenu, iddish)
+        execute_insertion(_SQL_INSERT_DISH_TO_MENU, values)
+        return iddish
 
     def get_all_dishes(self):
+        """
+        :returns: all dishes
+        """
         res = execute_selection(_SQL_GET_ALL_DISHES)
         return res
 
     def create_dish(self, name, food_type, calories):
+        """Creates new dish in dish table
+
+        :param name: dish name
+        :param food_type: food type
+        :param calories: calories per 100 grams
+        :reutrns: True on success
+        """
         values = (name, food_type, calories)
         res = execute_insertion(_SQL_INSERT_DISH_TO_DISH_TABLE, values)
         return res
 
     def check_if_dish_exist(self, dish):
+        """checks if dish exist in dish table
+
+        :param dish: dish name
+        :reutrns: True if exist, False if not.
+        """
         values = (dish)
         res = execute_selection(_SQL_GET_DISH_BY_NAME, values)
-        print(res)
         if len(res) > 0:
             return True
         else:
