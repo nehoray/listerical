@@ -44,6 +44,7 @@ export default class AddDish extends Component {
     this.snackbarRef.current.openSnackBar(msg);
   };
 
+  // runs when adding new dish.
   onSubmit = (event) => {
     event.preventDefault();
     if (this.state.isError === false) {
@@ -71,11 +72,10 @@ export default class AddDish extends Component {
             this.props.logout()
           }
         )
-
     };
   }
 
-  // updates the state and validates form
+  // on every change in the form, updates the state and validates form
   onChange = (event) => {
     event.preventDefault();
     const stateName = `${event.target.id}`;
@@ -94,21 +94,19 @@ export default class AddDish extends Component {
     switch (name) {
       case "name":
         this.checkIfDishExist(value)
-        if (name > 0)
-          if (value.match(/^[A-Za-zא-ת]+$/) === null) {
-            formErrors[name] = "can not conatin numbers";
-            isError = true
-            break;
-          } else if (value.length < 2) {
-            formErrors[name] = "must be more than 1";
-            isError = true
-            break;
-          } else {
-            formErrors[name] = "";
-
-            break;
-          }
-
+        if (value.match(/^[A-Za-zא-ת]+$/) === null && value.length > 0) {
+          formErrors[name] = "can contain lettes only";
+          isError = true
+          break;
+        } else if (value.length < 2) {
+          formErrors[name] = "must be more than 1";
+          isError = true
+          break;
+        } else {
+          formErrors[name] = "";
+          break;
+        }
+        break;
       case "food_type":
         if (value.match(/^[A-Za-zא-ת]+$/) === null) {
           formErrors[name] = "can not conatin numbers";
