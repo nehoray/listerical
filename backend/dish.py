@@ -93,8 +93,13 @@ class DishModel:
                     return res
         else:
             values = (idmenu, iddish)
-            execute_insertion(_SQL_INSERT_DISH_TO_MENU, )
+            execute_insertion(_SQL_INSERT_DISH_TO_MENU, values)
 
     def get_all_dishes(self):
         res = execute_selection(_SQL_GET_ALL_DISHES)
+        return res
+
+    def create_dish(self, name, food_type, calories):
+        values = (name, food_type, calories)
+        res = execute_insertion(_SQL_INSERT_DISH_TO_DISH_TABLE, values)
         return res

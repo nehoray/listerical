@@ -26,7 +26,8 @@ app.config['JWT_SECRET_KEY'] = os.environ.get(
 jwt = JWTManager(app)
 
 
-@app.route("/dish", methods=['POST'])
+# used in: adding dish to menu in main page (combo)
+@app.route("/menu/dish", methods=['POST'])
 @jwt_required
 def add_new_dish():
     """Add new dish to an exsiting menu.
@@ -47,6 +48,26 @@ def add_new_dish():
             calories_per_100_grams=calories_per_100_grams,
             idmenu=idmenu,
             iddish=iddish)
+        return jsonify(res)
+    else:
+        return jsonify(False), 403
+
+
+# for new dish button - main page
+@app.route("/dish", methods=['POST'])
+@jwt_required
+def create_new_dish():
+    """Add new dish to an exsiting menu.
+    
+    :returns: True on success, False and code 403 on failure 
+    """
+    userid = get_jwt_identity()  # decoded
+    user = login_model.get_user(userid)  # object user
+    if user.user_type == 'admin':
+        name = request.json['name']
+        food_type = request.json['food_type']
+        calories = request.json['calories']
+        res = dish.create_dish(name, food_type, calories)
         return jsonify(res)
     else:
         return jsonify(False), 403
