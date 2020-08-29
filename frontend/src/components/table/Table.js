@@ -62,6 +62,7 @@ const StyledTableRow = withStyles((theme) => ({
 
 
 function Row(props) {
+
   // let menu = props.row;
   const [open, setOpen] = React.useState(false);
   const classes = useRowStyles();
@@ -70,7 +71,7 @@ function Row(props) {
   const [selected, setSelected] = React.useState(0);
   let presentedDishes = []
   let dbDishes = allDbDishes
-  // make suer user wont choose an existion dish
+  // make sure user wont choose an existion dish
   const menuDishedIds = menu.dishes.map(dish => dish.iddish)
   presentedDishes = dbDishes.filter(dish => !menuDishedIds.includes(dish.iddish))
 
@@ -103,11 +104,12 @@ function Row(props) {
       .then((res) => {
         if (String(res.data) !== "false") {
           props.updateDishTable() // use the state to show user the change - works
-
         }
       }).catch(err => {
-        if (err.response.status === 401 || err.response.status === 422) {
-          this.props.logout()
+        if (err.response) {
+          if (err.response.status === 401 || err.response.status === 422) {
+            this.props.logout()
+          }
         }
       });
   }
@@ -115,11 +117,8 @@ function Row(props) {
   // when creating a dish, put it the state - works
   function onCreate(dish) {
     let newDishes = menu.dishes
-    console.log(newDishes)
-    console.log(dish)
     newDishes.push(dish)
     menu.dishes = newDishes
-    console.log(menu)
   }
   function addDishBar() {
     const userType = localStorage.getItem('user_type')
@@ -233,7 +232,7 @@ export class MenuTable extends Component {
   }
 
   // 2 uses: 1.for default render. 2. for datepicker choices
-  readMenuData(chosen_date = null) {
+  readMenuData(chosen_date = null, resetState = false) {
     const path = `${process.env.REACT_APP_BE_URL}`;
     axios
       .get(path, {
@@ -241,13 +240,10 @@ export class MenuTable extends Component {
       })
       .then((res) => {
         if (this._isMounted) {
-
-          this.setState({ menus: [] });
-
+          if (resetState) {
+            this.setState({ menus: [] });
+          }
           this.setState({ menus: res['data'] });
-
-          console.log(res)
-          console.log(this.state.menus)
           if (res.data.length === 0) {
             this.setState({ noMenuData: true })
           }
@@ -255,12 +251,12 @@ export class MenuTable extends Component {
             this.setState({ noMenuData: false })
           }
         }
-        console.log(this.state)
       }).catch(err => {
-        if (err.response.status === 401 || err.response.status === 422) {
-          this.props.logout()
+        if (err.response) {
+          if (err.response.status === 401 || err.response.status === 422) {
+            this.props.logout()
+          }
         }
-
       });
     chosen_date = chosen_date ? chosen_date : new Date()
 
