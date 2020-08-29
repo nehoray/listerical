@@ -102,13 +102,12 @@ export default class AddDish extends Component {
           formErrors[name] = "must be more than 1";
           isError = true
           break;
-        } else {
-          formErrors[name] = "";
-          break;
         }
+        formErrors[name] = "";
         break;
+
       case "food_type":
-        if (value.match(/^[A-Za-zא-ת]+$/) === null) {
+        if (value.match(/^[A-Za-zא-ת]+$/) === null && value.length > 0) {
           formErrors[name] = "can not conatin numbers";
           isError = true
           break;
@@ -116,9 +115,8 @@ export default class AddDish extends Component {
           formErrors[name] = "must be more than 2";
           isError = true
           break;
-        } else {
-          formErrors[name] = "";
         }
+        formErrors[name] = ""
         break;
 
       case "calories":
@@ -126,13 +124,12 @@ export default class AddDish extends Component {
           formErrors[name] = "can not be empty";
           isError = true
           break;
-        } else if (value.match(/^[1-9]\d*$/) == null) {
+        } else if (value.match(/^[1-9]\d*$/) == null && value.length > 0) {
           formErrors[name] = "can not start with 0";
           isError = true
           break;
-        } else {
-          formErrors[name] = "";
         }
+        formErrors[name] = "";
         break;
       default:
         break
