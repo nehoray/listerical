@@ -43,48 +43,8 @@ export default class AddDish extends Component {
     this.snackbarRef.current.openSnackBar(msg);
   };
 
-  onSubmit = (event) => {
-    event.preventDefault();
-    if (this.state.isError === false) {
-      const path = `${process.env.REACT_APP_BE_URL}/dish`;
-      const idmenu = this.props.idmenu
 
-      // when creating to a new menu - this will be udefined. 
-      if (idmenu) {
-        const data = {
-          name: this.state.name,
-          calories: this.state.calories,
-          food_type: this.state.food_type,
-          idmenu: idmenu
-        }
-        const token = localStorage.getItem('jwt')
-        const headers = {
-          "Authorization": `Bearer ${token}`
-        }
-        axios
-          .post(path, data, { headers: headers })
-          .then((res) => {
-            if (String(res.data) === "true") {
-              this.toggleModal();
-              this.setState({
-                open: true,
-              });
-              this.props.updateDishTable()
-            }
-          }).catch(err => {
-            if (err.response.status === 401 || err.response.status === 422) {
-              this.props.logout()
-            }
-          });
-      }
-      // used in the addMenu dialog
-      else {
-        this.handleSubmitToParent()
-        this.toggleModal();
 
-      }
-    };
-  }
 
   // updates the state and validates form
   onChange = (event) => {
@@ -156,13 +116,33 @@ export default class AddDish extends Component {
     this.setState({ formErrors, [name]: value });
   };
 
-  // if this component works as a child of addMenu component
-  handleSubmitToParent() {
-    if (this.props.onSubmit) {
-      this.props.onSubmit(this.state)
+  onSubmit(event) {
+    event.preventDefault();
+    if (this.state.isError === false) {
+      const path = `${process.env.REACT_APP_BE_URL}/dish`;
+      const data = {
+        name: this.state.name,
+        calories: this.state.calories,
+        food_type: this.state.food_type,
+      }
+      const token = localStorage.getItem('jwt')
+      const headers = {
+        "Authorization": `Bearer ${token}`
+      }
+      axios
+        .post(path, data, { headers: headers })
+        .then((res) => {
+          if (String(res.data) !== "false") {
+            let iddish = res['data'] // TODO: tell combos there is new dish 
+            this.props.reRenderTable()
+            this.toggleModal();
+            this.setState({ open: true });
+          }
+        }
+        )
     }
+  };
 
-  }
 
   toggleModal = (event) => {
     const { isOpen } = this.state;
@@ -171,17 +151,17 @@ export default class AddDish extends Component {
     });
   };
   // returns true if no errors
-  checkForm() {
+  checkForm = () => {
     const err = this.state.formErrors;
     return (err.name.length === 0 && err.food_type === 0 && err.calories === 0)
   }
 
-  addNewDishButton() {
+  addNewDishButton = () => {
     const userType = localStorage.getItem('user_type')
     if (userType === 'admin') {
       return (
         <AwesomeButton type="primary" onPress={this.toggleModal}>
-          Add dish
+          New Dish
         </AwesomeButton>
       )
     }
@@ -194,7 +174,6 @@ export default class AddDish extends Component {
       <div>
         {this.addNewDishButton()}
         <Dialog
-          // maxWidth="maxWidth"
           onClose={this.toggleModal}
           aria-labelledby="customized-dialog-title"
           open={this.state.isOpen}
@@ -210,7 +189,7 @@ export default class AddDish extends Component {
                 >
                   <TextField
                     autoFocus
-                    onSubmit={this.handleSubmitToParent}
+                    onSubmit={(e) => this.onSubmit(e)}
                     onChange={(e) => { this.onChange(e) }}
                     margin="dense"
                     id="name"

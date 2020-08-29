@@ -77,6 +77,7 @@ class Datepicker extends Component {
                 .reverse()
                 .join("-");
               // show the data of the newly created menu
+              console.log('wwww', this.props)
               this.props.readMenusFunc(dateRes);
             }}
             dateformat="dd/MM/yyyy"

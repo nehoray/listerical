@@ -1,6 +1,6 @@
+import { TextField } from '@material-ui/core';
 import Box from "@material-ui/core/Box";
 import Collapse from "@material-ui/core/Collapse";
-import Grid from "@material-ui/core/Grid";
 import IconButton from "@material-ui/core/IconButton";
 import Paper from "@material-ui/core/Paper";
 import { makeStyles, withStyles } from "@material-ui/core/styles";
@@ -10,15 +10,30 @@ import TableCell from "@material-ui/core/TableCell";
 import TableContainer from "@material-ui/core/TableContainer";
 import TableHead from "@material-ui/core/TableHead";
 import TableRow from "@material-ui/core/TableRow";
-import Typography from "@material-ui/core/Typography";
 import KeyboardArrowDownIcon from "@material-ui/icons/KeyboardArrowDown";
 import KeyboardArrowUpIcon from "@material-ui/icons/KeyboardArrowUp";
+import Autocomplete from '@material-ui/lab/Autocomplete';
 import axios from "axios";
-import React, { Component } from "react";
+import { Component, default as React } from "react";
+import { AwesomeButton } from "react-awesome-button";
 import AddDishDialog from "../addDish/AddDish";
 import AddMenuDialog from '../addMenu/AddMenu';
 import Datepicker from '../datepicker/Datepicker';
 import './Table.css';
+
+
+let allDbDishes;
+const path = `${process.env.REACT_APP_BE_URL}/dishes`;
+axios
+  .get(path)
+  .then((res) => {
+    allDbDishes = res['data']
+  })
+  .catch((e) => {
+    console.error("e");
+  });
+
+
 const useRowStyles = makeStyles({
   root: {
     "& > *": {
@@ -47,10 +62,92 @@ const StyledTableRow = withStyles((theme) => ({
 
 
 function Row(props) {
-  const menu = props.row;
+  // let menu = props.row;
   const [open, setOpen] = React.useState(false);
   const classes = useRowStyles();
+  const [isValueSelected, setIsValueSelected] = React.useState(false);
+  const [menu, setMenu] = React.useState(props.row)
+  const [selected, setSelected] = React.useState(0);
+  let presentedDishes = []
+  let dbDishes = allDbDishes
+  // make suer user wont choose an existion dish
+  const menuDishedIds = menu.dishes.map(dish => dish.iddish)
+  presentedDishes = dbDishes.filter(dish => !menuDishedIds.includes(dish.iddish))
 
+  function onChange(value) {
+    setSelected(value)
+    setIsValueSelected(true)
+  }
+
+  function onAdd(idmenu, day_part) {
+    // adding to state
+    let newDishes = menu.dishes
+    newDishes.push(selected)
+    menu.dishes = newDishes
+    setMenu(menu)
+    // add to db
+    const path = `${process.env.REACT_APP_BE_URL}/menu/dish`;
+    const data = {
+      name: selected.name,
+      calories: selected.calories_per_100_grams,
+      food_type: selected.food_type_base,
+      idmenu: idmenu,
+      iddish: selected.iddish
+    }
+    const token = localStorage.getItem('jwt')
+    const headers = {
+      "Authorization": `Bearer ${token}`
+    }
+    axios
+      .post(path, data, { headers: headers })
+      .then((res) => {
+        if (String(res.data) !== "false") {
+          props.updateDishTable() // use the state to show user the change - works
+
+        }
+      }).catch(err => {
+        if (err.response.status === 401 || err.response.status === 422) {
+          this.props.logout()
+        }
+      });
+  }
+
+  // when creating a dish, put it the state - works
+  function onCreate(dish) {
+    let newDishes = menu.dishes
+    console.log(newDishes)
+    console.log(dish)
+    newDishes.push(dish)
+    menu.dishes = newDishes
+    console.log(menu)
+  }
+  function addDishBar() {
+    const userType = localStorage.getItem('user_type')
+    if (userType === 'admin') {
+      return (
+        <div className="auto-complete">
+
+
+          <Autocomplete
+            size="small"
+            id="combo-box-demo"
+            disableClearable
+            onChange={(e, value) => onChange(value)}
+            options={presentedDishes}
+            getOptionLabel={(option) => `${option.name}`}
+            style={{ width: 300 }}
+            renderInput={(params) => <TextField {...params} label="Choose dish" variant="outlined" />}
+          />
+          <AwesomeButton disabled={!isValueSelected} onPress={(e) => { onAdd(menu.idmenu, menu.day_part) }}>
+            add
+               </AwesomeButton>
+        </div>
+
+      )
+    }
+  }
+
+  // data
   return (
     <React.Fragment>
       <TableRow className={classes.root}>
@@ -80,29 +177,7 @@ function Row(props) {
         >
           <Collapse in={open} timeout="auto" unmountOnExit>
             <Box margin={1}>
-              <Typography
-                fxlayout="row"
-                fxlayoutalign="space-between center"
-                align="center"
-                variant="h6"
-                gutterBottom
-              // component="div"
-              >
-                <Grid
-                  container
-                  direction="row"
-                  justify="space-between"
-                  alignItems="center"
-                >
-                  Dishes:{" "}
-                  <AddDishDialog
-                    idmenu={menu.idmenu}
-                    day_part={menu.day_part}
-                    logout={props.logout}
-                    updateDishTable={props.updateDishTable}
-                  />
-                </Grid>
-              </Typography>
+              {addDishBar()}
               <Table size="small" aria-label="purchases">
                 <TableHead>
                   <TableRow>
@@ -166,7 +241,13 @@ export class MenuTable extends Component {
       })
       .then((res) => {
         if (this._isMounted) {
-          this.setState({ menus: res.data });
+
+          this.setState({ menus: [] });
+
+          this.setState({ menus: res['data'] });
+
+          console.log(res)
+          console.log(this.state.menus)
           if (res.data.length === 0) {
             this.setState({ noMenuData: true })
           }
@@ -174,10 +255,12 @@ export class MenuTable extends Component {
             this.setState({ noMenuData: false })
           }
         }
+        console.log(this.state)
       }).catch(err => {
         if (err.response.status === 401 || err.response.status === 422) {
           this.props.logout()
         }
+
       });
     chosen_date = chosen_date ? chosen_date : new Date()
 
@@ -215,10 +298,9 @@ export class MenuTable extends Component {
       <>
         <span className="no-menu-card">
           <div className="no-menu-msg">
-            There is no menu for this date yet. <br />
-                You can create one right now.
+            There is no menu for this date yet.
             </div>
-          <AddMenuDialog logout={this.logout} menuDate={this.state.menuDate} readMenusFunc={this.readMenuData.bind(this)} />
+          <AddMenuDialog logout={this.props.logout} menuDate={this.state.menuDate} readMenusFunc={this.readMenuData.bind(this)} />
         </span>
       </>
     )
@@ -227,9 +309,14 @@ export class MenuTable extends Component {
     if (this._isMounted) {
       return (
         <>
-          <React.Fragment>
-            <Datepicker readMenusFunc={this.readMenuData.bind(this)} />
-          </React.Fragment>
+          <div className="top-bar">
+            <React.Fragment>
+              <Datepicker readMenusFunc={this.readMenuData.bind(this)} />
+            </React.Fragment>
+            <AddDishDialog reRenderTable={this.readMenuData.bind(this)}
+
+            />
+          </div>
           {this.state.noMenuData ? this.noMenuData() : this.tableContent()}
         </>
       );
