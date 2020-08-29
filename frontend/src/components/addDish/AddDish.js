@@ -98,20 +98,19 @@ export default class AddDish extends Component {
     switch (name) {
       case "name":
         this.checkIfDishExist(value)
-        if (name > 0)
-          if (value.match(/^[A-Za-zא-ת]+$/) === null) {
-            formErrors[name] = "can not conatin numbers";
-            isError = true
-            break;
-          } else if (value.length < 2) {
-            formErrors[name] = "must be more than 1";
-            isError = true
-            break;
-          } else {
-            formErrors[name] = "";
-
-            break;
-          }
+        if (value.match(/^[A-Za-zא-ת]+$/) === null) {
+          formErrors[name] = "can not conatin numbers";
+          isError = true
+          break;
+        } else if (value.length < 2) {
+          formErrors[name] = "must be more than 1";
+          isError = true
+          break;
+        } else {
+          formErrors[name] = "";
+          break;
+        }
+        break;
 
       case "food_type":
         if (value.match(/^[A-Za-zא-ת]+$/) === null) {

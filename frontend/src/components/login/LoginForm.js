@@ -32,7 +32,7 @@ export class LoginForm extends React.Component {
             .post(path, data)
             .then((res) => {
                 if (res['status'] === 200) {
-                    // TODO: better with redux
+                    // better with redux
                     localStorage.setItem('user_type', res['data']['user_type'])
                     localStorage.setItem('jwt', res['data']['access_token'])
                     localStorage.setItem('username', this.state.username)
