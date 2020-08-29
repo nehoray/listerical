@@ -116,19 +116,11 @@ function Row(props) {
     }
   }
 
-  // when creating a dish, put it the state - works
-  function onCreate(dish) {
-    let newDishes = menu.dishes
-    newDishes.push(dish)
-    menu.dishes = newDishes
-  }
   function addDishBar() {
     const userType = localStorage.getItem('user_type')
     if (userType === 'admin') {
       return (
         <div className="auto-complete">
-
-
           <Autocomplete
             size="small"
             id="combo-box-demo"
@@ -140,15 +132,14 @@ function Row(props) {
             renderInput={(params) => <TextField {...params} label="Choose dish" variant="outlined" />}
           />
           <AwesomeButton disabled={!isValueSelected} onPress={(e) => { onAdd(menu.idmenu, menu.day_part) }}>
-            add
+            Add Chosen Dish
                </AwesomeButton>
         </div>
-
       )
     }
   }
 
-  // data
+  // rendering the Row component
   return (
     <React.Fragment>
       <TableRow className={classes.root}>
@@ -219,6 +210,7 @@ function Row(props) {
   );
 }
 
+// main table component
 export class MenuTable extends Component {
   state = {
     menus: [],
@@ -247,16 +239,15 @@ export class MenuTable extends Component {
           }
           this.setState({ menus: res['data'] });
           if (res.data.length === 0) {
-            this.setState({ noMenuData: true })
+            this.setState({ noDataView: true })
           }
           else {
-            this.setState({ noMenuData: false })
+            this.setState({ noDataView: false })
           }
         }
       }, (err) => {
         this.props.logout()
       })
-
     chosen_date = chosen_date ? chosen_date : new Date()
 
     // for adding menu dialog
@@ -288,7 +279,7 @@ export class MenuTable extends Component {
   }
 
   // if no menu data for present day show this.
-  noMenuData() {
+  noDataView() {
     return (
       <>
         <span className="no-menu-card">
@@ -300,6 +291,7 @@ export class MenuTable extends Component {
       </>
     )
   }
+
   render() {
     if (this._isMounted) {
       return (
@@ -312,7 +304,7 @@ export class MenuTable extends Component {
 
             />
           </div>
-          {this.state.noMenuData ? this.noMenuData() : this.tableContent()}
+          {this.state.noDataView ? this.noDataView() : this.tableContent()}
         </>
       );
     } else {
