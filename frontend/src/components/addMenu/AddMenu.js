@@ -125,13 +125,12 @@ export default class AddMenuDialog extends Component {
         });
     };
 
-
-
     toggleModal = (event) => {
         const { isOpen } = this.state;
         this.setState({
             isOpen: !isOpen,
         });
+        this.setState({ dishRow: [] })
     };
 
     // present the new dish every dish adding
@@ -161,10 +160,6 @@ export default class AddMenuDialog extends Component {
 
     // remove dish from state and from dialog
     removeDish(name, mealName) {
-
-
-        // const curMealdishes = this.state.dishRow.filter(dish => dish.mealName === mealName)
-        // const removeIndex = this.state.dishRow.map(function (item) { return item.name }).indexOf(name) // index
         const dishToRemove = this.state.dishRow.find(dish => dish.name === name && dish.mealName === mealName)
         const removeIndex = this.state.dishRow.indexOf(dishToRemove)
         let newDishRow = this.state.dishRow
