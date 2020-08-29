@@ -12,8 +12,8 @@ export class LoginForm extends React.Component {
             error: '',
             isLoading: false
         }
-        this.handleSubmit = this.handleSubmit.bind(this)
-        this.changeHandler = this.changeHandler.bind(this)
+        this.onSubmit = this.onSubmit.bind(this)
+        this.onChange = this.onChange.bind(this)
     }
 
 
@@ -21,7 +21,7 @@ export class LoginForm extends React.Component {
         return this.state.email.length > 0 && this.state.password.length > 0;
     }
 
-    handleSubmit(event) {
+    onSubmit(event) {
         event.preventDefault();
         const path = `${process.env.REACT_APP_BE_URL}/login`;
         const data = {
@@ -44,7 +44,7 @@ export class LoginForm extends React.Component {
             });
     }
 
-    changeHandler = (event) => {
+    onChange = (event) => {
         event.preventDefault();
         const stateName = `${event.target.id}`;
         this.setState({
@@ -56,7 +56,7 @@ export class LoginForm extends React.Component {
         return (
             <div className="Login" >
 
-                <form onSubmit={this.handleSubmit} className="form">
+                <form onSubmit={this.onSubmit} className="form">
                     <h3 className="sign-in">Sign In</h3>
                     <div className="hello">Hello guest</div>
 
@@ -67,7 +67,7 @@ export class LoginForm extends React.Component {
                         margin="dense"
                         id="username"
                         label="User Name"
-                        onChange={(e) => { this.changeHandler(e) }}
+                        onChange={(e) => { this.onChange(e) }}
                         inputProps={{
                             maxLength: 10,
                         }}
@@ -79,7 +79,7 @@ export class LoginForm extends React.Component {
                         margin="dense"
                         id="password"
                         label="Password"
-                        onChange={(e) => { this.changeHandler(e) }}
+                        onChange={(e) => { this.onChange(e) }}
                         inputProps={{
                             maxLength: 10,
                         }}

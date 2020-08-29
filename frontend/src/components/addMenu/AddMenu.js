@@ -57,7 +57,6 @@ export default class AddMenuDialog extends Component {
                 console.error("e");
             });
     }
-
     mealsNames = ['morning', 'noon', 'evening']
 
     // init state rigth after menu adding
@@ -80,8 +79,8 @@ export default class AddMenuDialog extends Component {
         this.setState({ dishRow: [] })
     }
 
-    // runs when add menu button is clicked
-    SubmitHandler = (event) => {
+    // runs when add-menu button is clicked
+    onSubmit = (event) => {
         event.preventDefault();
         const path = `${process.env.REACT_APP_BE_URL}/menu`;
         const token = localStorage.getItem('jwt')
@@ -111,7 +110,7 @@ export default class AddMenuDialog extends Component {
     };
 
     // updates times state every input change
-    changeHandler = (event) => {
+    onChange = (event) => {
         event.preventDefault();
         const stateName = `${event.target.id}`;
         const value = event.target.value;
@@ -207,6 +206,8 @@ export default class AddMenuDialog extends Component {
             });
         }
     }
+
+    // rendering the button and the dialog of add-menu dialog
     render() {
         return (
             <div >
@@ -217,7 +218,7 @@ export default class AddMenuDialog extends Component {
                     open={this.state.isOpen}
                     class="dialog"
                 >
-                    <form onSubmit={(e) => this.changeHandler(e)} target="#" className="form">
+                    <form onSubmit={(e) => this.onChange(e)} target="#" className="form">
                         <div className="add-menu-dialog"
                         >
                             <div>
@@ -228,7 +229,7 @@ export default class AddMenuDialog extends Component {
                                     justify="flex-start"
                                     alignItems="baseline"
                                 >
-                                    {/* make 3 rows on the form (morinng, noon, evening) */}
+                                    {/* make 3 rows on the form (morning, noon, evening) */}
                                     {this.mealsNames.map(mealName => {
                                         return (
                                             <div className="meal-row" key={mealName}>
@@ -236,7 +237,7 @@ export default class AddMenuDialog extends Component {
                                                 <div className="text-and-time">
                                                     <span className="meal-text">{mealName}:</span>
                                                     <TextField
-                                                        onChange={this.changeHandler}
+                                                        onChange={this.onChange}
                                                         id={mealName + "_start"}
                                                         label="start"
                                                         type="time"
@@ -250,7 +251,7 @@ export default class AddMenuDialog extends Component {
                                                     />
                                                     <span className="to-text"> To </span>
                                                     <TextField className="end-time"
-                                                        onChange={this.changeHandler}
+                                                        onChange={this.onChange}
                                                         id={mealName + "_end"}
                                                         label="end"
                                                         type="time"
@@ -290,7 +291,7 @@ export default class AddMenuDialog extends Component {
                             <button
                                 type="button"
                                 className="button"
-                                onClick={(e) => this.SubmitHandler(e)}
+                                onClick={(e) => this.onSubmit(e)}
                             >
                                 Submit Menu
                             </button>

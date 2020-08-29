@@ -138,6 +138,7 @@ export default class AddDish extends Component {
     return isError
   }
 
+  // checks if the dish exist alreay before adding.
   checkIfDishExist(name) {
     this.setState({ isExist: false })
     const path = `${process.env.REACT_APP_BE_URL}/dish/check/${name}`;
@@ -161,6 +162,7 @@ export default class AddDish extends Component {
       isOpen: !isOpen,
     });
   };
+
   // returns true if no errors
   checkForm() {
     const err = this.state.formErrors;
@@ -168,6 +170,7 @@ export default class AddDish extends Component {
     return noFormErrors && (this.state.isError === false)
   }
 
+  // only admin can see the button
   addNewDishButton() {
     const userType = localStorage.getItem('user_type')
     if (userType === 'admin') {
@@ -180,14 +183,13 @@ export default class AddDish extends Component {
     }
   }
 
-
+  // renders the button of addDish dialog.
   render() {
     const { formErrors } = this.state;
     return (
       <div>
         {this.addNewDishButton()}
         <Dialog
-          // maxWidth="maxWidth"
           onClose={this.toggleModal}
           aria-labelledby="customized-dialog-title"
           open={this.state.isOpen}
@@ -269,7 +271,7 @@ export default class AddDish extends Component {
         <Snackbar
           autoHideDuration={3000}
           open={this.state.open}
-          message={this.state.name + " added successfully"}
+          message={this.state.name + " created successfully"}
           onClose={() => {
             this.setState({ open: false });
           }}

@@ -16,7 +16,7 @@ class Datepicker extends Component {
     };
   }
 
-
+  // gets the dates which have menu data 
   componentDidMount() {
     const path = `${process.env.REACT_APP_BE_URL}/menus/dates`;
     axios
@@ -30,7 +30,7 @@ class Datepicker extends Component {
       });
   }
 
-  // disabling dates according to user type
+  // disabling dates according to user type  
   disableDates(date) {
     const user_type = localStorage.getItem('user_type')
     const isEmpty = !this.state.goodDates.includes(this.convert(date));
