@@ -1,7 +1,5 @@
 import { Dialog, Grid, TextField } from '@material-ui/core';
-import MuiDialogContent from "@material-ui/core/DialogContent";
 import IconButton from '@material-ui/core/IconButton';
-import { withStyles } from "@material-ui/core/styles";
 import DeleteForeverIcon from '@material-ui/icons/DeleteForever';
 import Autocomplete from '@material-ui/lab/Autocomplete';
 import axios from "axios";
@@ -9,12 +7,6 @@ import React, { Component } from "react";
 import { AwesomeButton } from "react-awesome-button";
 import '../addMenu/AddMenu.css';
 
-
-const DialogContent = withStyles((theme) => ({
-    root: {
-        padding: theme.spacing(2),
-    },
-}))(MuiDialogContent);
 
 // Dialog of createing new menu
 export default class AddMenuDialog extends Component {
