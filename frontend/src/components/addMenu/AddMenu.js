@@ -103,14 +103,11 @@ export default class AddMenuDialog extends Component {
                         open: true,
                     });
                     this.props.readMenusFunc(this.props.menuDate)
-
                 }
                 // if token is not valid
-            }).catch(err => {
-                if (err.response.status === 401 || err.response.status === 422) {
-                    this.props.logout()
-                }
-            });
+            }, (err) => {
+                this.props.logout()
+            })
     };
 
     // updates times state every input change

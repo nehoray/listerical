@@ -61,20 +61,16 @@ export default class AddDish extends Component {
       }
       axios
         .post(path, data, { headers: headers })
-        .then((res) => {
-          if (String(res.data) === "true") {
-            this.toggleModal();
-            window.location.reload() // could be avoided using redux
-          }
-        })
-        .catch(err => {
-          // todo: fix logout if no jwt
-          if (err.response) {
-            if (err.response.status === 401 || err.response.status === 403) {
-              this.props.logout()
+        .then(
+          (res) => {
+            if (String(res.data) === "true") {
+              this.toggleModal();
+              window.location.reload() // could be avoided using redux
             }
+          }, (err) => {
+            this.props.logout()
           }
-        });
+        )
 
     };
   }

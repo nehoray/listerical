@@ -110,13 +110,9 @@ function Row(props) {
           if (String(res.data) !== "false") {
             props.updateDishTable() // use the state to show user the change - works
           }
-        }).catch(err => {
-          if (err.response) {
-            if (err.response.status === 401 || err.response.status === 422) {
-              this.props.logout()
-            }
-          }
-        });
+        }, (err) => {
+          this.props.logout()
+        })
     }
   }
 
@@ -257,13 +253,10 @@ export class MenuTable extends Component {
             this.setState({ noMenuData: false })
           }
         }
-      }).catch(err => {
-        if (err.response) {
-          if (err.response.status === 401 || err.response.status === 422) {
-            this.props.logout()
-          }
-        }
-      });
+      }, (err) => {
+        this.props.logout()
+      })
+
     chosen_date = chosen_date ? chosen_date : new Date()
 
     // for adding menu dialog
@@ -315,7 +308,7 @@ export class MenuTable extends Component {
             <React.Fragment>
               <Datepicker readMenusFunc={this.readMenuData.bind(this)} />
             </React.Fragment>
-            <AddDishDialog reRenderTable={this.readMenuData.bind(this)}
+            <AddDishDialog reRenderTable={this.readMenuData.bind(this)} logout={this.props.logout}
 
             />
           </div>
