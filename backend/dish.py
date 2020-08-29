@@ -24,6 +24,11 @@ _SQL_GET_ALL_DISHES = """
                         SELECT iddish, name,food_type_base, calories_per_100_grams
                         FROM listerical_db.dish;
                         """
+_SQL_GET_DISH_BY_NAME = """
+                            SELECT iddish 
+                            FROM listerical_db.dish 
+                            WHERE name = %s;
+                        """
 
 
 class DishModel:
@@ -103,3 +108,12 @@ class DishModel:
         values = (name, food_type, calories)
         res = execute_insertion(_SQL_INSERT_DISH_TO_DISH_TABLE, values)
         return res
+
+    def check_if_dish_exist(self, dish):
+        values = (dish)
+        res = execute_selection(_SQL_GET_DISH_BY_NAME, values)
+        print(res)
+        if len(res) > 0:
+            return True
+        else:
+            return False
