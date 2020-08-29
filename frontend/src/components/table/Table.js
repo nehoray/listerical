@@ -70,10 +70,9 @@ function Row(props) {
   const [menu, setMenu] = React.useState(props.row)
   const [selected, setSelected] = React.useState(0);
   let presentedDishes = []
-  let dbDishes = allDbDishes
   // make sure user wont choose an existion dish
   const menuDishedIds = menu.dishes.map(dish => dish.iddish)
-  presentedDishes = dbDishes.filter(dish => !menuDishedIds.includes(dish.iddish))
+  presentedDishes = allDbDishes.filter(dish => !menuDishedIds.includes(dish.iddish))
 
   function onChange(value) {
     setSelected(value)
