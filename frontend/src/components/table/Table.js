@@ -80,38 +80,44 @@ function Row(props) {
     setIsValueSelected(true)
   }
 
-  function onAdd(idmenu, day_part) {
-    // adding to state
-    let newDishes = menu.dishes
-    newDishes.push(selected)
-    menu.dishes = newDishes
-    setMenu(menu)
-    // add to db
-    const path = `${process.env.REACT_APP_BE_URL}/menu/dish`;
-    const data = {
-      name: selected.name,
-      calories: selected.calories_per_100_grams,
-      food_type: selected.food_type_base,
-      idmenu: idmenu,
-      iddish: selected.iddish
-    }
-    const token = localStorage.getItem('jwt')
-    const headers = {
-      "Authorization": `Bearer ${token}`
-    }
-    axios
-      .post(path, data, { headers: headers })
-      .then((res) => {
-        if (String(res.data) !== "false") {
-          props.updateDishTable() // use the state to show user the change - works
-        }
-      }).catch(err => {
-        if (err.response) {
-          if (err.response.status === 401 || err.response.status === 422) {
-            this.props.logout()
+  function onAdd(idmenu, mealName) {
+
+    // if not alreay in menu
+    const dish = menu.dishes.find(dish => dish.name === selected.name)
+    const dishIndex = menu.dishes.indexOf(dish)
+    if (dishIndex < 0) {
+      // adding to state
+      let newDishes = menu.dishes
+      newDishes.push(selected)
+      menu.dishes = newDishes
+      setMenu(menu)
+      // add to db
+      const path = `${process.env.REACT_APP_BE_URL}/menu/dish`;
+      const data = {
+        name: selected.name,
+        calories: selected.calories_per_100_grams,
+        food_type: selected.food_type_base,
+        idmenu: idmenu,
+        iddish: selected.iddish
+      }
+      const token = localStorage.getItem('jwt')
+      const headers = {
+        "Authorization": `Bearer ${token}`
+      }
+      axios
+        .post(path, data, { headers: headers })
+        .then((res) => {
+          if (String(res.data) !== "false") {
+            props.updateDishTable() // use the state to show user the change - works
           }
-        }
-      });
+        }).catch(err => {
+          if (err.response) {
+            if (err.response.status === 401 || err.response.status === 422) {
+              this.props.logout()
+            }
+          }
+        });
+    }
   }
 
   // when creating a dish, put it the state - works

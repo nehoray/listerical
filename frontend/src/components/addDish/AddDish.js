@@ -134,7 +134,7 @@ export default class AddDish extends Component {
         .then((res) => {
           if (String(res.data) !== "false") {
             let iddish = res['data'] // TODO: tell combos there is new dish 
-            this.props.reRenderTable()
+            this.props.reRenderTable(null, true)
             this.toggleModal();
             this.setState({ open: true });
           }
