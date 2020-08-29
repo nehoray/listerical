@@ -53,6 +53,17 @@ def add_new_dish():
         return jsonify(False), 403
 
 
+@app.route("/dish/check/", defaults={'name': ''})
+@app.route("/dish/check/<name>")
+def check_if_dish_exist(name):
+    """Add new dish to an exsiting menu.
+    
+    :returns: True on success, False and code 403 on failure 
+    """
+    res = dish.check_if_dish_exist(name)
+    return jsonify(res)
+
+
 # for new dish button - main page
 @app.route("/dish", methods=['POST'])
 @jwt_required

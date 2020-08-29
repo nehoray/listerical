@@ -29,6 +29,7 @@ export default class AddDish extends Component {
     super(props);
     this.state = {
       isError: false,
+      isExist: false,
       formErrors: {
         name: "",
         calories: "",
@@ -43,8 +44,41 @@ export default class AddDish extends Component {
     this.snackbarRef.current.openSnackBar(msg);
   };
 
+  onSubmit = (event) => {
+    event.preventDefault();
+    if (this.state.isError === false) {
+      const path = `${process.env.REACT_APP_BE_URL}/dish`;
+      const idmenu = this.props.idmenu
+      const data = {
+        name: this.state.name,
+        calories: this.state.calories,
+        food_type: this.state.food_type,
+        idmenu: idmenu
+      }
+      const token = localStorage.getItem('jwt')
+      const headers = {
+        "Authorization": `Bearer ${token}`
+      }
+      axios
+        .post(path, data, { headers: headers })
+        .then((res) => {
+          if (String(res.data) === "true") {
+            this.toggleModal();
+            this.setState({
+              open: true,
+            });
+          }
+        })
+      // .catch(err => { todo: fix logout if no jwt
+      //   if (err.response) {
+      //     if (err.response.status === 401 || err.response.status === 403) {
+      //       this.props.logout()
+      //     }
+      //   }
+      // });
 
-
+    };
+  }
 
   // updates the state and validates form
   onChange = (event) => {
@@ -55,94 +89,84 @@ export default class AddDish extends Component {
       [stateName]: event.target.value,
     });
     const name = stateName;
-    this.setState({ isError: false });
-    let isError = false;
-    let formErrors = { name: "", calories: "", food_type: "" };
+    this.setState({ isError: this.validate(name, value) })
+  };
+
+  validate(name, value) {
+    let formErrors = this.state.formErrors
+    let isError = false
 
     switch (name) {
       case "name":
-        if (value.match(/^[A-Za-zא-ת]+$/) === null) {
-          formErrors.name = "can not conatin numbers";
-          isError = true;
-        } else {
-          formErrors.name = ""
-        }
-        if (value.length < 2) {
-          formErrors.name = "must be more than 1";
-          isError = true;
-        }
-        else {
-          formErrors.name = ""
-        }
-        break;
+        this.checkIfDishExist(value)
+        if (name > 0)
+          if (value.match(/^[A-Za-zא-ת]+$/) === null) {
+            formErrors[name] = "can not conatin numbers";
+            isError = true
+            break;
+          } else if (value.length < 2) {
+            formErrors[name] = "must be more than 1";
+            isError = true
+            break;
+          } else {
+            formErrors[name] = "";
+
+            break;
+          }
 
       case "food_type":
         if (value.match(/^[A-Za-zא-ת]+$/) === null) {
-          formErrors.food_type = "can not conatin numbers";
-          isError = true;
+          formErrors[name] = "can not conatin numbers";
+          isError = true
+          break;
+        } else if (value.length < 3) {
+          formErrors[name] = "must be more than 2";
+          isError = true
+          break;
         } else {
-          formErrors.name = ""
-        }
-        if (value.length < 3) {
-          formErrors.food_type = "must be more than 2";
-          isError = true;
-        } else {
-          formErrors.food_type = ""
+          formErrors[name] = "";
         }
         break;
 
       case "calories":
         if (value.length < 0) {
-          formErrors.food_type = "can not be empty";
-          isError = true;
-
-        }
-        else {
-          formErrors.name = ""
-        }
-        if (value.match(/^[1-9]\d*$/) == null) {
-          formErrors.calories = "can not start with 0";
-          isError = true;
-
+          formErrors[name] = "can not be empty";
+          isError = true
+          break;
+        } else if (value.match(/^[1-9]\d*$/) == null) {
+          formErrors[name] = "can not start with 0";
+          isError = true
+          break;
         } else {
-          formErrors.calories = ""
+          formErrors[name] = "";
         }
         break;
-
       default:
-        break;
+        break
     }
-    this.setState({ isError: isError })
-    this.setState({ formErrors, [name]: value });
-  };
+    this.setState({ formErrors: formErrors });
+    console.log(this.state.formErrors)
+    return isError
+  }
 
-  onSubmit(event) {
-    event.preventDefault();
-    if (this.state.isError === false) {
-      const path = `${process.env.REACT_APP_BE_URL}/dish`;
-      const data = {
-        name: this.state.name,
-        calories: this.state.calories,
-        food_type: this.state.food_type,
-      }
-      const token = localStorage.getItem('jwt')
-      const headers = {
-        "Authorization": `Bearer ${token}`
-      }
-      axios
-        .post(path, data, { headers: headers })
-        .then((res) => {
-          if (String(res.data) !== "false") {
-            let iddish = res['data'] // TODO: tell combos there is new dish 
-            this.props.reRenderTable(null, true)
-            this.toggleModal();
-            this.setState({ open: true });
-          }
+  checkIfDishExist(name) {
+    this.setState({ isExist: false })
+    const path = `${process.env.REACT_APP_BE_URL}/dish/check/${name}`;
+    axios
+      .get(path)
+      .then((res) => {
+        if (res['data'] === true) {
+          this.setState({ isError: true })
+          this.setState({ isExist: true })
+          let newFormErrors = this.state.formErrors
+          newFormErrors.name = "Dish already exist"
+          this.setState({ formErrors: newFormErrors })
+        } else {
+          console.log('no such dish')
         }
-        )
-    }
-  };
-
+      }
+      )
+  }
 
   toggleModal = (event) => {
     const { isOpen } = this.state;
@@ -151,18 +175,20 @@ export default class AddDish extends Component {
     });
   };
   // returns true if no errors
-  checkForm = () => {
+  checkForm() {
     const err = this.state.formErrors;
-    return (err.name.length === 0 && err.food_type === 0 && err.calories === 0)
+    let noFormErrors = (err.name.length === 0 && err.food_type.length === 0 && err.calories.length === 0)
+    return noFormErrors && (this.state.isError === false)
   }
 
-  addNewDishButton = () => {
+  addNewDishButton() {
     const userType = localStorage.getItem('user_type')
     if (userType === 'admin') {
       return (
         <AwesomeButton type="primary" onPress={this.toggleModal}>
-          New Dish
+          Create new dish
         </AwesomeButton>
+
       )
     }
   }
@@ -174,6 +200,7 @@ export default class AddDish extends Component {
       <div>
         {this.addNewDishButton()}
         <Dialog
+          // maxWidth="maxWidth"
           onClose={this.toggleModal}
           aria-labelledby="customized-dialog-title"
           open={this.state.isOpen}
@@ -189,7 +216,7 @@ export default class AddDish extends Component {
                 >
                   <TextField
                     autoFocus
-                    onSubmit={(e) => this.onSubmit(e)}
+                    onSubmit={this.handleSubmitToParent}
                     onChange={(e) => { this.onChange(e) }}
                     margin="dense"
                     id="name"
@@ -245,7 +272,7 @@ export default class AddDish extends Component {
               <button
                 type="button"
                 className="button"
-                onClick={(e) => { (this.checkForm() === false) ? this.onSubmit(e) : void (0) }}
+                onClick={(e) => { (this.checkForm() === true) ? this.onSubmit(e) : void (0) }}
               >
                 Add dish
               </button>
