@@ -54,6 +54,8 @@ class MenuModel:
         :param menu_date: date the menu is served
         :reutrns: True
         """
+        print(dishes)
+
         # orgenize the dishes so it would be easy to create menu object for each meal
         meals_res = {'morning': [], 'noon': [], 'evening': []}
         for meal in meals_res.keys():
@@ -88,8 +90,9 @@ class MenuModel:
                         # menuids_day_parts[meal] = idmenu
                         # itarete over the dishes, adding them to db and link them to menu idmenu
                         for dish in meals_res[meal]:
+                            print(dish)
                             self.dish.add_dish_to_menu(dish['name'],
                                                        dish['food_type'],
                                                        dish['calories'],
-                                                       idmenu)
+                                                       idmenu, dish['iddish'])
         return True
