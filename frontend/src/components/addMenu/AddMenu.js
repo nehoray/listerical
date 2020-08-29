@@ -146,7 +146,7 @@ export default class AddMenuDialog extends Component {
                         <React.Fragment key={mealName + dish.name}>
                             <div className="added-dish">
                                 <div id="dish.name" type="text">{dish.name} ({dish.food_type}) with {dish.calories} calories (100 g)</div>
-                                <IconButton className="delete" onClick={() => this.removeDish(dish.name, this.state.selected)}>
+                                <IconButton className="delete" onClick={() => this.removeDish(dish.name, mealName)}>
                                     <DeleteForeverIcon />
                                 </IconButton>
                             </div>
@@ -160,12 +160,19 @@ export default class AddMenuDialog extends Component {
     }
 
     // remove dish from state and from dialog
-    removeDish(name, dishRow) {
-        const removeIndex = dishRow.map(function (item) { return item.name }).indexOf(name)
+    removeDish(name, mealName) {
+
+
+        // const curMealdishes = this.state.dishRow.filter(dish => dish.mealName === mealName)
+        // const removeIndex = this.state.dishRow.map(function (item) { return item.name }).indexOf(name) // index
+        const dishToRemove = this.state.dishRow.find(dish => dish.name === name && dish.mealName === mealName)
+        const removeIndex = this.state.dishRow.indexOf(dishToRemove)
+        let newDishRow = this.state.dishRow
         if (removeIndex > -1) {
-            dishRow.splice(removeIndex, 1)
+            newDishRow.splice(removeIndex, 1)
         }
-        this.setState({ dishRow: dishRow })
+        this.setState({ dishRow: newDishRow })
+        console.log(this.state.dishRow)
     }
 
     // add menu button (cant see if not admin)
@@ -195,21 +202,22 @@ export default class AddMenuDialog extends Component {
     // adding a new dish to the menu state - onPress (add)
     updateMenuState(meal) {
         const selectedMealState = this.state[`selected${meal}`]
-        // todo: check if not in state already
-        const newDish = {
-            name: selectedMealState.name,
-            calories: selectedMealState.calories_per_100_grams,
-            food_type: selectedMealState.food_type_base,
-            iddish: selectedMealState.iddish,
-            mealName: meal
+        // check if not in state already
+        const dish = this.state.dishRow.find(dish => dish.name === selectedMealState.name && dish.mealName === meal)
+        if (dish === undefined) {
+            const newDish = {
+                name: selectedMealState.name,
+                calories: selectedMealState.calories_per_100_grams,
+                food_type: selectedMealState.food_type_base,
+                iddish: selectedMealState.iddish,
+                mealName: meal
+            }
+            let updatedArr = this.state.dishRow
+            updatedArr.push(newDish)
+            this.setState({
+                dishRow: updatedArr
+            });
         }
-        let updatedArr = this.state.dishRow
-        updatedArr.push(newDish)
-
-        this.setState({
-            dishRow: updatedArr
-        });
-
     }
     render() {
         return (
