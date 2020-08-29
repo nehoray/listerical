@@ -25,3 +25,8 @@
     flex-direction: row;
     place-content: space-between
 }
+.top-bar{
+    display:flex;
+    flex-direction:row;
+    justify-content: space-between;
+}

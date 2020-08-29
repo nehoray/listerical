@@ -1,15 +1,12 @@
-import Dialog from "@material-ui/core/Dialog";
+import { Dialog, Grid, TextField } from '@material-ui/core';
 import MuiDialogContent from "@material-ui/core/DialogContent";
-import Grid from "@material-ui/core/Grid";
 import IconButton from '@material-ui/core/IconButton';
 import { withStyles } from "@material-ui/core/styles";
-import TextField from '@material-ui/core/TextField';
 import DeleteForeverIcon from '@material-ui/icons/DeleteForever';
 import Autocomplete from '@material-ui/lab/Autocomplete';
 import axios from "axios";
 import React, { Component } from "react";
 import { AwesomeButton } from "react-awesome-button";
-import AddDishDialog from '../addDish/AddDish';
 import '../addMenu/AddMenu.css';
 
 
@@ -22,7 +19,6 @@ const DialogContent = withStyles((theme) => ({
 // Dialog of createing new menu
 export default class AddMenuDialog extends Component {
     constructor (props) {
-        console.log(props)
         super(props);
         this.state = {
             mealsTimes: {
@@ -36,15 +32,32 @@ export default class AddMenuDialog extends Component {
             formErrors: {
                 timeError: ""
             },
-            dishRow: []
-            ,
-            isOpen: false
+            dishRow: [],
+            isOpen: false,
+            isSelectedmorning: false,
+            isSelectednoon: false,
+            isSelectevening: false,
+            selectedmorning: {},
+            selectednoon: {},
+            selectedevening: {}
         };
 
         this.removeDish = this.removeDish.bind(this)
         this.addDishToState = this.addDishToState.bind(this)
 
+        // get all dishes for combos
+        this.allDbDishes = [];
+        const path = `${process.env.REACT_APP_BE_URL}/dishes`;
+        axios
+            .get(path)
+            .then((res) => {
+                this.allDbDishes = res['data']
+            })
+            .catch((e) => {
+                console.error("e");
+            });
     }
+
     mealsNames = ['morning', 'noon', 'evening']
 
     // init state rigth after menu adding
@@ -89,8 +102,6 @@ export default class AddMenuDialog extends Component {
                     this.setState({
                         open: true,
                     });
-                    console.log('this is here:')
-                    console.log(this.props)
                     this.props.readMenusFunc(this.props.menuDate)
 
                 }
@@ -102,7 +113,7 @@ export default class AddMenuDialog extends Component {
             });
     };
 
-    // updates state every input change
+    // updates times state every input change
     changeHandler = (event) => {
         event.preventDefault();
         const stateName = `${event.target.id}`;
@@ -114,21 +125,7 @@ export default class AddMenuDialog extends Component {
         });
     };
 
-    // adding a new dish to the menu state
-    handleChildAddDish(childState, mealName) {
-        const newDish = {
-            name: childState.name,
-            calories: childState.calories,
-            food_type: childState.food_type,
-            mealName: mealName
-        }
-        let updatedArr = this.state.dishRow
-        updatedArr.push(newDish)
 
-        this.setState({
-            dishRow: updatedArr
-        });
-    }
 
     toggleModal = (event) => {
         const { isOpen } = this.state;
@@ -138,15 +135,18 @@ export default class AddMenuDialog extends Component {
     };
 
     // present the new dish every dish adding
-    addDishToState(dishRow, mealName) {
+    addDishToState(mealName, dishRow) {
+        console.log(mealName)
+        console.log(dishRow)
         return (
             dishRow.map((dish) => {
                 if (dish.mealName === mealName) {
+                    console.log('here')
                     return (
                         <React.Fragment key={mealName + dish.name}>
                             <div className="added-dish">
                                 <div id="dish.name" type="text">{dish.name} ({dish.food_type}) with {dish.calories} calories (100 g)</div>
-                                <IconButton className="delete" onClick={() => this.removeDish(dish.name, dishRow)}>
+                                <IconButton className="delete" onClick={() => this.removeDish(dish.name, this.state.selected)}>
                                     <DeleteForeverIcon />
                                 </IconButton>
                             </div>
@@ -179,6 +179,38 @@ export default class AddMenuDialog extends Component {
             )
         }
     }
+
+    // set the state of the meal
+    async onComboChange(value, meal) {
+        const selectedMeal = `selected${meal}`
+        const isSelected = `isSelected${meal}`
+        await this.setState({
+            [selectedMeal]: value
+        })
+        await this.setState({
+            [isSelected]: true
+        })
+    }
+
+    // adding a new dish to the menu state - onPress (add)
+    updateMenuState(meal) {
+        const selectedMealState = this.state[`selected${meal}`]
+        // todo: check if not in state already
+        const newDish = {
+            name: selectedMealState.name,
+            calories: selectedMealState.calories_per_100_grams,
+            food_type: selectedMealState.food_type_base,
+            iddish: selectedMealState.iddish,
+            mealName: meal
+        }
+        let updatedArr = this.state.dishRow
+        updatedArr.push(newDish)
+
+        this.setState({
+            dishRow: updatedArr
+        });
+
+    }
     render() {
         return (
             <div >
@@ -190,7 +222,7 @@ export default class AddMenuDialog extends Component {
                     class="dialog"
                 >
                     <form onSubmit={(e) => this.changeHandler(e)} target="#" className="form">
-                        <div dividers className="add-menu-dialog"
+                        <div className="add-menu-dialog"
                         >
                             <div>
                                 <h1 id="heading"> New Menu </h1>{" "}
@@ -235,32 +267,22 @@ export default class AddMenuDialog extends Component {
                                                         }}
                                                     />
                                                 </div>
-
                                                 <div className="combo-and-button">
-                                                    <AddDishDialog
-                                                        onSubmit={(data) => this.handleChildAddDish(data, mealName)}
+                                                    <Autocomplete
+                                                        size="small"
+                                                        id={"combo-box-" + mealName}
+                                                        disableClearable
+                                                        onChange={(e, value) => { this.onComboChange(value, mealName); this.setState({ isSelected: true }) }}
+                                                        options={this.allDbDishes}
+                                                        getOptionLabel={(option) => `${option.name} `}
+                                                        style={{ width: 300 }}
+                                                        renderInput={(params) => <TextField {...params} label="Choose dish" variant="outlined" />}
                                                     />
-                                                    <div className="auto-complete">
-                                                        <Autocomplete
-                                                            size="small"
-                                                            id="combo-box-demo"
-                                                            disableClearable
-                                                            // onChange={(e, value) => onChange(value)}
-                                                            // options={presentedDishes}
-                                                            // getOptionLabel={(option) => `${option.name}`}
-                                                            style={{ width: 300 }}
-                                                            renderInput={(params) => <TextField {...params} label="Choose dish" variant="outlined" />}
-                                                        />
-                                                        <AwesomeButton >
-                                                            add
+                                                    <AwesomeButton id={mealName + "btn"} onPress={(e) => { this.updateMenuState(mealName) }} disabled={!this.state[`isSelected${mealName}`]}>
+                                                        add
                                                         </AwesomeButton>
-                                                    </div>
+                                                    {this.addDishToState(mealName, this.state.dishRow)}
                                                 </div>
-
-
-
-                                                {/* adding new dish row onto the dialog each time user add new dish */}
-                                                {this.addDishToState(this.state.dishRow, mealName)}
                                             </div>
                                         )
                                     }
@@ -277,7 +299,7 @@ export default class AddMenuDialog extends Component {
                         </div>
                     </form>
                 </Dialog>
-            </div>
+            </div >
         );
     }
 }

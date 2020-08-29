@@ -86,7 +86,7 @@ function Row(props) {
     menu.dishes = newDishes
     setMenu(menu)
     // add to db
-    const path = `${process.env.REACT_APP_BE_URL}/dish`;
+    const path = `${process.env.REACT_APP_BE_URL}/menu/dish`;
     const data = {
       name: selected.name,
       calories: selected.calories_per_100_grams,
@@ -126,29 +126,23 @@ function Row(props) {
     if (userType === 'admin') {
       return (
         <div className="auto-complete">
-          <AddDishDialog
-            idmenu={menu.idmenu}
-            day_part={menu.day_part}
-            logout={props.logout}
-            updateDishTable={props.updateDishTable}
-            onCreate={onCreate}
+
+
+          <Autocomplete
+            size="small"
+            id="combo-box-demo"
+            disableClearable
+            onChange={(e, value) => onChange(value)}
+            options={presentedDishes}
+            getOptionLabel={(option) => `${option.name}`}
+            style={{ width: 300 }}
+            renderInput={(params) => <TextField {...params} label="Choose dish" variant="outlined" />}
           />
-          <div className="auto-complete">
-            <Autocomplete
-              size="small"
-              id="combo-box-demo"
-              disableClearable
-              onChange={(e, value) => onChange(value)}
-              options={presentedDishes}
-              getOptionLabel={(option) => `${option.name}`}
-              style={{ width: 300 }}
-              renderInput={(params) => <TextField {...params} label="Choose dish" variant="outlined" />}
-            />
-            <AwesomeButton disabled={!isValueSelected} onPress={(e) => { onAdd(menu.idmenu, menu.day_part) }}>
-              add
+          <AwesomeButton disabled={!isValueSelected} onPress={(e) => { onAdd(menu.idmenu, menu.day_part) }}>
+            add
                </AwesomeButton>
-          </div>
         </div>
+
       )
     }
   }
@@ -248,10 +242,11 @@ export class MenuTable extends Component {
       .then((res) => {
         if (this._isMounted) {
 
+          this.setState({ menus: [] });
+
           this.setState({ menus: res['data'] });
-          console.log('this is the data:')
+
           console.log(res)
-          console.log('this is the state:')
           console.log(this.state.menus)
           if (res.data.length === 0) {
             this.setState({ noMenuData: true })
@@ -260,6 +255,7 @@ export class MenuTable extends Component {
             this.setState({ noMenuData: false })
           }
         }
+        console.log(this.state)
       }).catch(err => {
         if (err.response.status === 401 || err.response.status === 422) {
           this.props.logout()
@@ -311,12 +307,16 @@ export class MenuTable extends Component {
   }
   render() {
     if (this._isMounted) {
-      console.log("shuold be updating!!!!1")
       return (
         <>
-          <React.Fragment>
-            <Datepicker readMenusFunc={this.readMenuData.bind(this)} />
-          </React.Fragment>
+          <div className="top-bar">
+            <React.Fragment>
+              <Datepicker readMenusFunc={this.readMenuData.bind(this)} />
+            </React.Fragment>
+            <AddDishDialog reRenderTable={this.readMenuData.bind(this)}
+
+            />
+          </div>
           {this.state.noMenuData ? this.noMenuData() : this.tableContent()}
         </>
       );
