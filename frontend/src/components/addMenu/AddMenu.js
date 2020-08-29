@@ -135,12 +135,9 @@ export default class AddMenuDialog extends Component {
 
     // present the new dish every dish adding
     addDishToState(mealName, dishRow) {
-        console.log(mealName)
-        console.log(dishRow)
         return (
             dishRow.map((dish) => {
                 if (dish.mealName === mealName) {
-                    console.log('here')
                     return (
                         <React.Fragment key={mealName + dish.name}>
                             <div className="added-dish">
@@ -167,7 +164,6 @@ export default class AddMenuDialog extends Component {
             newDishRow.splice(removeIndex, 1)
         }
         this.setState({ dishRow: newDishRow })
-        console.log(this.state.dishRow)
     }
 
     // add menu button (cant see if not admin)

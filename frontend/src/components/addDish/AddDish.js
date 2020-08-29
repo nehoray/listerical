@@ -64,18 +64,17 @@ export default class AddDish extends Component {
         .then((res) => {
           if (String(res.data) === "true") {
             this.toggleModal();
-            this.setState({
-              open: true,
-            });
+            window.location.reload() // could be avoided using redux
           }
         })
-      // .catch(err => { todo: fix logout if no jwt
-      //   if (err.response) {
-      //     if (err.response.status === 401 || err.response.status === 403) {
-      //       this.props.logout()
-      //     }
-      //   }
-      // });
+        .catch(err => {
+          // todo: fix logout if no jwt
+          if (err.response) {
+            if (err.response.status === 401 || err.response.status === 403) {
+              this.props.logout()
+            }
+          }
+        });
 
     };
   }
@@ -145,7 +144,6 @@ export default class AddDish extends Component {
         break
     }
     this.setState({ formErrors: formErrors });
-    console.log(this.state.formErrors)
     return isError
   }
 
@@ -161,8 +159,6 @@ export default class AddDish extends Component {
           let newFormErrors = this.state.formErrors
           newFormErrors.name = "Dish already exist"
           this.setState({ formErrors: newFormErrors })
-        } else {
-          console.log('no such dish')
         }
       }
       )
