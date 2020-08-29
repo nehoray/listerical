@@ -51,8 +51,6 @@ class DishModel:
         :param idmenu: id of the menu too add the dish to
         :return: dishid of the dish add
         """
-        print(idmenu)
-        print(iddish)
         values = (idmenu, iddish)
         execute_insertion(_SQL_INSERT_DISH_TO_MENU, values)
         return iddish
@@ -84,7 +82,6 @@ class DishModel:
         """
         values = (dish)
         res = execute_selection(_SQL_GET_DISH_BY_NAME, values)
-        print(res)
         if len(res) > 0:
             return True
         else:
