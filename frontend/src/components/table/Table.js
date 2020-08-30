@@ -33,7 +33,6 @@ axios
     console.error("e");
   });
 
-
 const useRowStyles = makeStyles({
   root: {
     "& > *": {
@@ -72,7 +71,9 @@ function Row(props) {
   let presentedDishes = []
   // make sure user wont choose an existion dish
   const menuDishedIds = menu.dishes.map(dish => dish.iddish)
-  presentedDishes = allDbDishes.filter(dish => !menuDishedIds.includes(dish.iddish))
+
+  console.log(allDbDishes)
+  presentedDishes = allDbDishes ? allDbDishes.filter(dish => !menuDishedIds.includes(dish.iddish)) : presentedDishes
 
   function onChange(value) {
     setSelected(value)
@@ -146,7 +147,7 @@ function Row(props) {
           <IconButton
             aria-label="expand row"
             size="small"
-            onClick={() => setOpen(!open)}
+            onClick={() => { if (allDbDishes !== undefined || open) { setOpen(!open) } }}
           >
             {open ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
           </IconButton>
